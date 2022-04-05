@@ -8,15 +8,23 @@ public class UserLoginRequest
     public string Password { get; set; } = string.Empty;
 }
 
-public class Validator : Validator<UserLoginRequest>
+public class UserLoginRequestValidator : Validator<UserLoginRequest>
 {
-    public Validator()
+    public UserLoginRequestValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Username is required!");
+            .NotEmpty()
+            .WithMessage("Username is required!")
+            .EmailAddress()
+            .WithMessage("Invalid email format!");
 
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Password is required!");
+            .NotEmpty()
+            .WithMessage("Password is required!")
+            .MinimumLength(6)
+            .WithMessage("The length of 'Password' must be between 6 and 10 characters!")
+            .MaximumLength(10)
+            .WithMessage("The length of 'Password' must be between 6 and 10 characters!");
     }
 }
 
