@@ -1,13 +1,13 @@
 ﻿namespace Articles.Api.Features.Login;
 
-public class LogingEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResponse, User>
+public class LoginEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResponse, User>
 {
-    private readonly ILogingService _service;
-    private readonly ILogger<LogingEndpoint> _log;
+    private readonly ILoginService _service;
+    private readonly ILogger<LoginEndpoint> _log;
 
-    public LogingEndpoint(
-        ILogingService service,
-        ILogger<LogingEndpoint> log)
+    public LoginEndpoint(
+        ILoginService service,
+        ILogger<LoginEndpoint> log)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _log = log ?? throw new ArgumentNullException(nameof(log));

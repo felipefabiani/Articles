@@ -4,24 +4,24 @@ using ssc = System.Security.Claims;
 using static BCrypt.Net.BCrypt;
 
 namespace Articles.Api.Features.Login;
-public interface ILogingService
+public interface ILoginService
 {
     Task<UserLoginResponse> Login(UserLoginRequest request, CancellationToken c);
 }
-public class LogingService : ILogingService, IScopedService
+public class LoginService : ILoginService, IScopedService
 {
     private readonly ArticleReadOnlyContext _context;
-    private readonly ILogger<LogingService> _logger;
     private readonly ArticleOptions _options;
+    private readonly ILogger<LoginService> _logger;
 
-    public LogingService(
+    public LoginService(
         ArticleReadOnlyContext context,
         IOptions<ArticleOptions> options,
-        ILogger<LogingService> logger)
+        ILogger<LoginService> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<UserLoginResponse> Login(UserLoginRequest request, CancellationToken cancellationToken)

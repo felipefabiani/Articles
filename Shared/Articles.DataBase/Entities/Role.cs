@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Articles.Database.Entities;
+﻿namespace Articles.Database.Entities;
 
 public class Role : Entity
 {

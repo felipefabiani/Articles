@@ -1,7 +1,4 @@
-﻿using Articles.Api.Features.Login;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Articles.Api.Infrastructure;
+﻿namespace Articles.Api.Infrastructure;
 
 public static class DecoratorFactory
 {

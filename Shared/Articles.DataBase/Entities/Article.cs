@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Articles.Database.Entities;
+﻿namespace Articles.Database.Entities;
 
 public class Article : Entity
 {
@@ -40,7 +37,7 @@ public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<Article>
             .IsUnicode(true)
             .IsRequired()
             .HasMaxLength(3000);
-        
+
         builder
             .Property(x => x.CreatedOn)
             .IsRequired();

@@ -5,7 +5,7 @@ public partial class ArticlesConstants
     public static readonly string ArticlesOptions = "ArticleOptions";
     public static readonly string ConnectionString = "ArticlesContext";
     public static readonly string LogFilePath = "log/log-.txt";
-    public static readonly int CachingTime = 20*60;
+    public static readonly int CachingTime = 20 * 60;
 }
 
 public partial class ArticlesConstants

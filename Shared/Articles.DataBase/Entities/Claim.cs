@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Articles.Database.Entities
+﻿namespace Articles.Database.Entities
 {
-    public class Claim: Entity
+    public class Claim : Entity
     {
         public string Name { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;

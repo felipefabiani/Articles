@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Articles.Database.Entities;
+﻿namespace Articles.Database.Entities;
 
 public class User : Entity
 {

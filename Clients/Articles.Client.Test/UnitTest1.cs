@@ -1,7 +1,7 @@
-using Xunit;
-using Bunit;
 using Articles.Client.Pages;
+using Bunit;
 using System;
+using Xunit;
 
 namespace Articles.Client.Test
 {
@@ -16,7 +16,7 @@ namespace Articles.Client.Test
 
             // Act
             cut.Find("button").Click();
-            
+
             // Wait for state before continuing test
             cut.WaitForState(
                 () => cut.Find("p").TextContent == $"Current count: 1",

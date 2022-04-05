@@ -1,7 +1,6 @@
 ﻿using Articles.Database.Infrastructure;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,21 +57,22 @@ public static class ServiceCollectionExtention
             builder.Services.AddDbContext<ArticleContext>(options =>
             {
                 options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+#endif
                     .UseSqlServer(connectionString, x =>
                     {
                         x.MigrationsAssembly(typeof(ArticleContext).Assembly.FullName);
                     });
-    #if DEBUG
-                options.EnableSensitiveDataLogging();
-    #endif
+
             });
             builder.Services.AddDbContext<ArticleReadOnlyContext>(options =>
             {
-                options.UseSqlServer(connectionString);
-
-    #if DEBUG
-                options.EnableSensitiveDataLogging();
-    #endif
+                options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+#endif
+                    .UseSqlServer(connectionString);
             });
         }
         void AddLifetimeServices()
@@ -198,5 +198,5 @@ public static class ServiceCollectionExtention
 
             return app;
         }
-    }    
+    }
 }

@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace Articles.Api.Test
 {
     public class UnitTest1
