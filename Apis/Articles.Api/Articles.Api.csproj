@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Articles.DataBase\Articles.Database.csproj" />
+    <ProjectReference Include="..\..\Shared\Articles.Models\Articles.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

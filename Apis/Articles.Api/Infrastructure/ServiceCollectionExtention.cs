@@ -1,5 +1,7 @@
 ﻿using Articles.Database.Infrastructure;
+using Articles.Models.Feature.Login;
 using FastEndpoints.Swagger;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,7 @@ public static class ServiceCollectionExtention
         AddDbContext();
         AddLifetimeServices();
         AddDecorators();
+        AddCors();
 
         _ = builder.Services.AddFastEndpoints();
         _ = builder.Services.AddResponseCaching();
@@ -150,12 +153,32 @@ public static class ServiceCollectionExtention
                     });
             }
         }
+        void AddCors()
+        {
+            var allowedHosts = builder.Configuration
+                .GetSection(ArticlesConstants.Cors.AllowedHostsSection)
+                .Get<string[]>();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    name: ArticlesConstants.Cors.ArticlesClient,
+                    builder =>
+                    {
+                        builder
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .WithOrigins(allowedHosts);
+                    });
+            });
+        }
     }
 
     public static async Task<WebApplication> SetApplication(this WebApplication app)
     {
         await SetEnvironment();
 
+        app.UseCors(ArticlesConstants.Cors.ArticlesClient);
         app.UseSerilogRequestLogging();
         app.UseHttpsRedirection();
 

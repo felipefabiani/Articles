@@ -16,8 +16,8 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7183;http://localhost:5183",
       "environmentVariables": {
-        // "ASPNETCORE_ENVIRONMENT": "Development"
-         "ASPNETCORE_ENVIRONMENT": "UAT-AutomatedTest"
+        "ASPNETCORE_ENVIRONMENT": "Development"
+        // "ASPNETCORE_ENVIRONMENT": "UAT-AutomatedTest"
       }
     },
     "IIS Express": {

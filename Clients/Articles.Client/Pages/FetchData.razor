@@ -1,57 +1,69 @@
 ﻿@page "/fetchdata"
-@inject HttpClient Http
+@using Articles.Client.Properties.EndPoints
+@using Articles.Models.Feature.Login
+@using System.Diagnostics;
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Login</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Fetch Data</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<EditComponentBase 
+    TRequest=UserLoginRequest
+    TResponse=UserLoginResponse
+    Endpoint=@ep
+    Model=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    CallBack=@Callback
+    MessageOnFormValid="Logged in"
+    MessageOnFormInvalid="Logg in failed">
 
+    <FormTemplate Context="model">
+        <MudTextField Label="Email" Class="mt-3"
+                      @bind-Value="model.Email" For="@(() => model.Email)" />
+        <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                      @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+    </FormTemplate>
+    <ButtonsTemplate>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SayHi())">Say Hi</MudButton>
+    </ButtonsTemplate>
+</EditComponentBase>
 @code {
-    private WeatherForecast[]? forecasts;
 
-    protected override async Task OnInitializedAsync()
+    [Inject] ISnackbar Snackbar { get; set; } = null!;
+
+    private UserLoginResponse? loggedUser;
+
+    private void Callback(UserLoginResponse resp)
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        if (resp.HasToken)
+        {
+            loggedUser = resp;
+            Snackbar.Add($"User {resp.FullName} loged in");
+        }
+        else
+        {
+            Snackbar.Add($"Oppppss!!!");
+        }
     }
 
-    public class WeatherForecast
+
+    private async Task SayHi()
     {
-        public DateTime Date { get; set; }
+        if (loggedUser is null)
+            Snackbar.Add($"Oppppss!!!");
+        else
+            Snackbar.Add($"Hi {loggedUser.FullName}!!!");
 
-        public int TemperatureC { get; set; }
+        await Task.CompletedTask;
+    }
 
-        public string? Summary { get; set; }
+    
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    private UserLoginRequesEndpoint ep = new UserLoginRequesEndpoint();
+
+    public class UserLoginRequesEndpoint: PostEndPoint<UserLoginRequest, UserLoginResponse>
+    {
+        public override string GetEndPoint() { return "api/login"; }
+        public override UserLoginResponse NullModel { get { return NullUserLoginResponse.Empty; } }
     }
 }

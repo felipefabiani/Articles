@@ -1,4 +1,6 @@
-﻿namespace Articles.Api.Features.Login;
+﻿using Articles.Models.Feature.Login;
+
+namespace Articles.Api.Features.Login;
 
 public class LoginEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResponse, User>
 {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Articles.Models.Feature.Login;
+using System.Linq;
 
 namespace Articles.Api.Test.Features.Login;
 public class LoginServiceTest

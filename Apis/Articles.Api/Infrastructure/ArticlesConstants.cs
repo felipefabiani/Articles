@@ -18,3 +18,11 @@ public partial class ArticlesConstants
         public static readonly string Production = "Production";
     }
 }
+public partial class ArticlesConstants
+{
+    public class Cors
+    {
+        public static readonly string ArticlesClient = "Article.Client";
+        public static readonly string AllowedHostsSection = "AllowedHosts";
+    }
+}

@@ -1,14 +1,12 @@
 global using Articles.Api.Features.Login;
 global using Articles.Api.Test.Fixture;
 global using Articles.Database.Context;
-global using Author.Login;
 global using FakeItEasy;
 global using FastEndpoints;
 global using FastEndpoints.Security;
 global using FastEndpoints.Validation;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
-// global using MiniDevTo.Auth;
 global using Shouldly;
 global using System;
 global using System.Threading.Tasks;

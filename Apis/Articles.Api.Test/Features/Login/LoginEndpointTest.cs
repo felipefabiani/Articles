@@ -1,4 +1,5 @@
-﻿using MiniDevTo.Auth;
+﻿using Articles.Models.Auth;
+using Articles.Models.Feature.Login;
 
 namespace Articles.Api.Test.Features.Login;
 public class LoginEndpointTest
@@ -15,7 +16,7 @@ public class LoginEndpointTest
 
         var logingService = A.Fake<ILoginService>();
         var logger = A.Fake<ILogger<LoginEndpoint>>();
-        A.CallTo(() => logingService.Login(req, default)).Returns(Task.FromResult(new UserLoginResponse
+        _ = A.CallTo(() => logingService.Login(req, default)).Returns(Task.FromResult(new UserLoginResponse
         {
             FullName = "Test",
             Token = new JwtToken

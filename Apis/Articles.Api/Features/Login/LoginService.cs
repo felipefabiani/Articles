@@ -2,6 +2,8 @@
 using ssc = System.Security.Claims;
 
 using static BCrypt.Net.BCrypt;
+using Articles.Models.Feature.Login;
+using Articles.Models.Auth;
 
 namespace Articles.Api.Features.Login;
 public interface ILoginService

@@ -1,5 +1,8 @@
-﻿using FluentValidation.TestHelper;
+﻿using Articles.Models.Feature.Login;
+using FluentValidation.TestHelper;
+
 namespace Articles.Api.Test.Features.Login;
+
 public class UserLoginRequestValidatorTest
 {
     private UserLoginRequestValidator _validator = null!;
@@ -11,9 +14,9 @@ public class UserLoginRequestValidatorTest
     }
 
     [Theory]
-    [InlineData(null, "NotEmptyValidator", null, "NotEmptyValidator" )]
-    [InlineData("", "NotEmptyValidator", "", "NotEmptyValidator" )]
-    [InlineData("invalid-email", "EmailValidator", "", "NotEmptyValidator" )]
+    [InlineData(null, "NotEmptyValidator", null, "NotEmptyValidator")]
+    [InlineData("", "NotEmptyValidator", "", "NotEmptyValidator")]
+    [InlineData("invalid-email", "EmailValidator", "", "NotEmptyValidator")]
     [InlineData("invalid-email", "EmailValidator", "1234", "MinimumLengthValidator")]
     [InlineData("invalid-email", "EmailValidator", "01234567891", "MaximumLengthValidator")]
     public void Should_have_error_when_Name_is_null(
