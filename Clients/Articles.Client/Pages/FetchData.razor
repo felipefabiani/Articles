@@ -5,28 +5,33 @@
 
 <PageTitle>Login</PageTitle>
 
-<h1>Fetch Data</h1>
 
-<EditComponentBase 
-    TRequest=UserLoginRequest
-    TResponse=UserLoginResponse
-    Endpoint=@ep
-    Model=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
+<MudGrid Justify="Justify.Center">
+    <MudItem md="6" xs="12">
+        <EditComponentBase TRequest=UserLoginRequest
+                           TResponse=UserLoginResponse
+                           Endpoint=@ep
+                           Model=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
+                           CallBack=@Callback
+                           MessageOnFormValid="Logged in"
+                           MessageOnFormInvalid="Logg in failed">
+            <HeaderTemplate>
+                <MudElement HtmlTag="h1">Login</MudElement>
 
-    CallBack=@Callback
-    MessageOnFormValid="Logged in"
-    MessageOnFormInvalid="Logg in failed">
+            </HeaderTemplate>
+            <FormTemplate Context="model">
+                <MudTextField Label="Email" Class="mt-3"
+                              @bind-Value="model.Email" For="@(() => model.Email)" />
+                <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                              @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+            </FormTemplate>
+            <ButtonsTemplate>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SayHi())">Say Hi</MudButton>
+            </ButtonsTemplate>
+        </EditComponentBase>
+    </MudItem>
+</MudGrid>
 
-    <FormTemplate Context="model">
-        <MudTextField Label="Email" Class="mt-3"
-                      @bind-Value="model.Email" For="@(() => model.Email)" />
-        <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                      @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
-    </FormTemplate>
-    <ButtonsTemplate>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SayHi())">Say Hi</MudButton>
-    </ButtonsTemplate>
-</EditComponentBase>
 @code {
 
     [Inject] ISnackbar Snackbar { get; set; } = null!;
@@ -57,11 +62,11 @@
         await Task.CompletedTask;
     }
 
-    
+
 
     private UserLoginRequesEndpoint ep = new UserLoginRequesEndpoint();
 
-    public class UserLoginRequesEndpoint: PostEndPoint<UserLoginRequest, UserLoginResponse>
+    public class UserLoginRequesEndpoint : PostEndPoint<UserLoginRequest, UserLoginResponse>
     {
         public override string GetEndPoint() { return "api/login"; }
         public override UserLoginResponse NullModel { get { return NullUserLoginResponse.Empty; } }

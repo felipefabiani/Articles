@@ -17,16 +17,9 @@ public class ArticleApiClient
         where TRequest : notnull, new()
         where TResponse : notnull, new()
     {
-        try
-        {
-            var response = await _http.PostAsJsonAsync(endPoint.GetEndPoint(), endPoint.Model, cancellationToken);
-            var content = await response.Content.ReadFromJsonAsync<TResponse>();
+        var response = await _http.PostAsJsonAsync(endPoint.GetEndPoint(), endPoint.Model, cancellationToken);
+        var content = await response.Content.ReadFromJsonAsync<TResponse>();
 
-            return content ?? endPoint.NullModel;
-        }
-        catch
-        {
-            return endPoint.NullModel;
-        }
+        return content ?? endPoint.NullModel;
     }
 }
