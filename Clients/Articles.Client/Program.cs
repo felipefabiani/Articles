@@ -1,6 +1,10 @@
 using Articles.Client;
+using Articles.Client.Authentication;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
 using MudBlazor;
 using MudBlazor.Services;
 using Serilog;
@@ -16,6 +20,12 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
+
+builder.Services.AddScoped<AuthStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(p=> p.GetRequiredService<AuthStateProvider>());
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
 builder.Services.AddMudServices(config =>
 {
@@ -30,24 +40,17 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 Log.Debug("Adding services");
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddHttpClient<ArticleApiClient>(client =>
+
+builder.Services.AddHttpClient("Article.Api", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7183");
-    //client.DefaultRequestHeaders.Add("accept", "application/json");
-    //client.DefaultRequestHeaders.Add("Content-Type", "application/json");
-
 });
+builder.Services.AddHttpClient<IAuthenticationService, AuthenticationService>("Article.Api");
+builder.Services.AddHttpClient<ArticleApiClient>("Article.Api");
 
 builder.AddFluentValidators("Articles.Models");
-
-Log.Debug("Setting Oidc");
-builder.Services.AddOidcAuthentication(options =>
-{
-    // Configure your authentication provider options here.
-    // For more information, see https://aka.ms/blazor-standalone-auth
-    builder.Configuration.Bind("Local", options.ProviderOptions);
-});
 
 Log.Debug("Running");
 await builder.Build().RunAsync();

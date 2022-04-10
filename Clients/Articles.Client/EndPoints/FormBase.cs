@@ -1,5 +1,4 @@
 ﻿using Articles.Client.Pages;
-using Articles.Client.Properties.EndPoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -23,7 +22,7 @@ public class FormBase<TRequest, TResponse> : ComponentBase
     [Parameter] public string MessageOnFormInvalid { get; set; } = string.Empty;
     [Parameter] public Action<TResponse>? CallBack { get; set; }
 
-    protected CancellationTokenSource cancellationTokenSource = new ();
+    protected CancellationTokenSource cancellationTokenSource = new();
     protected AbstractValidator<TRequest> _validator = null!;
 
     protected MudForm form = null!;
@@ -33,7 +32,7 @@ public class FormBase<TRequest, TResponse> : ComponentBase
 
         if (form.IsValid)
         {
-            var dlgRef = DialogService.Show<CanceDialob>("", 
+            var dlgRef = DialogService.Show<CancelDialog>("",
                 new DialogParameters
                 {
                     {"cancellationTokenSource", cancellationTokenSource }
@@ -75,7 +74,7 @@ public class FormBase<TRequest, TResponse> : ComponentBase
     protected Task Reset()
     {
         form.Reset();
-        Endpoint.Model = Model.CloneJson();;
+        Endpoint.Model = Model.CloneJson(); ;
         return Task.CompletedTask;
     }
     protected override Task OnInitializedAsync()
@@ -99,7 +98,7 @@ public class FormBase<TRequest, TResponse> : ComponentBase
     };
 
     private void ResetCancelationToken()
-    {        
+    {
         cancellationTokenSource.Dispose();
         cancellationTokenSource = new CancellationTokenSource();
     }

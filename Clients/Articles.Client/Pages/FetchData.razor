@@ -1,10 +1,15 @@
 ﻿@page "/fetchdata"
-@using Articles.Client.Properties.EndPoints
+@page "/login"
+
+@using Articles.Client.Authentication
+@using Articles.Client.EndPoints
 @using Articles.Models.Feature.Login
 @using System.Diagnostics;
 
-<PageTitle>Login</PageTitle>
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavManager
 
+<PageTitle>Login</PageTitle>
 
 <MudGrid Justify="Justify.Center">
     <MudItem md="6" xs="12">
@@ -12,7 +17,7 @@
                            TResponse=UserLoginResponse
                            Endpoint=@ep
                            Model=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
-                           CallBack=@Callback
+                           CallBack=@(async user => await @ExecuteLogin(user))
                            MessageOnFormValid="Logged in"
                            MessageOnFormInvalid="Logg in failed">
             <HeaderTemplate>
@@ -25,9 +30,6 @@
                 <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
                               @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
             </FormTemplate>
-            <ButtonsTemplate>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SayHi())">Say Hi</MudButton>
-            </ButtonsTemplate>
         </EditComponentBase>
     </MudItem>
 </MudGrid>
@@ -35,11 +37,34 @@
 @code {
 
     [Inject] ISnackbar Snackbar { get; set; } = null!;
+    
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string ReturnUrl 
+    { 
+        get => string.IsNullOrWhiteSpace(_returnUrl) ? "/" : _returnUrl;  
+        set => _returnUrl = value; 
+    }
+    
+    private bool showAuthenticationError = false;
+    private string authenticationErrorMessage = string.Empty;
+    private string _returnUrl = string.Empty;
+    private UserLoginResponse? loggedUser;   
 
-    private UserLoginResponse? loggedUser;
-
-    private void Callback(UserLoginResponse resp)
+    private async Task ExecuteLogin(UserLoginResponse resp)
     {
+         showAuthenticationError = false;
+        var result = await AuthService.Login(resp);
+        if (result is not null)
+        {
+            NavManager.NavigateTo(ReturnUrl);
+        }
+        else
+        {
+            authenticationErrorMessage = "There was an error when trying to log in";
+            showAuthenticationError = true;
+        }
+
         if (resp.HasToken)
         {
             loggedUser = resp;
@@ -50,19 +75,6 @@
             Snackbar.Add($"Oppppss!!!");
         }
     }
-
-
-    private async Task SayHi()
-    {
-        if (loggedUser is null)
-            Snackbar.Add($"Oppppss!!!");
-        else
-            Snackbar.Add($"Hi {loggedUser.FullName}!!!");
-
-        await Task.CompletedTask;
-    }
-
-
 
     private UserLoginRequesEndpoint ep = new UserLoginRequesEndpoint();
 

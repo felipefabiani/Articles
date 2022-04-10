@@ -1,4 +1,4 @@
-﻿namespace Articles.Client.Properties.EndPoints;
+﻿namespace Articles.Client.EndPoints;
 
 public interface INotNullClass<T>
 {
@@ -6,8 +6,8 @@ public interface INotNullClass<T>
 }
 
 public interface IPostEndPoint<T, TResonse>
-    where T: notnull, new ()
-    where TResonse : notnull, new ()
+    where T : notnull, new()
+    where TResonse : notnull, new()
 {
     Dictionary<string, string> Headers { get; set; }
     T Model { get; set; }

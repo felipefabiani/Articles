@@ -24,7 +24,7 @@ public class LoginEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResp
     {
         Response = await _service.Login(r, c);
 
-        await Task.Delay(10_000, c);
+        // await Task.Delay(10_000, c);
 
         if (!Response.HasToken)
         {

@@ -4,7 +4,7 @@ namespace Articles.Database.Infrastructure;
 public static class SeedArticleDatabaseExtension
 {
     private static string GetPassword(string pwd = "123456") =>
-        EnhancedHashPassword(pwd, BCrypt.Net.HashType.SHA512, 4);
+        EnhancedHashPassword(pwd, 12);
 
     public static async ValueTask Seed(this ArticleContext context)
     {

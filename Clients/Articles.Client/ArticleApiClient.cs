@@ -1,4 +1,4 @@
-﻿using Articles.Client.Properties.EndPoints;
+﻿using Articles.Client.EndPoints;
 using System.Net.Http.Json;
 
 namespace Articles.Client;

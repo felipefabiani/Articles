@@ -4,6 +4,9 @@ using ssc = System.Security.Claims;
 using static BCrypt.Net.BCrypt;
 using Articles.Models.Feature.Login;
 using Articles.Models.Auth;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Articles.Api.Features.Login;
 public interface ILoginService
@@ -36,7 +39,7 @@ public class LoginService : ILoginService, IScopedService
 
         if (
             string.IsNullOrWhiteSpace(user.Password) ||
-            !EnhancedVerify(request.Password, user.Password, HashType.SHA512))
+            !EnhancedVerify(request.Password, user.Password))
         {
             return NullUserLoginResponse.Empty;
         }
@@ -51,15 +54,45 @@ public class LoginService : ILoginService, IScopedService
             Token = new JwtToken
             {
                 ExpiryDate = DateTime.UtcNow.AddHours(4),
-                Value = JWTBearer.CreateToken(
+                Value = CreateToken(
                     signingKey: _options.JwtSigningKey,
                     expireAt: DateTime.UtcNow.AddHours(4),
                     roles: e.Roles.Select(x => x.Name).ToList(),
                     claims: e.Claims
                         .Select(x => new ssc.Claim(x.Name, x.Value))
                         .ToList()
+
                 )
             }
         };
+        string CreateToken(string signingKey, DateTime? expireAt = null, IEnumerable<string>? permissions = null, IEnumerable<string>? roles = null, IEnumerable<ssc.Claim>? claims = null)
+        {
+            var list = new List<ssc.Claim>();
+            if (claims != null)
+            {
+                list.AddRange(claims);
+                list.Add(new ssc.Claim(ssc.ClaimTypes.Name, $"{user.FirstName} {user.LastName}"));
+            }
+
+            if (permissions != null)
+            {
+                list.AddRange(permissions.Select((string p) => new ssc.Claim("permissions", p)));
+            }
+
+            if (roles != null)
+            {
+                list.AddRange(roles.Select((string r) => new ssc.Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", r)));
+            }
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ssc.ClaimsIdentity(list),
+                Expires = expireAt,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey)), "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256")
+            };
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            jwtSecurityTokenHandler.OutboundClaimTypeMap.Clear();
+            return jwtSecurityTokenHandler.WriteToken(jwtSecurityTokenHandler.CreateToken(tokenDescriptor));
+        }
     }
 }
