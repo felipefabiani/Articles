@@ -1,28 +1,31 @@
-﻿namespace Articles.Client.EndPoints;
+﻿using CSharpFunctionalExtensions;
+
+namespace Articles.Client.EndPoints;
 
 public interface INotNullClass<T>
 {
     T Empty { get; }
 }
 
-public interface IPostEndPoint<T, TResonse>
-    where T : notnull, new()
-    where TResonse : notnull, new()
+public interface IPostEndPoint<TRequest, TResponse>
+    where TRequest : notnull, new()
+    where TResponse : notnull, new()
 {
     Dictionary<string, string> Headers { get; set; }
-    T Model { get; set; }
-    TResonse NullModel { get; }
+    TRequest Model { get; set; }
+    TResponse Response { get; set; }
 
     string GetEndPoint();
 }
 
-public abstract class PostEndPoint<T, TResonse> :
-    IPostEndPoint<T, TResonse>
-    where T : notnull, new()
-    where TResonse : notnull, new()
+public abstract class PostEndPoint<TRequest, TResponse> :
+    IPostEndPoint<TRequest, TResponse>
+    where TRequest : notnull, new()
+    where TResponse : notnull, new()
 {
-    public T Model { get; set; } = new T();
-    public abstract TResonse NullModel { get; }
+    public TRequest Model { get; set; } = new TRequest();
+
+    public TResponse Response { get; set; }
     public abstract string GetEndPoint();
 
     public Dictionary<string, string> Headers { get; set; } = new();

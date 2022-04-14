@@ -5,29 +5,40 @@
 @using Articles.Client.EndPoints
 @using Articles.Models.Feature.Login
 @using System.Diagnostics;
+@using CSharpFunctionalExtensions
+@using static Articles.Client.ArticleApiClient
 
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavManager
 
 <PageTitle>Login</PageTitle>
-
 <MudGrid Justify="Justify.Center">
     <MudItem md="6" xs="12">
         <EditComponentBase TRequest=UserLoginRequest
                            TResponse=UserLoginResponse
                            Endpoint=@ep
+                           HttpClientName="Article.Api"
                            Model=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
-                           CallBack=@(async user => await @ExecuteLogin(user))
-                           MessageOnFormValid="Logged in"
-                           MessageOnFormInvalid="Logg in failed">
+                           SuccessCallBack=@(async user => await ExecuteLogin(user))
+                           FailCallBack=@(user => LoginFail(user))
+                           DisableFailDefaultMessage=true
+                           DisableSuccessDefaultMessage=true>
+
             <HeaderTemplate>
                 <MudElement HtmlTag="h1">Login</MudElement>
-
             </HeaderTemplate>
             <FormTemplate Context="model">
+                @if (showFailMessage)
+                {
+                    <MudAlert Severity="Severity.Error"
+                          ContentAlignment="HorizontalAlignment.Center"
+                          Elevation="6"
+                          ShowCloseIcon="true"
+                          CloseIconClicked="(() => showFailMessage = false)">@failMessage</MudAlert>
+                }
                 <MudTextField Label="Email" Class="mt-3"
                               @bind-Value="model.Email" For="@(() => model.Email)" />
-                <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                <MudTextField Label="Password" Class="mt-3"
                               @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
             </FormTemplate>
         </EditComponentBase>
@@ -37,23 +48,31 @@
 @code {
 
     [Inject] ISnackbar Snackbar { get; set; } = null!;
-    
+
     [Parameter]
     [SupplyParameterFromQuery]
-    public string ReturnUrl 
-    { 
-        get => string.IsNullOrWhiteSpace(_returnUrl) ? "/" : _returnUrl;  
-        set => _returnUrl = value; 
+    public string ReturnUrl
+    {
+        get => string.IsNullOrWhiteSpace(_returnUrl) ? "/" : _returnUrl;
+        set => _returnUrl = value;
     }
-    
+
     private bool showAuthenticationError = false;
     private string authenticationErrorMessage = string.Empty;
     private string _returnUrl = string.Empty;
-    private UserLoginResponse? loggedUser;   
+    private UserLoginResponse? loggedUser;
+    private string failMessage = string.Empty;
+    private bool showFailMessage = false;
+
+    private void LoginFail(BadRequestResponse resp)
+    {
+        failMessage = string.Join("<br/>", resp.errors.GeneralErrors);
+        showFailMessage = true;
+        StateHasChanged();
+    }
 
     private async Task ExecuteLogin(UserLoginResponse resp)
     {
-         showAuthenticationError = false;
         var result = await AuthService.Login(resp);
         if (result is not null)
         {
@@ -61,7 +80,7 @@
         }
         else
         {
-            authenticationErrorMessage = "There was an error when trying to log in";
+            Snackbar.Add("There was an error when trying to log in", Severity.Error);
             showAuthenticationError = true;
         }
 
@@ -81,6 +100,5 @@
     public class UserLoginRequesEndpoint : PostEndPoint<UserLoginRequest, UserLoginResponse>
     {
         public override string GetEndPoint() { return "api/login"; }
-        public override UserLoginResponse NullModel { get { return NullUserLoginResponse.Empty; } }
     }
 }
