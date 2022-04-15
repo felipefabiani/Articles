@@ -59,7 +59,6 @@ public class LoginService : ILoginService, IScopedService
                     claims: e.Claims
                         .Select(x => new ssc.Claim(x.Name, x.Value))
                         .ToList()
-
                 )
             }
         };
