@@ -2,28 +2,22 @@
 @page "/login"
 
 @using Articles.Client.Authentication
-@using Articles.Client.EndPoints
 @using Articles.Models.Feature.Login
-@using System.Diagnostics;
-@using CSharpFunctionalExtensions
-@using static Articles.Client.ArticleApiClient
 
 @inject IAuthenticationService AuthService
-@inject NavigationManager NavManager
 
 <PageTitle>Login</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem md="6" xs="12">
-        <EditComponentBase TRequest=UserLoginRequest
+        <PostForm TRequest=UserLoginRequest
                            TResponse=UserLoginResponse
-                           Endpoint=@ep
                            HttpClientName="Article.Api"
-                           Model=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
+                           Endpoint="api/login"
+                           DefaultModel=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
                            SuccessCallBack=@(async user => await ExecuteLogin(user))
                            FailCallBack=@(user => LoginFail(user))
                            DisableFailDefaultMessage=true
                            DisableSuccessDefaultMessage=true>
-
             <HeaderTemplate>
                 <MudElement HtmlTag="h1">Login</MudElement>
             </HeaderTemplate>
@@ -41,14 +35,11 @@
                 <MudTextField Label="Password" Class="mt-3"
                               @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
             </FormTemplate>
-        </EditComponentBase>
+        </PostForm>
     </MudItem>
 </MudGrid>
 
 @code {
-
-    [Inject] ISnackbar Snackbar { get; set; } = null!;
-
     [Parameter]
     [SupplyParameterFromQuery]
     public string ReturnUrl
@@ -93,12 +84,5 @@
         {
             Snackbar.Add($"Oppppss!!!");
         }
-    }
-
-    private UserLoginRequesEndpoint ep = new UserLoginRequesEndpoint();
-
-    public class UserLoginRequesEndpoint : PostEndPoint<UserLoginRequest, UserLoginResponse>
-    {
-        public override string GetEndPoint() { return "api/login"; }
     }
 }

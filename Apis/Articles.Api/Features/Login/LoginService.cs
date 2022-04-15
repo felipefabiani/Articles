@@ -1,12 +1,10 @@
-﻿using BCrypt.Net;
-using ssc = System.Security.Claims;
-
-using static BCrypt.Net.BCrypt;
+﻿using Articles.Models.Auth;
 using Articles.Models.Feature.Login;
-using Articles.Models.Auth;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using static BCrypt.Net.BCrypt;
+using ssc = System.Security.Claims;
 
 namespace Articles.Api.Features.Login;
 public interface ILoginService

@@ -12,8 +12,9 @@
 
 @using Serilog
 @using MudBlazor
-@*@using Articles.Models.Feature.Login*@
+@using Articles.Client.Shared.Templates
 @using Articles.Models
+@using Articles.Client.EndPoints
 
-@using Articles.Client.EndPoints;
-@using Articles.Client.EndPoints;
+@inject NavigationManager NavManager 
+@inject ISnackbar Snackbar

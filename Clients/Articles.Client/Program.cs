@@ -48,7 +48,6 @@ builder.Services.AddHttpClient("Article.Api", client =>
     client.BaseAddress = new Uri("https://localhost:7183");
 });
 builder.Services.AddHttpClient<IAuthenticationService, AuthenticationService>("Article.Api");
-builder.Services.AddHttpClient<ArticleApiClient>("Article.Api");
 
 builder.AddFluentValidators("Articles.Models");
 
