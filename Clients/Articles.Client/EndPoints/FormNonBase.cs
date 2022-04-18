@@ -8,18 +8,19 @@ public abstract class FormBase : ComponentBase
 {
     [Inject] protected IDialogService DialogService { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
-    [Inject] protected IServiceProvider ServiceProvider { get; set; } = null!;
+    [Inject] protected IHttpClientFactory HttpClientFactory { get; set; } = null!;
     [Parameter] public string HttpClientName { get; set; } = null!;
     [Parameter] public string Endpoint { get; set; } = null!;
-    [Parameter] public string? SuccessMessage { get; set; }
-    [Parameter] public string? FailedMessage { get; set; }
+    [Parameter] public string? SuccessMessage { get; set; } = null;
+    [Parameter] public string? FailedMessage { get; set; } = null;
     [Parameter] public bool DisableSuccessDefaultMessage { get; set; } = false;
     [Parameter] public bool DisableFailDefaultMessage { get; set; } = false;
+    [Parameter] public string? ButtonSubmitText { get; set; } = null;
 
     protected CancellationTokenSource cancellationTokenSource = new();
 
     protected MudForm form = null!;
-    protected HttpClient HttpClient { get { return ServiceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(HttpClientName); } }
+    protected HttpClient HttpClient { get { return HttpClientFactory.CreateClient(HttpClientName); } }
     protected async Task Submit()
     {
         await form.Validate();

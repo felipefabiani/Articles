@@ -7,7 +7,8 @@ public class PostFormBase<TRequest, TResponse> : FormBase<TRequest, TResponse>
 {
     protected override async Task<HttpResponseMessage> SendMessage()
     {
-        return await HttpClient.PostAsJsonAsync(Endpoint, _model, cancellationTokenSource.Token);
+        var http = HttpClient;
+        return await http.PostAsJsonAsync(Endpoint, _model, cancellationTokenSource.Token);
     }
 }
 

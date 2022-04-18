@@ -9,14 +9,15 @@
 <MudGrid Justify="Justify.Center">
     <MudItem md="6" xs="12">
         <PostForm TRequest=UserLoginRequest
-                           TResponse=UserLoginResponse
-                           HttpClientName="Article.Api"
-                           Endpoint="api/login"
-                           DefaultModel=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
-                           SuccessCallBack=@(async user => await ExecuteLogin(user))
-                           FailCallBack=@(user => LoginFail(user))
-                           DisableFailDefaultMessage=true
-                           DisableSuccessDefaultMessage=true>
+                  TResponse=UserLoginResponse
+                  HttpClientName="Article.Api"
+                  Endpoint="api/login"
+                  DefaultModel=@(new UserLoginRequest {Email="admin.test@article.ie", Password="123456"})
+                  SuccessCallBack=@(async user => await ExecuteLogin(user))
+                  FailCallBack=@(user => LoginFail(user))
+                  ButtonSubmitText="Login"
+                  DisableFailDefaultMessage=true
+                  DisableSuccessDefaultMessage=true>
             <HeaderTemplate>
                 <MudElement HtmlTag="h1">Login</MudElement>
             </HeaderTemplate>
@@ -29,10 +30,18 @@
                           ShowCloseIcon="true"
                           CloseIconClicked="(() => showFailMessage = false)">@failMessage</MudAlert>
                 }
-                <MudTextField Label="Email" Class="mt-3"
-                              @bind-Value="model.Email" For="@(() => model.Email)" />
-                <MudTextField Label="Password" Class="mt-3"
-                              @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+                <MudTextField id="login-email"
+                              InputType="InputType.Text"
+                              Label="Email"
+                              Class="mt-3"
+                              @bind-Value="model.Email"
+                              For="@(() => model.Email)" />
+                <MudTextField id="login-password"
+                              InputType="InputType.Password"
+                              Label="Password"
+                              Class="mt-3"
+                              @bind-Value="model.Password"
+                              For="@(() => model.Password)" />
             </FormTemplate>
         </PostForm>
     </MudItem>

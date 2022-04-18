@@ -29,9 +29,9 @@ namespace Articles.Models.Feature.Login
                 .NotEmpty()
                 .WithMessage("Password is required!")
                 .MinimumLength(6)
-                .WithMessage("The length of 'Password' must be between 6 and 10 characters!")
+                .WithMessage("Password length must be between 6 and 10 characters!")
                 .MaximumLength(10)
-                .WithMessage("The length of 'Password' must be between 6 and 10 characters!");
+                .WithMessage("Password length must be between 6 and 10 characters!");
         }
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue1 => async (model, propertyName) =>
         {

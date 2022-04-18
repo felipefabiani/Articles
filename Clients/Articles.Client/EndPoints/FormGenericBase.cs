@@ -9,15 +9,14 @@ public abstract class FormBase<TRequest, TResponse> : FormBase
     where TResponse : notnull, new()
 {
     [Inject] protected AbstractValidator<TRequest> Validator { get; set; } = null!;
-
-    [Parameter] public TRequest DefaultModel { get; set; } = new TRequest();
+    [Parameter] public TRequest DefaultModel { get; set; } = new ();
     [Parameter] public RenderFragment HeaderTemplate { get; set; } = default!;
     [Parameter] public RenderFragment<TRequest> FormTemplate { get; set; } = default!;
     [Parameter] public RenderFragment ButtonsTemplate { get; set; } = default!;
     [Parameter] public Action<TResponse>? SuccessCallBack { get; set; }
     [Parameter] public Action<BadRequestResponse>? FailCallBack { get; set; }
 
-    protected TRequest _model = null!;
+    protected TRequest _model = new ();
 
     protected override async Task Fail(HttpResponseMessage response)
     {
