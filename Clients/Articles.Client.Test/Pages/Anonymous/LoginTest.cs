@@ -22,9 +22,11 @@ using System.Net;
 using Xunit;
 =======
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
 using Xunit;
 using ssc = System.Security.Claims;
 >>>>>>> Add Test for blazor components.
@@ -51,8 +53,8 @@ public class LoginTest : IDisposable
     [Theory]
     [InlineData(null, null, "Username is required!", "Password is required!")]
     [InlineData("", "", "Username is required!", "Password is required!")]
-    [InlineData("test", "123", "Invalid email format!", "Password length must be between 6 and 10 characters!")]
-    [InlineData("test.cscs", "01234567891", "Invalid email format!", "Password length must be between 6 and 10 characters!")]
+    [InlineData("test", "123", "Please include an '@' in the email address.", "Password length must be between 6 and 10 characters.")]
+    [InlineData("test.cscs", "01234567891", "Please include an '@' in the email address.", "Password length must be between 6 and 10 characters.")]
     public void InvalidInputs(
         string? email,
         string? password,
@@ -75,8 +77,10 @@ public class LoginTest : IDisposable
         // Assert
         var validators = cut.FindAll("p.mud-input-helper-text.mud-input-error");
         validators.Count.ShouldBe(2);
-        cut.Markup.ShouldContain(emailMessage);
-        cut.Markup.ShouldContain(pwdMessage);
+
+        var decodedHtml = HttpUtility.HtmlDecode(cut.Markup);
+        decodedHtml.ShouldContain(emailMessage);
+        decodedHtml.ShouldContain(pwdMessage);
     }
 
     [Theory]

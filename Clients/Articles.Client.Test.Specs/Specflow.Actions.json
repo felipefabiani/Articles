@@ -2,6 +2,6 @@
 	"playwright": {
 		"browser": "chrome",
 		"headless": false,
-		"SlowMo": 0
+		"SlowMo": 700
 	}
 }

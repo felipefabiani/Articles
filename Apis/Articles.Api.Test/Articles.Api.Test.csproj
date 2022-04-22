@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Article.Helper\Articles.Helper.csproj" />
     <ProjectReference Include="..\Articles.Api\Articles.Api.csproj" />
   </ItemGroup>
 

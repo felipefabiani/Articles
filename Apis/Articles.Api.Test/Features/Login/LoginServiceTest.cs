@@ -19,7 +19,7 @@ public class LoginServiceTest
         var req = new UserLoginRequest
         {
             Email = "admin.test@article.ie",
-            Password = "1234"
+            Password = "123456"
         };
 
         // act

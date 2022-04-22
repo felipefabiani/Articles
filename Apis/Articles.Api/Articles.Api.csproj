@@ -4,7 +4,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 	<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <UserSecretsId>26d12aca-801c-431c-9939-366e21b014ef</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

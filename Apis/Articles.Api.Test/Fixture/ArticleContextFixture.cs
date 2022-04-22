@@ -1,8 +1,8 @@
-﻿using Articles.Database.Entities;
+﻿using Articles.Helper.Extensions;
+using Articles.Database.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
-using static BCrypt.Net.BCrypt;
 namespace Articles.Api.Test.Fixture;
 
 public abstract class DbAbstractServiceCollectionFixture<TDb> :
@@ -45,7 +45,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                LastName = "Access",
                Email = "full.access@article.ie",
                DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-               Password = GetPassword(),
+               Password = "123456".GetPassword(),
                Roles = roles,
                Claims = claims,
            },
@@ -55,7 +55,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                LastName = "Test",
                Email = "admin.test@article.ie",
                DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-               Password = GetPassword(),
+               Password = "123456".GetPassword(),
                Roles = roles.Where(x => x.Id == 1).ToList(),
                Claims = claims.Where(x => x.Id <= 4).ToList()
            },
@@ -65,7 +65,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                LastName = "Test",
                Email = "author.test@article.ie",
                DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-               Password = GetPassword(),
+               Password = "123456".GetPassword(),
                Roles = roles.Where(x => x.Id == 2).ToList(),
                Claims = claims.Where(x => x.Id >= 5 && x.Id < 9).ToList()
            },
@@ -75,7 +75,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                LastName = "Test",
                Email = "user.test@article.ie",
                DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-               Password = GetPassword(),
+               Password = "123456".GetPassword(),
                Roles = roles.Where(x => x.Id == 3).ToList(),
                Claims = claims.Where(x => x.Id >= 9 && x.Id <= 9).ToList()
            }
@@ -87,8 +87,6 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
         _context.AddRange(users);
         _context.SaveChanges();
     }
-    protected static string GetPassword(string pwd = "1234") =>
-           EnhancedHashPassword(pwd, BCrypt.Net.HashType.SHA512, 4);
 }
 
 public abstract class AbstractServiceCollectionFixture : IDisposable

@@ -1,11 +1,8 @@
-﻿using static BCrypt.Net.BCrypt;
+﻿using Articles.Helper.Extensions;
 namespace Articles.Database.Infrastructure;
 
 public static class SeedArticleDatabaseExtension
 {
-    private static string GetPassword(string pwd = "123456") =>
-        EnhancedHashPassword(pwd, 12);
-
     public static async ValueTask Seed(this ArticleContext context)
     {
         await context.SeedUsers();
@@ -27,7 +24,7 @@ public static class SeedArticleDatabaseExtension
                 LastName = "Access",
                 Email = "full.access@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-                Password = GetPassword(),
+                Password = "123456".GetPassword(),
                 Roles = roles,
                 Claims = claims,
             },
@@ -37,7 +34,7 @@ public static class SeedArticleDatabaseExtension
                 LastName = "Test",
                 Email = "admin.test@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-                Password = GetPassword(),
+                Password = "123456".GetPassword(),
                 Roles = roles.Where(x => x.Id == 1).ToList(),
                 Claims = claims.Where(x => x.Id <= 4).ToList()
             },
@@ -47,7 +44,7 @@ public static class SeedArticleDatabaseExtension
                 LastName = "Test",
                 Email = "author.test@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-                Password = GetPassword(),
+                Password = "123456".GetPassword(),
                 Roles = roles.Where(x => x.Id == 2).ToList(),
                 Claims = claims.Where(x => x.Id >= 5 && x.Id < 9).ToList()
             },
@@ -57,7 +54,7 @@ public static class SeedArticleDatabaseExtension
                 LastName = "Test",
                 Email = "user.test@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
-                Password = GetPassword(),
+                Password = "123456".GetPassword(),
                 Roles = roles.Where(x => x.Id == 3).ToList(),
                 Claims = claims.Where(x => x.Id >= 9 && x.Id <= 9).ToList()
             });
