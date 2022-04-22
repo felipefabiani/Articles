@@ -20,27 +20,14 @@ namespace Articles.Models.Feature.Login
         public UserLoginRequestValidator()
         {
             RuleFor(x => x.Email)
-                .NotEmpty()
-                .WithMessage("Username is required!")
-                .EmailAddress()
-                .WithMessage("Invalid email format!");
+                .NotEmpty().WithMessage("Username is required!")
+                .EmailAddress().WithMessage("Please include an '@' in the email address.");
 
             RuleFor(x => x.Password)
-                .NotEmpty()
-                .WithMessage("Password is required!")
-                .MinimumLength(6)
-                .WithMessage("Password length must be between 6 and 10 characters!")
-                .MaximumLength(10)
-                .WithMessage("Password length must be between 6 and 10 characters!");
+                .NotEmpty().WithMessage("Password is required!")
+                .MinimumLength(6).WithMessage("Password length must be between 6 and 10 characters.")
+                .MaximumLength(10).WithMessage("Password length must be between 6 and 10 characters.");
         }
-        public Func<object, string, Task<IEnumerable<string>>> ValidateValue1 => async (model, propertyName) =>
-        {
-            var result = await ValidateAsync(ValidationContext<UserLoginRequest>.CreateWithOptions((UserLoginRequest)model, x => x.IncludeProperties(propertyName)));
-            return
-                result.IsValid ?
-                (IEnumerable<string>)Array.Empty<string>() :
-                result.Errors.Select(e => e.ErrorMessage);
-        };
     }
 
     public class UserLoginResponse
