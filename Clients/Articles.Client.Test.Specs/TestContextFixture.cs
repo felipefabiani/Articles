@@ -1,8 +1,4 @@
-﻿using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
-
-namespace Articles.Client.Test.EndToEnd
+﻿namespace Articles.Client.Test.EndToEnd
 {
     //public class TestContextFixture : IDisposable
     //{
@@ -12,7 +8,7 @@ namespace Articles.Client.Test.EndToEnd
     //    }
     //    public void Dispose()
     //    {
-         
+
     //    }
     //}
 }

@@ -1,5 +1,4 @@
 ﻿using Articles.Client.Test.EndToEnd;
-using Microsoft.Playwright;
 using SpecFlow.Actions.Playwright;
 
 namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
@@ -17,7 +16,7 @@ public class LoginPageObject : BasePageObject
 
     // public Task SetEmail(string? email) => Interactions.SendTextAsync(EmailInputSelector, email ?? string.Empty);
     public Task SetEmail(string? email) => ClearAndSendTextAsync(EmailInputSelector, email ?? string.Empty);
-    public Task SetPassword(string? pwd) => ClearAndSendTextAsync(PasswordInputSelector, pwd ??string.Empty);
+    public Task SetPassword(string? pwd) => ClearAndSendTextAsync(PasswordInputSelector, pwd ?? string.Empty);
     public Task ClickLoginButton() => Interactions.ClickAsync(SubmitButtonSelector);
     public Task ClickResetButton() => Interactions.ClickAsync(ResetButtonSelector);
 

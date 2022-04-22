@@ -1,5 +1,5 @@
-﻿using Articles.Helper.Extensions;
-using Articles.Database.Entities;
+﻿using Articles.Database.Entities;
+using Articles.Helper.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 

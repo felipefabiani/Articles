@@ -1,5 +1,4 @@
 ﻿using Articles.Database.Infrastructure;
-using Articles.Models.Feature.Login;
 using FastEndpoints.Swagger;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;

@@ -91,7 +91,7 @@ public class LoginStepDefinitions
     }
 }
 
-public record User (
+public record User(
     string? Email,
     string? Password,
     string? EmailMessage,

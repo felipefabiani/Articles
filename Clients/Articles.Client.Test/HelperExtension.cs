@@ -1,5 +1,4 @@
-﻿using Articles.Models.Feature.Login;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,12 +11,12 @@ namespace Articles.Client.Test;
 public static class HelperExtension
 {
     public static string CreateToken(
-        this Guid signingKey, 
+        this Guid signingKey,
         string firstName,
         string lastName,
-        DateTime? expireAt = null, 
-        IEnumerable<string>? permissions = null, 
-        IEnumerable<string>? roles = null, 
+        DateTime? expireAt = null,
+        IEnumerable<string>? permissions = null,
+        IEnumerable<string>? roles = null,
         IEnumerable<ssc.Claim>? claims = null)
     {
         var list = new List<ssc.Claim>();
@@ -41,7 +40,7 @@ public static class HelperExtension
         {
             Subject = new ssc.ClaimsIdentity(list),
             Expires = expireAt,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey)), "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256")
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey.ToString())), "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256")
         };
         var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         jwtSecurityTokenHandler.OutboundClaimTypeMap.Clear();

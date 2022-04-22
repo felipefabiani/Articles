@@ -22,10 +22,10 @@ public class PutFormBase<TRequest, TResponse> : FormBase<TRequest, TResponse>
     }
 }
 
-public class DeleteFormBase: FormBase
+public class DeleteFormBase : FormBase
 {
     protected override async Task<HttpResponseMessage> SendMessage()
-    {       
+    {
         return await HttpClient.DeleteAsync(Endpoint, cancellationTokenSource.Token);
     }
 }

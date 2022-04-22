@@ -1,9 +1,6 @@
 ﻿using Articles.Models.Auth;
 using FluentValidation;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Articles.Models.Feature.Login
 {
@@ -14,7 +11,6 @@ namespace Articles.Models.Feature.Login
     }
 
     public class UserLoginRequestValidator :
-         // FluentValueValidator<UserLoginRequest>
          AbstractValidator<UserLoginRequest>
     {
         public UserLoginRequestValidator()
@@ -43,19 +39,6 @@ namespace Articles.Models.Feature.Login
     {
         public override bool HasToken { get => false; }
         public static NullUserLoginResponse Empty => new NullUserLoginResponse();
-    }
-
-    public abstract class FluentValueValidator<T> : AbstractValidator<T>
-    {
-
-        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
-        {
-            var result = await ValidateAsync(ValidationContext<T>.CreateWithOptions((T)model, x => x.IncludeProperties(propertyName)));
-            return 
-                result.IsValid ? 
-                (IEnumerable<string>)Array.Empty<string>() : 
-                result.Errors.Select(e => e.ErrorMessage);
-        };
     }
 }
 

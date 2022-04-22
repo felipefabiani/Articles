@@ -1,6 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
 
 namespace Articles.Client.Test.EndToEnd;
 
@@ -10,7 +8,7 @@ public class ChromeBrowserFixture : IDisposable
     public IBrowser Browser { get; set; }
     public IPage Page { get; set; }
 
- 
+
     public async Task InitializeAsync()
     {
         Playwright1 = await Playwright.CreateAsync();

@@ -2,7 +2,6 @@
 global using Articles.Database.Context;
 global using Articles.Database.Entities;
 global using FastEndpoints;
-global using FastEndpoints.Security;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;

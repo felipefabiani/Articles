@@ -69,7 +69,7 @@ namespace Articles.Client.Test.EndToEnd
                    response: response,
                    statusCode: statusCode,
                    endpoint: endpoint,
-                   baseAddress: baseAddress)); 
+                   baseAddress: baseAddress));
         }
 
         public void Dispose()
