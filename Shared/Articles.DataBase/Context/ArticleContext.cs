@@ -9,13 +9,10 @@ public abstract class ArticleAbstractContext : DbContext
     {
     }
 
-    // public DbSet<ArticleTest> ArticleTests { get; set; } = null!;
     public virtual DbSet<Article> Articles { get; set; } = null!;
     public virtual DbSet<User> Users { get; set; } = null!;
     public virtual DbSet<Role> Roles { get; set; } = null!;
     public virtual DbSet<Claim> Claims { get; set; } = null!;
-    //public DbSet<UserClaim> UserClaims { get; set; } = null!;
-    //public DbSet<UserRole> UserRoles { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,5 +33,14 @@ public class ArticleReadOnlyContext : ArticleAbstractContext
         : base(options)
     {
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess = true)
+    {
+        throw new Exception("Do not save data from this context");
+    }
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess = true, CancellationToken cancellationToken = default)
+    {
+        throw new Exception("Do not save data from this context");
     }
 }
