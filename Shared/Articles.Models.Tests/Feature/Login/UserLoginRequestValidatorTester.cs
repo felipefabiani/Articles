@@ -2,12 +2,13 @@
 using FluentValidation.TestHelper;
 using Xunit;
 
-public class PersonValidatorTester
+namespace Articles.Models.Tests.Feature.Login;
+public class UserLoginRequestValidatorTester
 {
     private UserLoginRequestValidator _validator;
 
 
-    public PersonValidatorTester()
+    public UserLoginRequestValidatorTester()
     {
         _validator = new UserLoginRequestValidator();
     }
@@ -15,11 +16,12 @@ public class PersonValidatorTester
     [Theory]
     [InlineData(null, null)]
     [InlineData("", "")]
-    public void Should_have_error_when_Email_and_Password_are_not_suplied (
+    public void Should_have_error_when_Email_and_Password_are_not_suplied(
         string? email,
         string? password)
     {
-        var model = new UserLoginRequest { 
+        var model = new UserLoginRequest
+        {
             Email = email!,
             Password = password!
         };
@@ -35,7 +37,7 @@ public class PersonValidatorTester
     [Theory]
     [InlineData("email", "01234")]
     [InlineData("email.email", "01234567890")]
-    public void Should_have_error_when_Email_and_Password_are_invalid (
+    public void Should_have_error_when_Email_and_Password_are_invalid(
         string email,
         string password)
     {
@@ -56,7 +58,7 @@ public class PersonValidatorTester
     [Theory]
     [InlineData("e@e", "012345")]
     [InlineData("e@e.com", "0123456789")]
-    public void Should_not_have_error_when_Email_and_Password_are_valid (
+    public void Should_not_have_error_when_Email_and_Password_are_valid(
         string email,
         string password)
     {
