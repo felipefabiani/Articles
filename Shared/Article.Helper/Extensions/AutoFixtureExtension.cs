@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using AutoFixture.Dsl;
+﻿using AutoFixture.Dsl;
 using System;
 using System.Linq;
 using System.Linq.Expressions;

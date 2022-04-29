@@ -1,9 +1,9 @@
-﻿using Articles.Database.Entities;
+﻿using Articles.Database.Context;
+using Articles.Database.Entities;
 using Articles.Helper.Extensions;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Articles.Api.Test.Fixture;
+namespace Articles.Test.Helper.Fixture;
 
 public abstract class DbAbstractServiceCollectionFixture<TDb> :
     AbstractServiceCollectionFixture
@@ -81,11 +81,14 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
            }
         };
 
-        _context.Database.EnsureCreated();
-        _context.AddRange(roles);
-        _context.AddRange(claims);
-        _context.AddRange(users);
-        _context.SaveChanges();
+        // to seed you must use Writable dbContext;
+        var content = ServiceProvider.GetRequiredService<ArticleContext>();
+
+        content.Database.EnsureCreated();
+        content.AddRange(roles);
+        content.AddRange(claims);
+        content.AddRange(users);
+        content.SaveChanges();
     }
 }
 

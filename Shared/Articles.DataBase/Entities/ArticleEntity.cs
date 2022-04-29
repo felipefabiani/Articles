@@ -25,7 +25,7 @@ public class ArticleEntity : Entity<ArticleEntity>
         _logger?.LogDebug("Saving article, id {id}, title {title}", Id, Title);
 
         if (Id != 0 &&
-          !DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId)) 
+          !DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId))
         {
             return null;
         }

@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Articles.DataBase\Articles.Database.csproj" />
+    <ProjectReference Include="..\shared\Articles.Test.Helper\Articles.Test.Helper.csproj" />
   </ItemGroup>
 
 </Project>

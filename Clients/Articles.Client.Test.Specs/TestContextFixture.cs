@@ -1,4 +1,4 @@
-﻿namespace Articles.Client.Test.EndToEnd
+﻿namespace Articles.Client.Test.Specs
 {
     //public class TestContextFixture : IDisposable
     //{

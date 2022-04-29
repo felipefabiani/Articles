@@ -1,5 +1,4 @@
 global using Articles.Api.Features.Login;
-global using Articles.Api.Test.Fixture;
 global using Articles.Database.Context;
 global using FakeItEasy;
 global using FastEndpoints;

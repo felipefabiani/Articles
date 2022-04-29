@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace Articles.Client.Test.EndToEnd;
+namespace Articles.Client.Test.Specs;
 
 public class ChromeBrowserFixture : IDisposable
 {

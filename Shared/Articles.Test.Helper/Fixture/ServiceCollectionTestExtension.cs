@@ -1,20 +1,19 @@
 ﻿using Articles.Database.Context;
-using Articles.Database.Tests.Fixture;
+using Articles.Test.Helper.Fixture;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
 
-namespace Articles.Database.Tests.Fixture;
+namespace Articles.Test.Helper.Fixture;
 
 public static class ServiceCollectionTestExtension
 {
-    public static IServiceCollection SetupBasicesConfigurationForServices<TDb>(
+    public static IServiceCollection SetupBasicesConfigurationForServices(
         this IServiceCollection services,
         Type interfaceType,
         Type implemantationType)
-        where TDb : ArticleAbstractContext
     {
         if (!interfaceType.IsAssignableFrom(implemantationType))
         {
@@ -22,19 +21,27 @@ public static class ServiceCollectionTestExtension
         }
 
         return services
-            .AddDbContext<TDb>()
+            .AddDbContext<ArticleContext>()
+            .AddDbContext<ArticleReadOnlyContext>()
             .ConfigureOptions()
             .AddNullLogger()
             .AddSingleton(interfaceType, implemantationType);
 
     }
+
+    private static readonly InMemoryDatabaseRoot _inMemoryDatabaseRoot = new InMemoryDatabaseRoot();
     public static IServiceCollection AddDbContext<T>(this IServiceCollection services)
         where T : ArticleAbstractContext
     {
-        return services.AddDbContext<T>(options => options
-            .UseInMemoryDatabase(
-                databaseName: Guid.NewGuid().ToString()),
-                optionsLifetime: ServiceLifetime.Transient);
+        return services.AddDbContext<T>(options =>
+        {
+            options.UseInMemoryDatabase(
+                databaseName: "ArticleContext",
+                databaseRoot: _inMemoryDatabaseRoot
+
+                );
+        }, optionsLifetime: ServiceLifetime.Transient);
+
     }
     public static IServiceCollection ConfigureOptions(this IServiceCollection services)
     {

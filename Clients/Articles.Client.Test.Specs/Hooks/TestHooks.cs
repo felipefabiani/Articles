@@ -1,6 +1,6 @@
 ﻿using Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
 
-namespace Articles.Client.Test.EndToEnd.Hooks;
+namespace Articles.Client.Test.Specs.Hooks;
 
 [Binding]
 public class TestHooks

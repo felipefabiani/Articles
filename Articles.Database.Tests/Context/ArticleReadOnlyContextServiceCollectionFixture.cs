@@ -1,10 +1,10 @@
 ﻿using Articles.Database.Context;
-using Articles.Database.Tests.Fixture;
+using Articles.Test.Helper.Fixture;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Articles.Api.Test.Features.Login;
+namespace Articles.Database.Tests.Context;
 
-public class ArticleReadOnlyContextServiceServiceCollectionFixture :
+public class ArticleReadOnlyContextServiceCollectionFixture :
     DbAbstractServiceCollectionFixture<ArticleReadOnlyContext>
 {
     protected override ServiceProvider BuildServiceProvider()
@@ -17,7 +17,7 @@ public class ArticleReadOnlyContextServiceServiceCollectionFixture :
     protected override ArticleReadOnlyContext GetDbContext() =>
         ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();
 
-    protected override void InitDb() {}
+    protected override void InitDb() { }
 }
 
 public class ArticleContextServiceCollectionFixture :

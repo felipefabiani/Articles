@@ -1,4 +1,5 @@
-﻿using Articles.Client.Authentication;
+﻿using Articles.Client;
+using Articles.Client.Authentication;
 using Blazored.LocalStorage;
 using Bunit;
 using FluentValidation;
@@ -12,7 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 
-namespace Articles.Client.Test.EndToEnd
+namespace Articles.Client.Test
 {
     public class TestContextFixture : IDisposable
     {

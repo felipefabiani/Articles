@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using SpecFlow.Actions.Playwright;
 
-namespace Articles.Client.Test.EndToEnd;
+namespace Articles.Client.Test.Specs;
 public abstract class BasePageObject : IDisposable
 {
     //public abstract string ResetButtonSelector { get; }

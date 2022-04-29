@@ -1,6 +1,5 @@
-﻿using Articles.Api.Test.Features.Login;
+﻿//using Articles.Api.Test.Features.Login;
 using Articles.Database.Context;
-using FakeItEasy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -10,13 +9,13 @@ using Xunit;
 
 namespace Articles.Database.Tests.Context;
 public class ArticleReadOnlyContextTest
-      : IClassFixture<ArticleReadOnlyContextServiceServiceCollectionFixture>
+      : IClassFixture<ArticleReadOnlyContextServiceCollectionFixture>
 {
     private readonly ArticleReadOnlyContext _context;
 
-    public ArticleReadOnlyContextTest(ArticleReadOnlyContextServiceServiceCollectionFixture spFixture)
+    public ArticleReadOnlyContextTest(ArticleReadOnlyContextServiceCollectionFixture spFixture)
     {
-        _context =  spFixture.ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();    
+        _context = spFixture.ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();
     }
 
     [Fact]

@@ -11,7 +11,7 @@ public abstract class Entity : IEntity
 public abstract class Entity<T> : Entity
     where T : class, IEntity
 {
-    public Entity() {}
+    public Entity() { }
     public Entity(IServiceProvider service)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -20,7 +20,7 @@ public abstract class Entity<T> : Entity
             .CreateLogger<T>();
     }
 
-   
+
     protected readonly IServiceProvider? _service;
     protected readonly ILogger<T>? _logger;
 

@@ -1,5 +1,4 @@
-﻿using Articles.Api.Test.Features.Login;
-using Articles.Database.Context;
+﻿using Articles.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
