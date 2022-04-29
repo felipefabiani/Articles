@@ -9,7 +9,7 @@ public abstract class ArticleAbstractContext : DbContext
     {
     }
 
-    public virtual DbSet<Article> Articles { get; set; } = null!;
+    public virtual DbSet<ArticleEntity> Articles { get; set; } = null!;
     public virtual DbSet<User> Users { get; set; } = null!;
     public virtual DbSet<Role> Roles { get; set; } = null!;
     public virtual DbSet<Claim> Claims { get; set; } = null!;

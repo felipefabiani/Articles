@@ -27,6 +27,6 @@ namespace Articles.Models.Feature.Articles.SaveArticle
     public class SaveArticleResponse
     {
         public string Message => "Article saved!";
-        public string? ArticleID { get; set; }
+        public int? ArticleID { get; set; }
     }
 }
