@@ -7,10 +7,10 @@ public class ArticleEntity : Entity<ArticleEntity>
     public string FullName { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-    public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.MinValue;
+    public DateTimeOffset CreatedOn { get; set; } = default;
     public bool IsApproved { get; set; } = false;
     public string? RejectionReason { get; set; }
-    public List<Comment> Comments { get; set; } = new();
+    public List<Comment>? Comments { get; set; }
     public int AuthorId { get; set; }
 
     public ArticleEntity() : base()
@@ -20,19 +20,25 @@ public class ArticleEntity : Entity<ArticleEntity>
         : base(service)
     { }
 
-    public async Task<ArticleEntity?> SaveArticle(CancellationToken cancellationToken = default)
+    public async Task<ArticleEntity?> Save(CancellationToken cancellationToken = default)
     {
         _logger?.LogDebug("Saving article, id {id}, title {title}", Id, Title);
 
-        if (Id != 0 &&
-          !DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId))
+        if (Id == 0)
+        {
+            await DbSetWriteOnly.AddAsync(this);
+        } 
+        else if(DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId))
+        {
+            DbSetWriteOnly.Update(this);
+        }
+        else
         {
             return null;
         }
 
-        var art = DbSetWriteOnly.Update(this);
         await SaveAsync(cancellationToken);
-        return art.Entity;
+        return this;
     }
 }
 public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEntity>

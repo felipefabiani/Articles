@@ -1,0 +1,11 @@
+﻿global using Articles.Database.Context;
+global using Articles.Database.Tests.Context;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using Shouldly;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Text;
+global using System.Threading.Tasks;
+global using Xunit;

@@ -29,6 +29,18 @@ public static class ServiceCollectionTestExtension
 
     }
 
+    public static IServiceCollection SetupBasicesConfigurationForServices(
+        this IServiceCollection services)
+    {
+        return services
+            .AddDbContext<ArticleContext>()
+            .AddDbContext<ArticleReadOnlyContext>()
+            .ConfigureOptions()
+            .AddNullLogger()
+            ;
+
+    }
+
     private static readonly InMemoryDatabaseRoot _inMemoryDatabaseRoot = new InMemoryDatabaseRoot();
     public static IServiceCollection AddDbContext<T>(this IServiceCollection services)
         where T : ArticleAbstractContext
@@ -53,6 +65,8 @@ public static class ServiceCollectionTestExtension
     }
     public static IServiceCollection AddNullLogger(this IServiceCollection services)
     {
-        return services.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
+        return services
+            .AddSingleton(typeof(ILogger<>), typeof(NullLogger<>))
+            .AddSingleton<ILoggerFactory, NullLoggerFactory>();
     }
 }

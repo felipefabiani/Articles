@@ -4,7 +4,7 @@ namespace Articles.Api.Test.Features.Login;
 
 public class LoginServiceServiceCollectionFixture : DbAbstractServiceCollectionFixture<ArticleReadOnlyContext>
 {
-    protected override ServiceProvider BuildServiceProvider()
+    protected override IServiceProvider BuildServiceProvider()
     {
         return new ServiceCollection()
             .SetupBasicesConfigurationForServices(

@@ -94,12 +94,12 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
 
 public abstract class AbstractServiceCollectionFixture : IDisposable
 {
-    public ServiceProvider ServiceProvider { get; private set; }
+    public IServiceProvider ServiceProvider { get; private set; }
     public AbstractServiceCollectionFixture()
     {
         ServiceProvider = BuildServiceProvider();
     }
-    protected abstract ServiceProvider BuildServiceProvider();
+    protected abstract IServiceProvider BuildServiceProvider();
 
-    public void Dispose() => ServiceProvider?.Dispose();
+    public void Dispose() => (ServiceProvider as ServiceProvider)?.Dispose();
 }
