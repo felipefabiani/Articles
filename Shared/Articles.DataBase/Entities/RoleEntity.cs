@@ -1,16 +1,17 @@
 ﻿namespace Articles.Database.Entities;
 
-public class Role : Entity
+public class RoleEntity : Entity
 {
     public string Name { get; set; } = string.Empty;
-    public List<User> Users { get; set; } = null!;
+    public List<UserEntity> Users { get; set; } = null!;
 
 }
 
-public class RoleEntityTypeConfiguration : IEntityTypeConfiguration<Role>
+public class RoleEntityTypeConfiguration : IEntityTypeConfiguration<RoleEntity>
 {
-    public void Configure(EntityTypeBuilder<Role> builder)
+    public void Configure(EntityTypeBuilder<RoleEntity> builder)
     {
+        builder.ToTable("Roles");
         builder.HasIndex(x => x.Name).IsUnique();
 
         builder

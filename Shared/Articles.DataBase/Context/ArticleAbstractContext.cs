@@ -34,9 +34,9 @@ public abstract class ArticleAbstractContext : DbContext
 
     public virtual DbSet<ArticleEntity> Articles { get; set; } = null!;
     public virtual DbSet<CommentEntity> Comments { get; set; } = null!;
-    public virtual DbSet<User> Users { get; set; } = null!;
-    public virtual DbSet<Role> Roles { get; set; } = null!;
-    public virtual DbSet<Claim> Claims { get; set; } = null!;
+    public virtual DbSet<UserEntity> Users { get; set; } = null!;
+    public virtual DbSet<RoleEntity> Roles { get; set; } = null!;
+    public virtual DbSet<ClaimEntity> Claims { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

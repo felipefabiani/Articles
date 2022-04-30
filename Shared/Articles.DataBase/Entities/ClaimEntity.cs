@@ -1,16 +1,17 @@
 ﻿namespace Articles.Database.Entities
 {
-    public class Claim : Entity
+    public class ClaimEntity : Entity
     {
         public string Name { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
-        public List<User> Users { get; set; } = null!;
+        public List<UserEntity> Users { get; set; } = null!;
     }
 
-    public class ClaimEntityTypeConfiguration : IEntityTypeConfiguration<Claim>
+    public class ClaimEntityTypeConfiguration : IEntityTypeConfiguration<ClaimEntity>
     {
-        public void Configure(EntityTypeBuilder<Claim> builder)
+        public void Configure(EntityTypeBuilder<ClaimEntity> builder)
         {
+            builder.ToTable("Claims");
             builder.HasIndex(x => x.Name).IsUnique();
 
             builder

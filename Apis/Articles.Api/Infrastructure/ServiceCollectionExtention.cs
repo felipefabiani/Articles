@@ -203,9 +203,9 @@ public static class ServiceCollectionExtention
                 app.UseOpenApi();
                 app.UseSwaggerUi3(c => c.ConfigureDefaults());
 
-                // var context = app.Services.GetRequiredService<ArticleContext>();
-                // await context.EnsureCreateAndSeedAsync();
-                // await context.Seed();
+                //var context = app.Services.GetRequiredService<ArticleContext>();
+                //await context.EnsureCreateAndSeedAsync();
+                //await context.Seed();
             }
             else if (app.Environment.IsEnvironment(ArticlesConstants.Environment.UatAutomatedTest))
             {

@@ -19,27 +19,27 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
 
     protected virtual void InitDb()
     {
-        var roles = new List<Role>
+        var roles = new List<RoleEntity>
         {
-            new Role { Id = 1, Name = "Admin" },
-            new Role { Id = 2, Name = "Author" },
-            new Role { Id = 3, Name = "User" }
+            new RoleEntity { Id = 1, Name = "Admin" },
+            new RoleEntity { Id = 2, Name = "Author" },
+            new RoleEntity { Id = 3, Name = "User" }
         };
-        var claims = new List<Claim>
+        var claims = new List<ClaimEntity>
         {
-            new Claim { Id = 1, Name = "Article_Moderate", Value= "100" },
-            new Claim { Id = 2, Name = "Article_Delete", Value= "101" },
-            new Claim { Id = 3, Name = "Article_Get_Pending_List", Value= "102" },
-            new Claim { Id = 4, Name = "Article_Update", Value= "103" },
-            new Claim { Id = 5, Name = "Author_Update_Profile", Value= "104" },
-            new Claim { Id = 6, Name = "Author_Get_Own_List", Value= "200" },
-            new Claim { Id = 7, Name = "Author_Save_Own", Value= "201" },
-            new Claim { Id = 8, Name = "Author_Update_Own_Profile", Value= "202" },
-            new Claim { Id = 9, Name = "user_reads", Value= "301" }
+            new ClaimEntity { Id = 1, Name = "Article_Moderate", Value= "100" },
+            new ClaimEntity { Id = 2, Name = "Article_Delete", Value= "101" },
+            new ClaimEntity { Id = 3, Name = "Article_Get_Pending_List", Value= "102" },
+            new ClaimEntity { Id = 4, Name = "Article_Update", Value= "103" },
+            new ClaimEntity { Id = 5, Name = "Author_Update_Profile", Value= "104" },
+            new ClaimEntity { Id = 6, Name = "Author_Get_Own_List", Value= "200" },
+            new ClaimEntity { Id = 7, Name = "Author_Save_Own", Value= "201" },
+            new ClaimEntity { Id = 8, Name = "Author_Update_Own_Profile", Value= "202" },
+            new ClaimEntity { Id = 9, Name = "user_reads", Value= "301" }
         };
-        var users = new List<User>
+        var users = new List<UserEntity>
         {
-             new User()
+             new UserEntity()
            {
                FirstName = "Full",
                LastName = "Access",
@@ -49,7 +49,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                Roles = roles,
                Claims = claims,
            },
-           new User()
+           new UserEntity()
            {
                FirstName = "Admin",
                LastName = "Test",
@@ -59,7 +59,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                Roles = roles.Where(x => x.Id == 1).ToList(),
                Claims = claims.Where(x => x.Id <= 4).ToList()
            },
-           new User()
+           new UserEntity()
            {
                FirstName = "Author",
                LastName = "Test",
@@ -69,7 +69,7 @@ public abstract class DbAbstractServiceCollectionFixture<TDb> :
                Roles = roles.Where(x => x.Id == 2).ToList(),
                Claims = claims.Where(x => x.Id >= 5 && x.Id < 9).ToList()
            },
-           new User()
+           new UserEntity()
            {
                FirstName = "User",
                LastName = "Test",

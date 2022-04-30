@@ -18,7 +18,7 @@ public static class SeedArticleDatabaseExtension
         var claims = context.Claims.ToList();
 
         await context.AddRangeAsync(
-            new User()
+            new UserEntity()
             {
                 FirstName = "Full",
                 LastName = "Access",
@@ -28,7 +28,7 @@ public static class SeedArticleDatabaseExtension
                 Roles = roles,
                 Claims = claims,
             },
-            new User()
+            new UserEntity()
             {
                 FirstName = "Admin",
                 LastName = "Test",
@@ -38,7 +38,7 @@ public static class SeedArticleDatabaseExtension
                 Roles = roles.Where(x => x.Id == 1).ToList(),
                 Claims = claims.Where(x => x.Id <= 4).ToList()
             },
-            new User()
+            new UserEntity()
             {
                 FirstName = "Author",
                 LastName = "Test",
@@ -48,7 +48,7 @@ public static class SeedArticleDatabaseExtension
                 Roles = roles.Where(x => x.Id == 2).ToList(),
                 Claims = claims.Where(x => x.Id >= 5 && x.Id < 9).ToList()
             },
-            new User()
+            new UserEntity()
             {
                 FirstName = "User",
                 LastName = "Test",

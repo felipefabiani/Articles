@@ -1,19 +1,19 @@
 ﻿namespace Articles.Database.Entities;
 
-public class User : Entity
+public class UserEntity : Entity
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public DateTimeOffset DateOfBirday { get; set; } = DateTimeOffset.MinValue;
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public List<Role> Roles { get; set; } = new();
-    public List<Claim> Claims { get; set; } = new();
+    public List<RoleEntity> Roles { get; set; } = new();
+    public List<ClaimEntity> Claims { get; set; } = new();
 }
 
-public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
+public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.HasIndex(x => new
         {
@@ -55,10 +55,28 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
 
         builder
             .HasMany(x => x.Roles)
-            .WithMany(x => x.Users);
+            .WithMany(x => x.Users)
+            .UsingEntity<Dictionary<string, object>>(
+                "RoleUser",
+                l => l.HasOne<RoleEntity>().WithMany().HasForeignKey("UserId"),
+                r => r.HasOne<UserEntity>().WithMany().HasForeignKey("RoleId"),
+                j => {
+                    j.HasKey("RoleId", "UserId");
+                    j.ToTable("RoleUser");
+                    j.HasIndex(new[] { "UserId" }, "IX_RoleUser_UserId");
+                });
 
         builder
             .HasMany(x => x.Claims)
-            .WithMany(x => x.Users);
+            .WithMany(x => x.Users)
+            .UsingEntity<Dictionary<string, object>>(
+                "ClaimUser",
+                l => l.HasOne<ClaimEntity>().WithMany().HasForeignKey("UserId"),
+                r => r.HasOne<UserEntity>().WithMany().HasForeignKey("ClaimId"),
+                j => {
+                    j.HasKey("ClaimId", "UserId");
+                    j.ToTable("ClaimUser");
+                    j.HasIndex(new[] { "UserId" }, "IX_ClaimUser_UserId");
+                });
     }
 }

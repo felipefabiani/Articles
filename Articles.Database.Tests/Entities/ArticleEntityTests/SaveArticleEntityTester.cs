@@ -11,8 +11,8 @@ public class SaveArticleEntityTester
     public SaveArticleEntityTester(SaveArticleEntityServiceCollectionFixture spFixture)
     {
         _fixture = new Fixture()
-            .Build<ArticleEntity>();
-            // .FromFactory(() => new ArticleEntity(spFixture.ServiceProvider));
+            .Build<ArticleEntity>()
+            .FromFactory(() => new ArticleEntity(spFixture.ServiceProvider));
     }
 
     [Fact]
