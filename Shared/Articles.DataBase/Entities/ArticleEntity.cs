@@ -2,7 +2,7 @@
 
 namespace Articles.Database.Entities;
 
-public class ArticleEntity : 
+public class ArticleEntity :
     Entity<ArticleEntity>,
     ITrackableEntity
 {
@@ -25,22 +25,27 @@ public class ArticleEntity :
 
     public async Task<ArticleEntity?> Save(CancellationToken cancellationToken = default)
     {
-        _logger?.LogDebug("Saving article, id {id}, title {title}", Id, Title);
+        _logger.LogDebug("Saving article, id [{id}], title [{title}].", Id, Title);
 
         if (Id == 0)
         {
+            _logger.LogDebug("Add article.");
             await DbSetWriteOnly.AddAsync(this);
-        } 
-        else if(DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId))
+        }
+        else if (DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId))
         {
+            _logger.LogDebug("Update article.");
             DbSetWriteOnly.Update(this);
         }
         else
         {
+            _logger.LogDebug("Author is not the article owner.");
             return null;
         }
 
         await SaveAsync(cancellationToken);
+
+        _logger.LogDebug("Article saved, id [{id}], title [{title}].", Id, Title);
         return this;
     }
 }
@@ -49,7 +54,7 @@ public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEn
     public void Configure(EntityTypeBuilder<ArticleEntity> builder)
     {
         builder.ToTable("Articles");
-        
+
         builder.HasIndex(x => new
         {
             x.Title,

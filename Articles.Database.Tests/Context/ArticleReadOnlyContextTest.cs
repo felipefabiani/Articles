@@ -1,11 +1,4 @@
 ﻿//using Articles.Api.Test.Features.Login;
-using Articles.Database.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace Articles.Database.Tests.Context;
 public class ArticleReadOnlyContextTest
@@ -19,7 +12,7 @@ public class ArticleReadOnlyContextTest
     }
 
     [Fact]
-    public async Task Test()
+    public async Task SaveAsync_should_throw_exception()
     {
         _context.ChangeTracker.QueryTrackingBehavior.ShouldBe(QueryTrackingBehavior.NoTracking);
 

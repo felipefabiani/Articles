@@ -1,6 +1,4 @@
-﻿using Articles.Database.Context;
-using Articles.Test.Helper.Fixture;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Articles.Test.Helper.Fixture;
 
 namespace Articles.Database.Tests.Context;
 

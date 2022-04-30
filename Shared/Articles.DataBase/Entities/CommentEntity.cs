@@ -3,7 +3,7 @@
 public class CommentEntity : Entity, ITrackableEntity
 {
     public string NickName { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;    
+    public string Content { get; set; } = string.Empty;
     public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.MinValue;
     public DateTimeOffset LastModifyedOn { get; set; } = DateTimeOffset.MinValue;
     public ArticleEntity Article { get; set; } = null!;

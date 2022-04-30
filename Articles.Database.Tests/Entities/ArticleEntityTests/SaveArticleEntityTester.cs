@@ -1,24 +1,42 @@
 ﻿using Articles.Database.Entities;
+using Articles.Test.Helper.Bases;
 using AutoFixture;
-using AutoFixture.Dsl;
 
 namespace Articles.Database.Tests.Entities.ArticleEntityTests;
-public class SaveArticleEntityTester
-      : IClassFixture<SaveArticleEntityServiceCollectionFixture>
+public class SaveArticleEntityTester :
+    BaseEntityTester<SaveArticleEntityServiceCollectionFixture, ArticleEntity>
 {
-    private readonly IPostprocessComposer<ArticleEntity> _fixture;
-
-    public SaveArticleEntityTester(SaveArticleEntityServiceCollectionFixture spFixture)
+    public SaveArticleEntityTester(
+        SaveArticleEntityServiceCollectionFixture spFixture) :
+        base(spFixture, new ArticleEntity(spFixture.ServiceProvider))
     {
-        _fixture = new Fixture()
-            .Build<ArticleEntity>()
-            .FromFactory(() => new ArticleEntity(spFixture.ServiceProvider));
+    }
+
+    protected override void PreEntityBuilder()
+    {
+        _fixture.Register(() => _fixture
+           .Build<CommentEntity>()
+           .Without(x => x.Article)
+           .Create());
+    }
+
+    protected override void ResetDb()
+    {
+        var comments = _context.Comments.Where(x => x.Id >= 0).ToList();
+
+        if (comments.Count == 0)
+        {
+            return;
+        }
+
+        _context.RemoveRange(comments);
+        base.ResetDb();
     }
 
     [Fact]
     public async Task Add_Article_required_fields_not_supplied_Fail()
     {
-        var sut = _fixture
+        var sut = _entityBuilder
            .OmitAutoProperties()
            .Create();
 
@@ -35,7 +53,7 @@ public class SaveArticleEntityTester
     [Fact]
     public async Task Update_Article_authors_doesnt_match_Fail()
     {
-        var sut = _fixture
+        var sut = _entityBuilder
             .Without(entity => entity.Id)
             .With(entity => entity.AuthorId, 20)
             .Create();
@@ -52,7 +70,7 @@ public class SaveArticleEntityTester
     [Fact]
     public async Task Add_Article_Success()
     {
-        var sut = _fixture
+        var sut = _entityBuilder
             .Without(entity => entity.Id)
             .Create();
 
@@ -64,7 +82,7 @@ public class SaveArticleEntityTester
     [Fact]
     public async Task Update_Article_Success()
     {
-        var sut = _fixture
+        var sut = _entityBuilder
             .Without(entity => entity.Id)
             .Create();
 
@@ -72,12 +90,13 @@ public class SaveArticleEntityTester
 
         sut.Title = "Testtestestest";
 
-        await Task.Delay(2_000);
+        await Task.Delay(1_000);
         var ret = await sut.Save(default);
 
         ret.ShouldNotBeNull();
         ret.Id.ShouldBeGreaterThan(0);
         ret.Title.ShouldBe("Testtestestest");
         ret.LastModifyedOn.ShouldBeGreaterThan(ret.CreatedOn);
+
     }
 }

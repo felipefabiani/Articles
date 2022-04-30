@@ -1,11 +1,4 @@
-﻿using Articles.Database.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace Articles.Database.Tests.Context;
+﻿namespace Articles.Database.Tests.Context;
 public class ArticleContextTest
       : IClassFixture<ArticleContextServiceCollectionFixture>
 {

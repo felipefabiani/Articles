@@ -6,12 +6,6 @@ public class ArticleContext : ArticleAbstractContext
     {
     }
 
-    public override int SaveChanges()
-    {
-        UpdateTrackableEntities();
-        return base.SaveChanges();
-    }
-
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         UpdateTrackableEntities();
@@ -19,32 +13,27 @@ public class ArticleContext : ArticleAbstractContext
     }
 
     public override Task<int> SaveChangesAsync(
-        bool acceptAllChangesOnSuccess, 
+        bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)
     {
         UpdateTrackableEntities();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        UpdateTrackableEntities();
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
     private void UpdateTrackableEntities()
     {
         var selectedEntityList = ChangeTracker.Entries()
-            .Where(x => x.Entity is ITrackableEntity);
-        
-        foreach (var entity in selectedEntityList.Where(x => x.State == EntityState.Added))
+            .Where(x => x.Entity is ITrackableEntity)
+            .ToList();
+
+        foreach (var entity in selectedEntityList.Where(x => x.State == EntityState.Added).ToList())
         {
             var dtNow = DateTimeOffset.Now;
             ((ITrackableEntity)entity.Entity).CreatedOn = dtNow;
             ((ITrackableEntity)entity.Entity).LastModifyedOn = dtNow;
         }
 
-        foreach (var entity in selectedEntityList.Where(x => x.State == EntityState.Modified))
+        foreach (var entity in selectedEntityList.Where(x => x.State == EntityState.Modified).ToList())
         {
             ((ITrackableEntity)entity.Entity).LastModifyedOn = DateTimeOffset.Now;
         }

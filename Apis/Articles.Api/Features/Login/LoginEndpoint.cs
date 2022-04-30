@@ -2,7 +2,7 @@
 
 namespace Articles.Api.Features.Login;
 
-public class LoginEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResponse, User>
+public class LoginEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResponse, UserEntity>
 {
     private readonly ILoginService _service;
     private readonly ILogger<LoginEndpoint> _log;

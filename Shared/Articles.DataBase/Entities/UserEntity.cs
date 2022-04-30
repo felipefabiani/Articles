@@ -60,7 +60,8 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
                 "RoleUser",
                 l => l.HasOne<RoleEntity>().WithMany().HasForeignKey("UserId"),
                 r => r.HasOne<UserEntity>().WithMany().HasForeignKey("RoleId"),
-                j => {
+                j =>
+                {
                     j.HasKey("RoleId", "UserId");
                     j.ToTable("RoleUser");
                     j.HasIndex(new[] { "UserId" }, "IX_RoleUser_UserId");
@@ -73,7 +74,8 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
                 "ClaimUser",
                 l => l.HasOne<ClaimEntity>().WithMany().HasForeignKey("UserId"),
                 r => r.HasOne<UserEntity>().WithMany().HasForeignKey("ClaimId"),
-                j => {
+                j =>
+                {
                     j.HasKey("ClaimId", "UserId");
                     j.ToTable("ClaimUser");
                     j.HasIndex(new[] { "UserId" }, "IX_ClaimUser_UserId");

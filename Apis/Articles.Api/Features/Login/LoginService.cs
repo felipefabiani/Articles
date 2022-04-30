@@ -33,7 +33,7 @@ public class LoginService : ILoginService, IScopedService
             .Where(x => x.Email == request.Email)
             .Include(x => x.Roles)
             .Include(x => x.Claims)
-            .FirstOrDefaultAsync(cancellationToken) ?? new User();
+            .FirstOrDefaultAsync(cancellationToken) ?? new UserEntity();
 
         if (
             string.IsNullOrWhiteSpace(user.Password) ||
@@ -44,7 +44,7 @@ public class LoginService : ILoginService, IScopedService
 
         return MapFromEntityAsync(user);
 
-        UserLoginResponse MapFromEntityAsync(User e) => new()
+        UserLoginResponse MapFromEntityAsync(UserEntity e) => new()
         {
             FullName = $"{e.FirstName} {e.LastName}",
             UserRoles = e.Roles.Select(x => x.Name).ToList(),

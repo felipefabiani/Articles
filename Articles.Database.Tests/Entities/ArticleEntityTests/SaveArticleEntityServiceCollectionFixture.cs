@@ -1,6 +1,4 @@
-﻿using Articles.Database.Entities;
-using Articles.Test.Helper.Fixture;
-using AutoFixture;
+﻿using Articles.Test.Helper.Fixture;
 
 namespace Articles.Database.Tests.Context;
 

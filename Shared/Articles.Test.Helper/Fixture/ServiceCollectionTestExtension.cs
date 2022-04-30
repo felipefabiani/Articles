@@ -26,7 +26,6 @@ public static class ServiceCollectionTestExtension
             .ConfigureOptions()
             .AddNullLogger()
             .AddSingleton(interfaceType, implemantationType);
-
     }
 
     public static IServiceCollection SetupBasicesConfigurationForServices(
@@ -36,9 +35,7 @@ public static class ServiceCollectionTestExtension
             .AddDbContext<ArticleContext>()
             .AddDbContext<ArticleReadOnlyContext>()
             .ConfigureOptions()
-            .AddNullLogger()
-            ;
-
+            .AddNullLogger();
     }
 
     private static readonly InMemoryDatabaseRoot _inMemoryDatabaseRoot = new InMemoryDatabaseRoot();
@@ -53,7 +50,6 @@ public static class ServiceCollectionTestExtension
 
                 );
         }, optionsLifetime: ServiceLifetime.Transient);
-
     }
     public static IServiceCollection ConfigureOptions(this IServiceCollection services)
     {
