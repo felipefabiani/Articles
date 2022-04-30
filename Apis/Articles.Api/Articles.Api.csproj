@@ -40,8 +40,5 @@
 
   <ItemGroup>
     <Folder Include="Features\Author\" />
-    <Folder Include="log\" />
-    <Folder Include="Features\Author\" />
-    <Folder Include="log\" />
   </ItemGroup>
 </Project>

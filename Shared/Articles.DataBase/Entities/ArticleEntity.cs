@@ -2,16 +2,19 @@
 
 namespace Articles.Database.Entities;
 
-public class ArticleEntity : Entity<ArticleEntity>
+public class ArticleEntity : 
+    Entity<ArticleEntity>,
+    ITrackableEntity
 {
     public string FullName { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-    public DateTimeOffset CreatedOn { get; set; } = default;
     public bool IsApproved { get; set; } = false;
     public string? RejectionReason { get; set; }
-    public List<Comment>? Comments { get; set; }
+    public List<CommentEntity>? Comments { get; set; }
     public int AuthorId { get; set; }
+    public DateTimeOffset CreatedOn { get; set; } = default;
+    public DateTimeOffset LastModifyedOn { get; set; }
 
     public ArticleEntity() : base()
     { }
@@ -45,6 +48,8 @@ public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEn
 {
     public void Configure(EntityTypeBuilder<ArticleEntity> builder)
     {
+        builder.ToTable("Articles");
+        
         builder.HasIndex(x => new
         {
             x.Title,
@@ -81,5 +86,10 @@ public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEn
             .Property(x => x.RejectionReason)
             .IsUnicode(false)
             .HasMaxLength(1000);
+
+        builder
+            .HasMany(x => x.Comments)
+            .WithOne(x => x.Article)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

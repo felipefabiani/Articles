@@ -11,8 +11,8 @@ public class SaveArticleEntityTester
     public SaveArticleEntityTester(SaveArticleEntityServiceCollectionFixture spFixture)
     {
         _fixture = new Fixture()
-            .Build<ArticleEntity>()
-            .FromFactory(() => new ArticleEntity(spFixture.ServiceProvider));
+            .Build<ArticleEntity>();
+            // .FromFactory(() => new ArticleEntity(spFixture.ServiceProvider));
     }
 
     [Fact]
@@ -72,10 +72,12 @@ public class SaveArticleEntityTester
 
         sut.Title = "Testtestestest";
 
+        await Task.Delay(2_000);
         var ret = await sut.Save(default);
 
         ret.ShouldNotBeNull();
         ret.Id.ShouldBeGreaterThan(0);
         ret.Title.ShouldBe("Testtestestest");
+        ret.LastModifyedOn.ShouldBeGreaterThan(ret.CreatedOn);
     }
 }
