@@ -49,6 +49,8 @@ public class ArticleEntity :
         return this;
     }
 }
+
+[ExcludeFromCodeCoverage]
 public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEntity>
 {
     public void Configure(EntityTypeBuilder<ArticleEntity> builder)

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Articles.Database.Migrations.Seeding
 {
+    [ExcludeFromCodeCoverage]
     [DbContext(typeof(ArticleContext))]
     [Migration("20220329213444_SeedingUsers")]
     partial class SeedingUsers

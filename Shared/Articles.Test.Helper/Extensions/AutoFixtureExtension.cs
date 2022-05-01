@@ -1,8 +1,10 @@
 ﻿using AutoFixture.Dsl;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace Articles.Test.Helper.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class AutoFixtureExtension
 {
     private readonly static Random _random = new();

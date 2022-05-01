@@ -1,6 +1,8 @@
 ﻿using Articles.Helper.Extensions;
+
 namespace Articles.Database.Infrastructure;
 
+[ExcludeFromCodeCoverage]
 public static class SeedArticleDatabaseExtension
 {
     public static async ValueTask Seed(this ArticleContext context)
@@ -60,11 +62,15 @@ public static class SeedArticleDatabaseExtension
             });
         await context.SaveChangesAsync();
     }
+
+    [ExcludeFromCodeCoverage]
     public static async Task EnsureDropCreateAndSeedAsync(this ArticleContext context)
     {
         await context.Database.EnsureDeletedAsync();
         await EnsureCreateAndSeedAsync(context);
     }
+
+    [ExcludeFromCodeCoverage]
     public static async Task EnsureCreateAndSeedAsync(this ArticleContext context)
     {
         await context.Database.MigrateAsync();

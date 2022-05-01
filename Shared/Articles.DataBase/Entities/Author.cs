@@ -1,5 +1,6 @@
 ﻿namespace Articles.Database.Entities;
 
+[ExcludeFromCodeCoverage]
 public class Author : Entity
 {
     public string FirstName { get; set; } = string.Empty;

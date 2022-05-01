@@ -27,9 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Articles.Helper", "Shared\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Articles.Models.Tests", "shared\Articles.Models.Tests\Articles.Models.Tests.csproj", "{150BEACC-F02D-4996-BF62-047616CC3699}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articles.Database.Tests", "Articles.Database.Tests\Articles.Database.Tests.csproj", "{A7ACFE1A-A81D-488C-974D-44EECE5EC11D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Articles.Database.Tests", "Articles.Database.Tests\Articles.Database.Tests.csproj", "{A7ACFE1A-A81D-488C-974D-44EECE5EC11D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Articles.Test.Helper", "shared\Articles.Test.Helper\Articles.Test.Helper.csproj", "{F40F7362-6F29-4952-9F33-EC2F40855AE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Articles.Test.Helper", "shared\Articles.Test.Helper\Articles.Test.Helper.csproj", "{F40F7362-6F29-4952-9F33-EC2F40855AE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
