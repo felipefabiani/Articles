@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Article.Helper\Articles.Helper.csproj" />
     <ProjectReference Include="..\Articles.Models\Articles.Models.csproj" />
+    <ProjectReference Include="..\Articles.Test.Helper\Articles.Test.Helper.csproj" />
   </ItemGroup>
 
 </Project>

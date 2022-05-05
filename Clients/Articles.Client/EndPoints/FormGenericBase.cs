@@ -20,11 +20,11 @@ public abstract class FormBase<TRequest, TResponse> : FormBase
 
     protected override async Task Fail(HttpResponseMessage response)
     {
-        var bad = await response.Content.ReadFromJsonAsync<BadRequestResponse>();
+        var bad = await response.Content.ReadFromJsonAsync<BadRequestResponse>()!;
 
         ShowFailMessage(bad);
 
-        FailCallBack?.Invoke(bad);
+        FailCallBack?.Invoke(bad!);
     }
 
     protected override async Task Success(HttpResponseMessage response)
@@ -33,7 +33,7 @@ public abstract class FormBase<TRequest, TResponse> : FormBase
 
         ShowSuccesMessage();
 
-        SuccessCallBack?.Invoke(result);
+        SuccessCallBack?.Invoke(result!);
     }
 
     protected override Task Reset()

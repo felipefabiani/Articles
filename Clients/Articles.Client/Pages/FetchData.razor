@@ -47,8 +47,6 @@
         set => _returnUrl = value;
     }
 
-    private bool showAuthenticationError = false;
-    private string authenticationErrorMessage = string.Empty;
     private string _returnUrl = string.Empty;
     private UserLoginResponse? loggedUser;
     private string failMessage = string.Empty;
@@ -56,7 +54,7 @@
 
     private void LoginFail(BadRequestResponse resp)
     {
-        failMessage = string.Join("<br/>", resp.errors.GeneralErrors);
+        failMessage = string.Join("<br/>", resp?.errors?.GeneralErrors ?? new string[] {"Login Fail"});
         showFailMessage = true;
         StateHasChanged();
     }
@@ -71,7 +69,7 @@
         else
         {
             Snackbar.Add("There was an error when trying to log in", Severity.Error);
-            showAuthenticationError = true;
+            // showAuthenticationError = true;
         }
 
         if (resp.HasToken)

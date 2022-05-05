@@ -5,14 +5,10 @@ namespace Articles.Api.Features.Login;
 public class LoginEndpoint : EndpointWithMapping<UserLoginRequest, UserLoginResponse, UserEntity>
 {
     private readonly ILoginService _service;
-    private readonly ILogger<LoginEndpoint> _log;
 
-    public LoginEndpoint(
-        ILoginService service,
-        ILogger<LoginEndpoint> log)
+    public LoginEndpoint(ILoginService service)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
-        _log = log ?? throw new ArgumentNullException(nameof(log));
     }
     public override void Configure()
     {

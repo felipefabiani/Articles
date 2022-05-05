@@ -1,5 +1,5 @@
-﻿using Articles.Helper.Extensions;
-using Articles.Models.Feature.Articles.SaveArticle;
+﻿using Articles.Models.Feature.Articles.SaveArticle;
+using Articles.Test.Helper.Extensions;
 using AutoFixture;
 using FluentValidation.TestHelper;
 using Xunit;
@@ -28,7 +28,7 @@ public class SaveArticleValidatorTester
         {
             Title = title!,
             Content = content!,
-            AuthorID = authorId
+            AuthorId = authorId
         };
         var result = _validator.TestValidate(model);
         result
@@ -40,7 +40,7 @@ public class SaveArticleValidatorTester
             .WithErrorMessage("Content is required!");
 
         result
-            .ShouldHaveValidationErrorFor(m => m.AuthorID)
+            .ShouldHaveValidationErrorFor(m => m.AuthorId)
             .WithErrorMessage("AuthorID is required!");
     }
 
@@ -78,12 +78,12 @@ public class SaveArticleValidatorTester
         var model = fixture.Build<SaveArticleRequest>()
             .WithStringLength(x => x.Title, titleSize)
             .WithStringLength(x => x.Content, contentSize)
-            .With(x => x.AuthorID, authorId)
+            .With(x => x.AuthorId, authorId)
             .Create();
 
         var result = _validator.TestValidate(model);
         result.ShouldNotHaveValidationErrorFor(m => m.Title);
         result.ShouldNotHaveValidationErrorFor(m => m.Content);
-        result.ShouldNotHaveValidationErrorFor(m => m.AuthorID);
+        result.ShouldNotHaveValidationErrorFor(m => m.AuthorId);
     }
 }

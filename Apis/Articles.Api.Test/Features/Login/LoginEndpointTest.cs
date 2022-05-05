@@ -1,9 +1,22 @@
 ﻿using Articles.Models.Auth;
 using Articles.Models.Feature.Login;
+using Articles.Test.Helper.Bases;
+using Articles.Test.Helper.Fixture;
+using Microsoft.AspNetCore.Http;
 
 namespace Articles.Api.Test.Features.Login;
-public class LoginEndpointTest
+public class LoginEndpointTest :
+    ServiceProvider<ServiceCollectionFixture>
 {
+    private readonly DefaultHttpContext _defaultHttpContext;
+
+    public LoginEndpointTest(
+        ServiceCollectionFixture spFixture) :
+        base(spFixture)
+    {
+        _defaultHttpContext = spFixture.ServiceProvider.GetRequiredService<DefaultHttpContext>();
+    }
+
     [Fact]
     public async Task AdminLoginSuccess()
     {
@@ -15,23 +28,24 @@ public class LoginEndpointTest
         };
 
         var logingService = A.Fake<ILoginService>();
-        var logger = A.Fake<ILogger<LoginEndpoint>>();
-        _ = A.CallTo(() => logingService.Login(req, default)).Returns(Task.FromResult(new UserLoginResponse
-        {
-            FullName = "Test",
-            Token = new JwtToken
+        _ = A
+            .CallTo(() => logingService.Login(req, default))
+            .Returns(Task.FromResult(new UserLoginResponse
             {
-                ExpiryDate = DateTime.UtcNow.AddHours(4),
-                Value = JWTBearer.CreateToken(
-                    signingKey: new Guid().ToString(),
-                    expireAt: DateTime.UtcNow.AddHours(4),
-                    roles: new[] { "admin" },
-                    claims: new[] { ("admin", "100") }
-                )
-            }
-        }));
+                FullName = "Test",
+                Token = new JwtToken
+                {
+                    ExpiryDate = DateTime.UtcNow.AddHours(4),
+                    Value = JWTBearer.CreateToken(
+                        signingKey: new Guid().ToString(),
+                        expireAt: DateTime.UtcNow.AddHours(4),
+                        roles: new[] { "admin" },
+                        claims: new[] { ("admin", "100") }
+                    )
+                }
+            }));
 
-        var ep = Factory.Create<LoginEndpoint>(logingService, logger);
+        var ep = Factory.Create<LoginEndpoint>(_defaultHttpContext, new object[] { logingService });
 
         //act
         await ep.HandleAsync(req, default);
@@ -49,13 +63,11 @@ public class LoginEndpointTest
         var req = new UserLoginRequest();
 
         var logingService = A.Fake<ILoginService>();
-        A.CallTo(() => logingService.Login(req, default))
+        _ = A
+            .CallTo(() => logingService.Login(req, default))
             .Returns(Task.FromResult((UserLoginResponse)NullUserLoginResponse.Empty));
 
-        var ep = Factory.Create<LoginEndpoint>(
-            logingService,
-            A.Fake<ILogger<LoginEndpoint>>());
-
+        var ep = Factory.Create<LoginEndpoint>(_defaultHttpContext, new object[] { logingService });
         var ex = await Should.ThrowAsync<ValidationFailureException>(async () => await ep.HandleAsync(req, default));
     }
 }

@@ -34,7 +34,7 @@ public class AuthStateProvider : AuthenticationStateProvider
                 new AuthenticationHeaderValue(AuthConst.Bearer, token);
             return GetAuthenticationState(token);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return _anonymous!;
         }

@@ -13,6 +13,7 @@ public class ArticleEntity :
     public string? RejectionReason { get; set; }
     public List<CommentEntity>? Comments { get; set; }
     public int AuthorId { get; set; }
+    public UserEntity Author { get; set; } = null!;
     public DateTimeOffset CreatedOn { get; set; } = default;
     public DateTimeOffset LastModifyedOn { get; set; }
 
@@ -35,6 +36,14 @@ public class ArticleEntity :
         else if (DbSetReadOnly.Any(art => art.Id == Id && art.AuthorId == AuthorId))
         {
             _logger.LogDebug("Update article.");
+
+            var article = await DbSetWriteOnly.FindAsync(new object[] { Id }, cancellationToken);
+            if (article is null)
+            {
+                _logger.LogDebug("Article with id {id} not found.", Id);
+                return null;
+            }
+
             DbSetWriteOnly.Update(this);
         }
         else
@@ -98,5 +107,11 @@ public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEn
             .HasMany(x => x.Comments)
             .WithOne(x => x.Article)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasOne(x => x.Author)
+            .WithOne()
+            .OnDelete(DeleteBehavior.NoAction)
+            .IsRequired();
     }
 }

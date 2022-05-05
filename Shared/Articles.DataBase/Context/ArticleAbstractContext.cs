@@ -3,7 +3,7 @@
 ////        Package Manager Console select Aricles.Database
 ////    
 ////    Add-Migration: 
-////        EntityFrameworkCore\Add-Migration {migration-name} -Context ArticleContext - OutputDir Migrations
+////        EntityFrameworkCore\Add-Migration {migration-name} -Context ArticleContext -OutputDir Migrations
 ////    
 ////    Remove-Migration:
 ////        EntityFrameworkCore\Remove-Migration -Context ArticleContext -OutputDir Migrations

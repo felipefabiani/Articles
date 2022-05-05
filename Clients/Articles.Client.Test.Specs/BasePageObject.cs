@@ -4,9 +4,6 @@ using SpecFlow.Actions.Playwright;
 namespace Articles.Client.Test.Specs;
 public abstract class BasePageObject : IDisposable
 {
-    //public abstract string ResetButtonSelector { get; }
-    //public abstract string SubmitButtonSelector { get; }
-
     public virtual string ResetButtonSelector => "#reset";
 
     public virtual string SubmitButtonSelector => "#submit";

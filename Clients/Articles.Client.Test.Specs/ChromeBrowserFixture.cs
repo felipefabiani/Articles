@@ -4,9 +4,9 @@ namespace Articles.Client.Test.Specs;
 
 public class ChromeBrowserFixture : IDisposable
 {
-    public IPlaywright Playwright1 { get; set; }
-    public IBrowser Browser { get; set; }
-    public IPage Page { get; set; }
+    public IPlaywright Playwright1 { get; set; } = null!;
+    public IBrowser Browser { get; set; } = null!;
+    public IPage Page { get; set; } = null!;
 
 
     public async Task InitializeAsync()

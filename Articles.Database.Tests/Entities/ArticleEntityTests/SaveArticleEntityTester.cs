@@ -1,36 +1,26 @@
 ﻿using Articles.Database.Entities;
 using Articles.Test.Helper.Bases;
+using Articles.Test.Helper.Fixture;
 using AutoFixture;
 
 namespace Articles.Database.Tests.Entities.ArticleEntityTests;
 public class SaveArticleEntityTester :
-    BaseEntityTester<SaveArticleEntityServiceCollectionFixture, ArticleEntity>
+    ContextDb<ServiceCollectionFixture, ArticleEntity>
 {
     public SaveArticleEntityTester(
-        SaveArticleEntityServiceCollectionFixture spFixture) :
+        ServiceCollectionFixture spFixture) :
         base(spFixture, new ArticleEntity(spFixture.ServiceProvider))
     {
     }
 
     protected override void PreEntityBuilder()
     {
-        _fixture.Register(() => _fixture
+        _fixture.Register(() => _fixture?
            .Build<CommentEntity>()
            .Without(x => x.Article)
            .Create());
-    }
 
-    protected override void ResetDb()
-    {
-        var comments = _context.Comments.Where(x => x.Id >= 0).ToList();
-
-        if (comments.Count == 0)
-        {
-            return;
-        }
-
-        _context.RemoveRange(comments);
-        base.ResetDb();
+        _fixture.Register(() => _contextWriteOnly.Users.First());
     }
 
     [Fact]
@@ -55,12 +45,12 @@ public class SaveArticleEntityTester :
     {
         var sut = _entityBuilder
             .Without(entity => entity.Id)
-            .With(entity => entity.AuthorId, 20)
+            .With(entity => entity.AuthorId, 1)
             .Create();
 
         var saved = await sut.Save(default);
 
-        sut.AuthorId = 21;
+        sut.AuthorId += 1;
 
         var ret = await sut.Save(default);
 
@@ -71,8 +61,9 @@ public class SaveArticleEntityTester :
     public async Task Add_Article_Success()
     {
         var sut = _entityBuilder
-            .Without(entity => entity.Id)
-            .Create();
+           .Without(entity => entity.Id)
+           .With(entity => entity.AuthorId, 1)
+           .Create();
 
         var ret = await sut.Save(default);
         ret.ShouldNotBeNull();
@@ -83,20 +74,21 @@ public class SaveArticleEntityTester :
     public async Task Update_Article_Success()
     {
         var sut = _entityBuilder
-            .Without(entity => entity.Id)
-            .Create();
+           .Without(entity => entity.Id)
+           .With(entity => entity.AuthorId, 1)
+           .Create();
 
         var saved = await sut.Save(default);
 
-        sut.Title = "Testtestestest";
+        var title = "Testtestestest";
+        sut.Title = title;
 
         await Task.Delay(1_000);
         var ret = await sut.Save(default);
 
         ret.ShouldNotBeNull();
         ret.Id.ShouldBeGreaterThan(0);
-        ret.Title.ShouldBe("Testtestestest");
+        ret.Title.ShouldBe(title);
         ret.LastModifyedOn.ShouldBeGreaterThan(ret.CreatedOn);
-
     }
 }

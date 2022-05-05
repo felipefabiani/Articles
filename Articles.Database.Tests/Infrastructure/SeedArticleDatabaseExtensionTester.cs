@@ -1,28 +1,32 @@
 ﻿using Articles.Database.Infrastructure;
+using Articles.Test.Helper.Bases;
+using Articles.Test.Helper.Fixture;
+
 namespace Articles.Database.Tests.Infrastructure;
 
 public class SeedArticleDatabaseExtensionTester :
-    IClassFixture<ArticleContextServiceCollectionFixture>
+    ContextDb<ServiceCollectionFixture>
 {
-    private readonly ArticleContext _context;
+    protected override void SeedDb() { }
 
-    public SeedArticleDatabaseExtensionTester(ArticleContextServiceCollectionFixture spFixture)
+    public SeedArticleDatabaseExtensionTester(ServiceCollectionFixture spFixture) :
+        base(spFixture)
+
     {
-        _context = spFixture.ServiceProvider.GetRequiredService<ArticleContext>();
     }
 
     [Fact]
     public async Task Seed()
     {
-        await _context.Seed();
+        await _contextWriteOnly.Seed();
 
-        _context.Users.Count().ShouldBe(4);
+        _contextWriteOnly.Users.Count().ShouldBe(4);
     }
     [Fact]
     public async Task SeedUsers()
     {
-        await _context.SeedUsers();
+        await _contextWriteOnly.SeedUsers();
 
-        _context.Users.Count().ShouldBe(4);
+        _contextWriteOnly.Users.Count().ShouldBe(4);
     }
 }

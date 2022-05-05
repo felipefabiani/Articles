@@ -24,10 +24,6 @@ public static class AutoFixtureExtension
     }
     public static string RandomString(int length)
     {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable
-            .Repeat(chars, length)
-            .Select(s => s[_random.Next(s.Length)])
-            .ToArray());
+        return LoremNETCore.Generate.Words(100_000, 100_000, true, false).Substring(0, length);
     }
 }

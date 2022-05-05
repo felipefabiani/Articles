@@ -7,7 +7,6 @@ public class UserLoginRequestValidatorTester
 {
     private UserLoginRequestValidator _validator;
 
-
     public UserLoginRequestValidatorTester()
     {
         _validator = new UserLoginRequestValidator();

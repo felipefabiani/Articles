@@ -9,8 +9,8 @@ namespace Articles.Client.Test;
 
 public class FakeLocalStorageService : ILocalStorageService
 {
-    public event EventHandler<ChangingEventArgs> Changing;
-    public event EventHandler<ChangedEventArgs> Changed;
+    public event EventHandler<ChangingEventArgs>? Changing;
+    public event EventHandler<ChangedEventArgs>? Changed;
 
     private Dictionary<string, string> _keys = new();
 

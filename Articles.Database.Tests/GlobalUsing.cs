@@ -1,5 +1,4 @@
 ﻿global using Articles.Database.Context;
-global using Articles.Database.Tests.Context;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Shouldly;

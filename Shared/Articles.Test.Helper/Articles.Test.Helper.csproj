@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.3" />
+    <PackageReference Include="Lorem.NetCore" Version="1.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Apis\Articles.Api\Articles.Api.csproj" />
     <ProjectReference Include="..\Articles.DataBase\Articles.Database.csproj" />
   </ItemGroup>
 

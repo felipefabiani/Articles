@@ -1,12 +1,12 @@
-﻿//using Articles.Api.Test.Features.Login;
+﻿using Articles.Test.Helper.Fixture;
 
 namespace Articles.Database.Tests.Context;
 public class ArticleReadOnlyContextTest
-      : IClassFixture<ArticleReadOnlyContextServiceCollectionFixture>
+      : IClassFixture<ServiceCollectionFixture>
 {
     private readonly ArticleReadOnlyContext _context;
 
-    public ArticleReadOnlyContextTest(ArticleReadOnlyContextServiceCollectionFixture spFixture)
+    public ArticleReadOnlyContextTest(ServiceCollectionFixture spFixture)
     {
         _context = spFixture.ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();
     }

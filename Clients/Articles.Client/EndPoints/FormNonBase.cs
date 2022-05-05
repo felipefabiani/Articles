@@ -90,7 +90,7 @@ public abstract class FormBase : ComponentBase
         else if (DisableFailDefaultMessage == false)
         {
             Snackbar.Add(
-                message: FailedMessage ?? string.Join("<br/>", bad.errors.GeneralErrors),
+                message: FailedMessage ?? string.Join("<br/>", bad?.errors?.GeneralErrors!),
                 severity: Severity.Error);
         }
     }

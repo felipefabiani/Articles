@@ -1,13 +1,17 @@
 ﻿using Articles.Models.Feature.Login;
+using Articles.Test.Helper.Bases;
+using Articles.Test.Helper.Fixture;
 using System.Linq;
 
 namespace Articles.Api.Test.Features.Login;
-public class LoginServiceTest
-    : IClassFixture<LoginServiceServiceCollectionFixture>
+public class LoginServiceTest :
+    ContextDb<ServiceCollectionFixture>
 {
     private readonly ILoginService _loginService;
 
-    public LoginServiceTest(LoginServiceServiceCollectionFixture spFixture)
+    public LoginServiceTest(
+        ServiceCollectionFixture spFixture) :
+        base(spFixture)
     {
         _loginService = spFixture.ServiceProvider.GetRequiredService<ILoginService>();
     }

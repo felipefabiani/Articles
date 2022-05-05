@@ -1,10 +1,12 @@
-﻿namespace Articles.Database.Tests.Context;
+﻿using Articles.Test.Helper.Fixture;
+
+namespace Articles.Database.Tests.Context;
 public class ArticleContextTest
-      : IClassFixture<ArticleContextServiceCollectionFixture>
+      : IClassFixture<ServiceCollectionFixture>
 {
     private readonly ArticleContext _context;
 
-    public ArticleContextTest(ArticleContextServiceCollectionFixture spFixture)
+    public ArticleContextTest(ServiceCollectionFixture spFixture)
     {
         _context = spFixture.ServiceProvider.GetRequiredService<ArticleContext>();
     }

@@ -4,7 +4,7 @@ namespace Articles.Models.Feature.Articles.SaveArticle
 {
     public class SaveArticleRequest : ArticleModel
     {
-        public int AuthorID { get; set; }
+        public int AuthorId { get; set; }
     }
 
     public class SaveArticleValidator : AbstractValidator<SaveArticleRequest>
@@ -19,7 +19,7 @@ namespace Articles.Models.Feature.Articles.SaveArticle
                 .NotEmpty().WithMessage("Content is required!")
                 .MinimumLength(10).WithMessage("Content is too short!");
 
-            RuleFor(x => x.AuthorID)
+            RuleFor(x => x.AuthorId)
                 .GreaterThan(0).WithMessage("AuthorID is required!");
         }
     }
@@ -27,6 +27,6 @@ namespace Articles.Models.Feature.Articles.SaveArticle
     public class SaveArticleResponse
     {
         public string Message => "Article saved!";
-        public int? ArticleID { get; set; }
+        public int? Id { get; set; }
     }
 }
