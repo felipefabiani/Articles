@@ -7,9 +7,10 @@ public class SaveArticleEndpoint : EndpointWithMapping<SaveArticleRequest, SaveA
 {
     public override void Configure()
     {
-        Post("/author/articles/save-article");
-        Claims(RolePermissions.Author);
-        Permissions(ClaimPermissions.Article_Save_Own);
+        Post("/articles/save-article");
+        Roles(RolePermissions.Author);
+        Claims(nameof(ClaimPermissions.Author_Save_Own));
+        // Permissions(ClaimPermissions.Article_Save_Own);
     }
 
     public override async Task HandleAsync(SaveArticleRequest request, CancellationToken cancellationToken)

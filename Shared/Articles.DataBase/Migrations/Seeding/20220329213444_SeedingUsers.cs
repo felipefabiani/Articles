@@ -29,7 +29,7 @@ namespace Articles.Database.Migrations.Seeding
                    { 6, "Author_Get_Own_List", "200" },
                    { 7, "Author_Save_Own", "201" },
                    { 8, "Author_Update_Own_Profile", "202" },
-                   { 9, "user_reads", "301" }
+                   { 9, "User_Reads", "301" }
                 });
         }
 

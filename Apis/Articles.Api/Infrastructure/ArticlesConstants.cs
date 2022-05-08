@@ -25,4 +25,9 @@ public partial class ArticlesConstants
         public static readonly string ArticlesClient = "Article.Client";
         public static readonly string AllowedHostsSection = "AllowedHosts";
     }
+    public class Security
+    {
+        public static readonly string Issuer = "Article.Issuer";
+        public static readonly string Audience = "Article.Audience";
+    }
 }

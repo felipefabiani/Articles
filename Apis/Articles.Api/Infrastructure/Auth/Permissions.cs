@@ -13,10 +13,12 @@ public class ClaimPermissions : Permissions
     public const string Author_Update_Profile = "104";
 
     //AUTHOR PERMISSIONS
-    public const string Article_Get_Own_List = "200";
-    public const string Article_Save_Own = "201";
+    public const string Author_Get_Own_List = "200";
+    public const string Author_Save_Own = "201";
     public const string Author_Update_Own_Profile = "202";
 
+    //USER PERMISSIONS
+    public const string User_Reads = "301";
 }
 
 public class RolePermissions

@@ -1,14 +1,19 @@
 ﻿using Articles.Database.Infrastructure;
 using FastEndpoints.Swagger;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Scrutor;
 using Serilog;
 using System.Reflection;
 using System.Text.Json;
+
+using static Articles.Api.Infrastructure.ArticlesConstants.Security;
 
 namespace Articles.Api.Infrastructure;
 
@@ -23,6 +28,7 @@ public static class ServiceCollectionExtention
         AddLifetimeServices();
         AddDecorators();
         AddCors();
+        AddAuthentication();
 
         _ = builder.Services.AddFastEndpoints();
         _ = builder.Services.AddResponseCaching();
@@ -171,6 +177,31 @@ public static class ServiceCollectionExtention
                     });
             });
         }
+        void AddAuthentication()
+        {
+            var jwt = builder.Configuration["ArticleOptions:JwtSigningKey"];
+            builder.Services.AddAuthentication(delegate (AuthenticationOptions o)
+            {
+                o.DefaultAuthenticateScheme = "Bearer";
+                o.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(delegate (JwtBearerOptions o)
+            {
+                var issuerSigningCertificate = new SigningIssuerCertificate();
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    RequireExpirationTime = true,
+                    ValidateIssuerSigningKey = true,
+                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt)),
+                    IssuerSigningKey = issuerSigningCertificate.GetIssuerSigningKey(),
+
+                    ValidateAudience = true,
+                    ValidAudience = Audience,
+                    ValidateIssuer = true,
+                    ValidIssuer = Issuer,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+        }
     }
 
     public static async Task<WebApplication> SetApplication(this WebApplication app)
@@ -178,6 +209,9 @@ public static class ServiceCollectionExtention
         await SetEnvironment();
 
         app.UseCors(ArticlesConstants.Cors.ArticlesClient);
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         app.UseSerilogRequestLogging();
         app.UseHttpsRedirection();
 

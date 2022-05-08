@@ -56,6 +56,7 @@ public class LoginService : ILoginService, IScopedService
                     signingKey: _options.JwtSigningKey,
                     expireAt: DateTime.UtcNow.AddHours(4),
                     roles: e.Roles.Select(x => x.Name).ToList(),
+                    // permissions: e.Claims.Select(x => x.Value).ToList(),
                     claims: e.Claims
                         .Select(x => new ssc.Claim(x.Name, x.Value))
                         .ToList()
@@ -64,11 +65,14 @@ public class LoginService : ILoginService, IScopedService
         };
         string CreateToken(string signingKey, DateTime? expireAt = null, IEnumerable<string>? permissions = null, IEnumerable<string>? roles = null, IEnumerable<ssc.Claim>? claims = null)
         {
-            var list = new List<ssc.Claim>();
+            var list = new List<ssc.Claim>
+            {
+                new ssc.Claim(ssc.ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+            };
+
             if (claims != null)
             {
                 list.AddRange(claims);
-                list.Add(new ssc.Claim(ssc.ClaimTypes.Name, $"{user.FirstName} {user.LastName}"));
             }
 
             if (permissions != null)
@@ -85,7 +89,10 @@ public class LoginService : ILoginService, IScopedService
             {
                 Subject = new ssc.ClaimsIdentity(list),
                 Expires = expireAt,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey)), "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256")
+                // SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey)), "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256")
+                SigningCredentials = new SigningIssuerCertificate().GetAudienceSigningKey(),
+                Issuer = ArticlesConstants.Security.Issuer,
+                Audience = ArticlesConstants.Security.Audience
             };
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             jwtSecurityTokenHandler.OutboundClaimTypeMap.Clear();
