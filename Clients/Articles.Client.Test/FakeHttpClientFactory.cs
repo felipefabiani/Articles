@@ -1,8 +1,5 @@
 ﻿using RichardSzalay.MockHttp;
-using System;
-using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 
 namespace Articles.Client.Test;
 public class FakeHttpClientFactory<T> : IHttpClientFactory
@@ -10,8 +7,8 @@ public class FakeHttpClientFactory<T> : IHttpClientFactory
 
     public FakeHttpClientFactory(
         T response,
-        HttpStatusCode statusCode = HttpStatusCode.OK,
         string endpoint = "/",
+        HttpStatusCode statusCode = HttpStatusCode.OK,
         string baseAddress = "http://localhost")
 
     {

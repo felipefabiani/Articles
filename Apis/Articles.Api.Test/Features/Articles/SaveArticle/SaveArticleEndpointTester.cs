@@ -1,62 +1,44 @@
-﻿namespace Articles.Api.Test.Features.Articles.SaveArticle;
+﻿using Articles.Api.Features.Articles.SaveArticle;
+using Articles.Models.Feature.Articles.SaveArticle;
+using Articles.Test.Helper.Bases;
+using Articles.Test.Helper.Extensions;
+using Articles.Test.Helper.Fixture;
+using AutoFixture;
+using Microsoft.AspNetCore.Http;
 
-public class SaveArticleEndpointTester
+namespace Articles.Api.Test.Features.Articles.SaveArticle;
+
+public class SaveArticleEndpointTester :
+    ServiceProvider<ServiceCollectionFixture>
 {
+    private readonly DefaultHttpContext _defaultHttpContext;
 
-    //[Fact]
-    //public async Task AdminLoginSuccess()
-    //{
-    //    //arrange
-    //    var fixture = new Fixture();
-    //    var req = fixture
-    //        .Build<SaveArticleRequest>()
-    //        .OmitAutoProperties()
-    //        .Create();
+    public SaveArticleEndpointTester(
+        ServiceCollectionFixture fixture) :
+        base(fixture)
+    {
+        _defaultHttpContext = fixture.ServiceProvider.GetRequiredService<DefaultHttpContext>();
+    }
 
+    [Fact]
+    public async Task ToEntityAsync()
+    {
+        //var lastId = _contextWriteOnly.Articles.Any() ?
+        //    _contextWriteOnly.Articles.Max(art => art.Id) :
+        //    0;
 
+        var request = _fixture
+            .Build<SaveArticleRequest>()
+            .With(x => x.Id, 0)
+            .With(x => x.AuthorId, 1)
+            .WithStringLength(x => x.Title, 20)
+            .WithStringLength(x => x.Content, 20)
+            .Create();
 
-    //    var logingService = A.Fake<ILoginService>();
-    //    var logger = A.Fake<ILogger<LoginEndpoint>>();
-    //    _ = A.CallTo(() => logingService.Login(req, default)).Returns(Task.FromResult(new UserLoginResponse
-    //    {
-    //        FullName = "Test",
-    //        Token = new JwtToken
-    //        {
-    //            ExpiryDate = DateTime.UtcNow.AddHours(4),
-    //            Value = JWTBearer.CreateToken(
-    //                signingKey: new Guid().ToString(),
-    //                expireAt: DateTime.UtcNow.AddHours(4),
-    //                roles: new[] { "admin" },
-    //                claims: new[] { ("admin", "100") }
-    //            )
-    //        }
-    //    }));
+        var sut = Factory.Create<SaveArticleEndpoint>(_defaultHttpContext, default);
 
-    //    var ep = Factory.Create<LoginEndpoint>(logingService, logger);
+        await sut.HandleAsync(request, default);
 
-    //    //act
-    //    await ep.HandleAsync(req, default);
-    //    var rsp = ep.Response;
-
-    //    ////assert
-    //    rsp.HasToken.ShouldBeTrue();
-    //    rsp.FullName.ShouldBe("Test");
-    //}
-
-    //[Fact]
-    //public async Task AdminLoginInvalidInput()
-    //{
-    //    //arrange
-    //    var req = new UserLoginRequest();
-
-    //    var logingService = A.Fake<ILoginService>();
-    //    A.CallTo(() => logingService.Login(req, default))
-    //        .Returns(Task.FromResult((UserLoginResponse)NullUserLoginResponse.Empty));
-
-    //    var ep = Factory.Create<LoginEndpoint>(
-    //        logingService,
-    //        A.Fake<ILogger<LoginEndpoint>>());
-
-    //    var ex = await Should.ThrowAsync<ValidationFailureException>(async () => await ep.HandleAsync(req, default));
-    //}
+        sut.Response.Id.ShouldBe(1);
+    }
 }

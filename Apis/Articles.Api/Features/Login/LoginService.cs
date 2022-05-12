@@ -2,7 +2,6 @@
 using Articles.Models.Feature.Login;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using static BCrypt.Net.BCrypt;
 using ssc = System.Security.Claims;
 
@@ -67,7 +66,8 @@ public class LoginService : ILoginService, IScopedService
         {
             var list = new List<ssc.Claim>
             {
-                new ssc.Claim(ssc.ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+                new ssc.Claim(ssc.ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                new ssc.Claim("id", $"{user.Id}")
             };
 
             if (claims != null)

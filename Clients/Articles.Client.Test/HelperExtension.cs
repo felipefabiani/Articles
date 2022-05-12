@@ -1,13 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
-using ssc = System.Security.Claims;
-
-
-namespace Articles.Client.Test;
+﻿namespace Articles.Client.Test;
 public static class HelperExtension
 {
     public static string CreateToken(

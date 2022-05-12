@@ -6,12 +6,24 @@ using System.Security.Claims;
 
 namespace Articles.Client.Authentication;
 
-public class AuthStateProvider : AuthenticationStateProvider
+public interface IAuthStateProvider
+{
+    int UserId { get; }
+
+    Task<AuthenticationState> GetAuthenticationStateAsync();
+    Task NotifyUserAuthentication(UserLoginResponse userLoggedin);
+    Task NotifyUserLogout();
+}
+
+public class AuthStateProvider : AuthenticationStateProvider, IAuthStateProvider
 {
     private readonly HttpClient _httpClient;
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationState _anonymous = new(
         new ClaimsPrincipal(new ClaimsIdentity()));
+
+    private int _userId;
+    public int UserId { get => _userId; }
 
     public AuthStateProvider(
         HttpClient httpClient,
@@ -30,9 +42,15 @@ public class AuthStateProvider : AuthenticationStateProvider
                 return _anonymous!;
             }
 
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(AuthConst.Bearer, token);
-            return GetAuthenticationState(token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthConst.Bearer, token);
+
+            var authenticationState = GetAuthenticationState(token);
+
+            var userId = authenticationState.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value ?? "0";
+            await _localStorage.SetItemAsStringAsync("UserId", userId);
+            _userId = int.Parse(userId);
+
+            return authenticationState;
         }
         catch (Exception)
         {

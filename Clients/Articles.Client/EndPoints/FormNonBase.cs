@@ -101,13 +101,13 @@ public abstract class FormBase : ComponentBase
         {
             Snackbar.Add(
                 message: SuccessMessage,
-                severity: Severity.Error);
+                severity: Severity.Success);
         }
         else if (DisableFailDefaultMessage == false)
         {
             Snackbar.Add(
                 message: "Completed successfully",
-                severity: Severity.Error);
+                severity: Severity.Success);
         }
     }
 

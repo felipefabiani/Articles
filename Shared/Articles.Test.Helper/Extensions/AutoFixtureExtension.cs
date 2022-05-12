@@ -22,7 +22,7 @@ public static class AutoFixtureExtension
     {
         return build.With(propertyPicker, RandomString(length));
     }
-    public static string RandomString(int length)
+    public static string RandomString(this int length)
     {
         return LoremNETCore.Generate.Words(100_000, 100_000, true, false).Substring(0, length);
     }

@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 public class SigningIssuerCertificate
 {
     private RSA _rsa = RSA.Create();
-    
+
     public RsaSecurityKey GetIssuerSigningKey()
     {
         var publicXmlKey = File.ReadAllText("./public_key.pem");

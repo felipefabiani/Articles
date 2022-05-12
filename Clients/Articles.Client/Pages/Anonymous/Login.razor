@@ -1,10 +1,5 @@
 ﻿@page "/login"
 
-@using Articles.Client.Authentication
-@using Articles.Models.Feature.Login
-
-@inject IAuthenticationService AuthService
-
 <PageTitle>Login</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem md="6" xs="12">
@@ -71,6 +66,7 @@
     private async Task ExecuteLogin(UserLoginResponse resp)
     {
         var result = await AuthService.Login(resp);
+
         if (result is not null)
         {
             NavManager.NavigateTo(ReturnUrl);

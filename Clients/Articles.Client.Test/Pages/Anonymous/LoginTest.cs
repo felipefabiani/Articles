@@ -1,24 +1,4 @@
-﻿using Articles.Client.Pages.Anonymous;
-using Articles.Models.Auth;
-using Articles.Models.Feature.Login;
-using AutoFixture;
-using Bunit;
-using Bunit.TestDoubles;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using MudBlazor;
-using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Web;
-using Xunit;
-using ssc = System.Security.Claims;
-
-namespace Articles.Client.Test.Pages.Anonymous;
+﻿namespace Articles.Client.Test.Pages.Anonymous;
 
 public class LoginTest : IDisposable
 // : IClassFixture<TestContextFixture>
@@ -42,7 +22,7 @@ public class LoginTest : IDisposable
     [InlineData("", "", "Username is required!", "Password is required!")]
     [InlineData("test", "123", "Please include an '@' in the email address.", "Password length must be between 6 and 10 characters.")]
     [InlineData("test.cscs", "01234567891", "Please include an '@' in the email address.", "Password length must be between 6 and 10 characters.")]
-    public void InvalidInputs(
+    public async Task InvalidInputs(
         string? email,
         string? password,
         string emailMessage,
@@ -59,7 +39,7 @@ public class LoginTest : IDisposable
         // Act
         cut.Find("input#login-email").Change(email);
         cut.Find("input#login-password").Change(password);
-        cut.Find("button#submit").Click();
+        await cut.Find("button#submit").ClickAsync(null!);
 
         // Assert
         var validators = cut.FindAll("p.mud-input-helper-text.mud-input-error");
@@ -73,7 +53,7 @@ public class LoginTest : IDisposable
     [Theory]
     [InlineData("test@t", "012345")]
     [InlineData("test@t.com", "0123456789")]
-    public async void ValidInputsInvalidUser(
+    public async Task ValidInputsInvalidUser(
     string email,
     string password)
     {
@@ -112,7 +92,7 @@ public class LoginTest : IDisposable
     [Theory]
     [InlineData("test@t", "012345")]
     [InlineData("test@t.com", "0123456789")]
-    public async void ValidInputsValidUser(
+    public async Task ValidInputsValidUser(
         string email,
         string password)
     {

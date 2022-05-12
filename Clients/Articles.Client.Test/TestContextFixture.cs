@@ -1,15 +1,9 @@
 ﻿using Articles.Client;
 using Articles.Client.Authentication;
-using Blazored.LocalStorage;
-using Bunit;
 using FluentValidation;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
-using System;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
 
@@ -26,8 +20,8 @@ namespace Articles.Client.Test
             _ctx = new TestContext();
             _ctx.Services.AddOptions();
             _ctx.Services.AddAuthorizationCore();
-            _ctx.Services.AddScoped<AuthStateProvider>();
-            _ctx.Services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<AuthStateProvider>());
+            _ctx.Services.AddScoped<IAuthStateProvider, FakeAuthStateProvider>();
+            _ctx.Services.AddScoped<AuthenticationStateProvider>(p => (FakeAuthStateProvider)p.GetRequiredService<IAuthStateProvider>());
             // _ctx.Services.AddBlazoredLocalStorage();
             _ctx.Services.AddScoped<ILocalStorageService, FakeLocalStorageService>();
             _ctx.Services.AddMudServices(ProgramExtension.MudConfig);
@@ -61,16 +55,24 @@ namespace Articles.Client.Test
 
         public void AddHttpClient<T>(
             T response,
+            string endpoint = "/",
             HttpStatusCode statusCode = HttpStatusCode.OK,
-            string baseAddress = "http://localhost:8080",
-            string endpoint = "/")
+            string baseAddress = "http://localhost:8080")
         {
-            _ctx.Services.AddSingleton<IHttpClientFactory>(
-                new FakeHttpClientFactory<T>(
-                   response: response,
-                   statusCode: statusCode,
-                   endpoint: endpoint,
-                   baseAddress: baseAddress));
+            try
+            {
+                _ctx.Services.AddSingleton<IHttpClientFactory>(
+                       new FakeHttpClientFactory<T>(
+                          response: response,
+                          endpoint: endpoint,
+                          statusCode: statusCode,
+                          baseAddress: baseAddress));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         public void Dispose()
