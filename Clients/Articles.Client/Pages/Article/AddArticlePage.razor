@@ -1,5 +1,7 @@
 ﻿@page "/add-article"
 
+@attribute [Authorize(Policy = "AuthorSaveArticle")]
+
 <PageTitle>Add Article</PageTitle>
 <MudGrid Justify="Justify.Center">
     <MudItem md="6" xs="12">

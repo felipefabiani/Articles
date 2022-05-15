@@ -1,4 +1,5 @@
 ﻿using Articles.Client.Authentication;
+using Articles.Helper.Auth;
 using Blazored.LocalStorage;
 using FluentValidation;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -13,7 +14,9 @@ public static class ProgramExtension
     public static void SetupApplication(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddOptions();
-        builder.Services.AddAuthorizationCore();
+        builder.Services.AddAuthorizationCore(op => {
+            op.AddPolicy(Policies.Author.AuthorSaveArticle, Policies.Author.GetAuthorSaveArticle());
+        });
 
         builder.Services.AddScoped<IAuthStateProvider, AuthStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(p => (AuthStateProvider)p.GetRequiredService<IAuthStateProvider>());
