@@ -26,7 +26,8 @@ public static class ProgramExtension
 
         builder.Services.AddHttpClient("Article.Api", client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7183");
+            var ep = builder.Configuration["Endpoints:ArticleApi"] ?? string.Empty;
+            client.BaseAddress = new Uri(ep);
         });
         builder.AddFluentValidators("Articles.Models");
     }

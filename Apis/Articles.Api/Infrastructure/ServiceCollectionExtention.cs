@@ -1,4 +1,6 @@
 ﻿using Articles.Database.Infrastructure;
+using Articles.Helper;
+using Articles.Helper.Auth;
 using FastEndpoints.Swagger;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
@@ -13,7 +15,7 @@ using Serilog;
 using System.Reflection;
 using System.Text.Json;
 
-using static Articles.Api.Infrastructure.ArticlesConstants.Security;
+using static Articles.Helper.ArticlesConstants.Security;
 
 namespace Articles.Api.Infrastructure;
 
@@ -71,6 +73,7 @@ public static class ServiceCollectionExtention
                     .UseSqlServer(connectionString, x =>
                     {
                         x.MigrationsAssembly(typeof(ArticleContext).Assembly.FullName);
+                        x.EnableRetryOnFailure(2);
                     });
 
             });
@@ -228,6 +231,11 @@ public static class ServiceCollectionExtention
             };
         });
 
+
+        app.Run(async context => {
+            context.Response.Redirect("swagger");
+            await Task.CompletedTask;
+        });
         return app;
 
         async Task<WebApplication> SetEnvironment()
@@ -235,7 +243,21 @@ public static class ServiceCollectionExtention
             if (app.Environment.IsDevelopment())
             {
                 app.UseOpenApi();
-                app.UseSwaggerUi3(c => c.ConfigureDefaults());
+                app.UseSwaggerUi3(c =>
+                {
+                    c.ConfigureDefaults();
+                    // c.DocumentPath = "/swagger/swagger.yaml";
+                    c.Path = "/swagger";
+
+                    c.TransformToExternalPath = (s, r) =>
+                    {
+                        var path = 
+                            s.EndsWith("swagger") && !string.IsNullOrEmpty(r.PathBase)
+                            ? $"{r.PathBase}{s}"
+                            : s;
+                        return path;
+                    };
+                });
 
                 //var context = app.Services.GetRequiredService<ArticleContext>();
                 //await context.EnsureCreateAndSeedAsync();
@@ -247,9 +269,17 @@ public static class ServiceCollectionExtention
                 app.UseOpenApi();
                 app.UseSwaggerUi3(c => c.ConfigureDefaults());
 #endif
-                var context = app.Services.GetRequiredService<ArticleContext>();
-                await context.EnsureDropCreateAndSeedAsync();
-                await context.Seed();
+                try
+                {
+                    var context = app.Services.GetRequiredService<ArticleContext>();
+                    await context.EnsureDropCreateAndSeedAsync();
+                    await context.Seed();
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
             }
 
             return app;

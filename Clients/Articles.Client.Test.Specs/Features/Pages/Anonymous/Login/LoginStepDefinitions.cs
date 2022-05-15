@@ -4,22 +4,24 @@ using TechTalk.SpecFlow.Assist;
 namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
 
 [Binding]
-public class LoginStepDefinitions
+public class LoginStepDefinitions: IAsyncDisposable, IDisposable
 {
     private readonly LoginPageObject _loginPage;
-    private IPage _page = null!;
-    private User _user = null!;
+    private IPage _page;
+    private User _user;
 
-    public LoginStepDefinitions(LoginPageObject loginPage)
+    public LoginStepDefinitions()
     {
-        _loginPage = loginPage;
+        _loginPage = new LoginPageObject();
+        _page = _loginPage.Page;
+        _user = new User();
     }
 
     [Given(@"a logged out user")]
     public async Task GivenALoggedOutUser()
     {
-        await _loginPage.EnsureCalculatorIsOpenAndResetAsync();
-        _page = await _loginPage.Page;
+        await _loginPage.EnsureIsOpenAndResetAsync();
+        _page = _loginPage.Page;
     }
 
     [When(@"the user attempts to log in with invalid email and password credentials")]
@@ -85,15 +87,25 @@ public class LoginStepDefinitions
 
     private async Task SetUser(Table table)
     {
-        _user = table.CreateInstance<User>(new InstanceCreationOptions { VerifyAllColumnsBound = true });
-        await _loginPage.SetEmail(_user?.Email);
-        await _loginPage.SetPassword(_user?.Password);
+        _loginPage.SetData(table);
+        await _loginPage.SetEmail(_loginPage.Data?.Email);
+        await _loginPage.SetPassword(_loginPage.Data?.Password);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _loginPage.DisposeAsync().ConfigureAwait(false);
+    }
+
+    public async void Dispose()
+    {
+        await _loginPage.DisposeAsync().ConfigureAwait(false);
     }
 }
 
 public record User(
-    string? Email,
-    string? Password,
-    string? EmailMessage,
-    string? PwdMessage,
-    string? Alert);
+    string? Email = null,
+    string? Password = null,
+    string? EmailMessage = null,
+    string? PwdMessage = null,
+    string? Alert = null);

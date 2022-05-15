@@ -2,7 +2,7 @@
 using Articles.Models.Feature.Articles.SaveArticle;
 using Articles.Test.Helper.TheoryData;
 
-namespace Articles.Client.Test.Pages.Articles;
+namespace Articles.Client.Test.Pages.Article;
 
 public class AddArticlePageTesterBase : IDisposable
 {

@@ -5,11 +5,11 @@ namespace Articles.Client.Authentication;
 
 public class AuthenticationService : IAuthenticationService
 {
-    private readonly AuthStateProvider _authStateProvider;
+    private readonly IAuthStateProvider _authStateProvider;
 
     public AuthenticationService(AuthenticationStateProvider authStateProvider)
     {
-        _authStateProvider = (AuthStateProvider)authStateProvider ?? throw new ArgumentNullException(nameof(authStateProvider));
+        _authStateProvider = (IAuthStateProvider)authStateProvider ?? throw new ArgumentNullException(nameof(authStateProvider));
     }
 
     public async Task<UserLoginResponse> Login(UserLoginResponse userLoggedin)

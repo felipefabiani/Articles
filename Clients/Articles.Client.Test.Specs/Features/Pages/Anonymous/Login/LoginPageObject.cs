@@ -1,12 +1,11 @@
 ﻿using SpecFlow.Actions.Playwright;
 
 namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
-public class LoginPageObject : BasePageObject
+public class LoginPageObject : BasePageObject<LoginPageObject.User>
 {
     public override string PagePath => "login";
 
-    public LoginPageObject(BrowserDriver browser)
-        : base(browser)
+    public LoginPageObject()
     {
     }
 
@@ -16,13 +15,19 @@ public class LoginPageObject : BasePageObject
     // public Task SetEmail(string? email) => Interactions.SendTextAsync(EmailInputSelector, email ?? string.Empty);
     public Task SetEmail(string? email) => ClearAndSendTextAsync(EmailInputSelector, email ?? string.Empty);
     public Task SetPassword(string? pwd) => ClearAndSendTextAsync(PasswordInputSelector, pwd ?? string.Empty);
-    public Task ClickLoginButton() => Interactions.ClickAsync(SubmitButtonSelector);
-    public Task ClickResetButton() => Interactions.ClickAsync(ResetButtonSelector);
+    public Task ClickLoginButton() => Page.ClickAsync(SubmitButtonSelector);
+    public Task ClickResetButton() => Page.ClickAsync(ResetButtonSelector);
 
     private async Task ClearAndSendTextAsync(string selector, string email)
     {
-        var p = await Page;
-        await p.FillAsync(selector, string.Empty);
-        await p.FillAsync(selector, email);
+        await Page.FillAsync(selector, string.Empty);
+        await Page.FillAsync(selector, email);
     }
+
+    public record User(
+        string? Email = null,
+        string? Password = null,
+        string? EmailMessage = null,
+        string? PwdMessage = null,
+        string? Alert = null);
 }

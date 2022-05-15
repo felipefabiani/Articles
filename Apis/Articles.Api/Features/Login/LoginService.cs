@@ -1,7 +1,6 @@
-﻿using Articles.Models.Auth;
+﻿using Articles.Helper.Extensions;
+using Articles.Models.Auth;
 using Articles.Models.Feature.Login;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using static BCrypt.Net.BCrypt;
 using ssc = System.Security.Claims;
 
@@ -51,52 +50,15 @@ public class LoginService : ILoginService, IScopedService
             Token = new JwtToken
             {
                 ExpiryDate = DateTime.UtcNow.AddHours(4),
-                Value = CreateToken(
-                    signingKey: _options.JwtSigningKey,
-                    expireAt: DateTime.UtcNow.AddHours(4),
+                Value = DateTime.UtcNow.AddHours(4).CreateToken(
+                    id: user.Id,
+                    userName: $"{user.FirstName} {user.LastName}",
                     roles: e.Roles.Select(x => x.Name).ToList(),
-                    // permissions: e.Claims.Select(x => x.Value).ToList(),
                     claims: e.Claims
                         .Select(x => new ssc.Claim(x.Name, x.Value))
                         .ToList()
                 )
             }
         };
-        string CreateToken(string signingKey, DateTime? expireAt = null, IEnumerable<string>? permissions = null, IEnumerable<string>? roles = null, IEnumerable<ssc.Claim>? claims = null)
-        {
-            var list = new List<ssc.Claim>
-            {
-                new ssc.Claim(ssc.ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                new ssc.Claim("id", $"{user.Id}")
-            };
-
-            if (claims != null)
-            {
-                list.AddRange(claims);
-            }
-
-            if (permissions != null)
-            {
-                list.AddRange(permissions.Select((string p) => new ssc.Claim("permissions", p)));
-            }
-
-            if (roles != null)
-            {
-                list.AddRange(roles.Select((string r) => new ssc.Claim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", r)));
-            }
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ssc.ClaimsIdentity(list),
-                Expires = expireAt,
-                // SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(signingKey)), "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256")
-                SigningCredentials = new SigningIssuerCertificate().GetAudienceSigningKey(),
-                Issuer = ArticlesConstants.Security.Issuer,
-                Audience = ArticlesConstants.Security.Audience
-            };
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            jwtSecurityTokenHandler.OutboundClaimTypeMap.Clear();
-            return jwtSecurityTokenHandler.WriteToken(jwtSecurityTokenHandler.CreateToken(tokenDescriptor));
-        }
     }
 }
