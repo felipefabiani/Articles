@@ -24,11 +24,14 @@ public static class ProgramExtension
 
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-        builder.Services.AddHttpClient("Article.Api", client =>
-        {
-            var ep = builder.Configuration["Endpoints:ArticleApi"] ?? string.Empty;
-            client.BaseAddress = new Uri(ep);
-        });
+        builder.Services.AddScoped<AuthenticationHttpMessageHandler>();
+        builder.Services
+            .AddHttpClient("Article.Api", client =>
+            {
+                var ep = builder.Configuration["Endpoints:ArticleApi"] ?? string.Empty;
+                client.BaseAddress = new Uri(ep);
+            })
+            .AddHttpMessageHandler<AuthenticationHttpMessageHandler>();
         builder.AddFluentValidators("Articles.Models");
     }
     public static void AddFluentValidators(this WebAssemblyHostBuilder builder, string assemblyName)

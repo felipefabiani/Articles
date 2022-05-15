@@ -42,6 +42,7 @@ public abstract class FormBase : ComponentBase
                     await Success(response);
                     break;
                 case System.Net.HttpStatusCode.Unauthorized:
+                case System.Net.HttpStatusCode.Forbidden:
                     Snackbar.Add(
                         message: "User doesn't have permission.",
                         severity: Severity.Error);
