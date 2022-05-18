@@ -16,12 +16,6 @@ public class LoginPageObject : BasePageObject<LoginPageObject.User>
     public Task ClickLoginButton() => Page.ClickAsync(SubmitButtonSelector);
     public Task ClickResetButton() => Page.ClickAsync(ResetButtonSelector);
 
-    private async Task ClearAndSendTextAsync(string selector, string email)
-    {
-        await Page.FillAsync(selector, string.Empty);
-        await Page.FillAsync(selector, email);
-    }
-
     public record User(
         string? Email = null,
         string? Password = null,

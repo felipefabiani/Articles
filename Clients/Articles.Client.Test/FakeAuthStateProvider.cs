@@ -1,5 +1,6 @@
 ﻿using Articles.Client.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace Articles.Client.Test;
 
@@ -7,18 +8,10 @@ public class FakeAuthStateProvider : AuthenticationStateProvider, IAuthStateProv
 {
     public int UserId { get => 2; }
 
-    public override Task<AuthenticationState> GetAuthenticationStateAsync()
-    {
-        throw new NotImplementedException();
-    }
+    public override Task<AuthenticationState> GetAuthenticationStateAsync() => Task.FromResult(
+        new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
 
-    public Task NotifyUserAuthentication(UserLoginResponse userLoggedin)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task NotifyUserAuthentication(UserLoginResponse userLoggedin) => await Task.CompletedTask;
 
-    public Task NotifyUserLogout()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task NotifyUserLogout() => await Task.CompletedTask;
 }

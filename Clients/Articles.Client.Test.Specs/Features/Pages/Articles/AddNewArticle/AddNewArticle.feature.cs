@@ -180,14 +180,14 @@ this.ScenarioInitialize(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="3 - Add New Article invalid input")]
+        [Xunit.SkippableFactAttribute(DisplayName="3 - Add New Article valid input")]
         [Xunit.TraitAttribute("FeatureTitle", "AddNewArticle")]
-        [Xunit.TraitAttribute("Description", "3 - Add New Article invalid input")]
-        public void _3_AddNewArticleInvalidInput()
+        [Xunit.TraitAttribute("Description", "3 - Add New Article valid input")]
+        public void _3_AddNewArticleValidInput()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("3 - Add New Article invalid input", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("3 - Add New Article valid input", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 28
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -206,23 +206,17 @@ this.ScenarioInitialize(scenarioInfo);
                             "Value"});
                 table10.AddRow(new string[] {
                             "Title",
-                            "too short"});
+                            "not too short"});
                 table10.AddRow(new string[] {
                             "Content",
-                            "too short"});
-                table10.AddRow(new string[] {
-                            "TitleMessage",
-                            "Title is too short!"});
-                table10.AddRow(new string[] {
-                            "ContentMessage",
-                            "Content is too short!"});
+                            "not too short"});
 #line 30
- testRunner.When("author attempts to add new article with invalid title and content", ((string)(null)), table10, "When ");
+ testRunner.When("author attempts to add new article with valid title and content", ((string)(null)), table10, "When ");
 #line hidden
-#line 36
- testRunner.Then("article is not created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 34
+ testRunner.Then("article is created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 37
+#line 35
  testRunner.And("get messages for the inputs fields", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
