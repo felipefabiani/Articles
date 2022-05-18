@@ -3,7 +3,6 @@ using Articles.Helper;
 using Articles.Helper.Auth;
 using FastEndpoints.Swagger;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +31,7 @@ public static class ServiceCollectionExtention
         AddCors();
         AddAuthentication();
 
+        _ = builder.Services.AddArticlesAuthorization();
         _ = builder.Services.AddFastEndpoints();
         _ = builder.Services.AddResponseCaching();
 
@@ -183,7 +183,7 @@ public static class ServiceCollectionExtention
         void AddAuthentication()
         {
             var jwt = builder.Configuration["ArticleOptions:JwtSigningKey"];
-            builder.Services.AddAuthentication(delegate (AuthenticationOptions o)
+            builder.Services.AddAuthentication(o =>
             {
                 o.DefaultAuthenticateScheme = "Bearer";
                 o.DefaultChallengeScheme = "Bearer";
@@ -232,7 +232,8 @@ public static class ServiceCollectionExtention
         });
 
 
-        app.Run(async context => {
+        app.Run(async context =>
+        {
             context.Response.Redirect("swagger");
             await Task.CompletedTask;
         });
@@ -251,7 +252,7 @@ public static class ServiceCollectionExtention
 
                     c.TransformToExternalPath = (s, r) =>
                     {
-                        var path = 
+                        var path =
                             s.EndsWith("swagger") && !string.IsNullOrEmpty(r.PathBase)
                             ? $"{r.PathBase}{s}"
                             : s;

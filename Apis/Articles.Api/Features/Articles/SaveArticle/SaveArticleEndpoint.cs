@@ -1,16 +1,13 @@
-﻿using Articles.Api.Infrastructure.Auth;
-using Articles.Models.Feature.Articles.SaveArticle;
+﻿using Articles.Models.Feature.Articles.SaveArticle;
+using static Articles.Helper.Auth.Policies.Author;
 
 namespace Articles.Api.Features.Articles.SaveArticle;
-
 public class SaveArticleEndpoint : EndpointWithMapping<SaveArticleRequest, SaveArticleResponse, ArticleEntity>
 {
     public override void Configure()
     {
         Post("/articles/save-article");
-        Roles(RolePermissions.Author);
-        Claims(nameof(ClaimPermissions.Author_Save_Own));
-        // Permissions(ClaimPermissions.Article_Save_Own);
+        Policies(AuthorSaveArticle);
     }
 
     public override async Task HandleAsync(SaveArticleRequest request, CancellationToken cancellationToken)
@@ -39,12 +36,14 @@ public class SaveArticleEndpoint : EndpointWithMapping<SaveArticleRequest, SaveA
 
     public override Task<ArticleEntity> MapToEntityAsync(SaveArticleRequest request)
     {
-        var article = Resolve<ArticleEntity>();
-
-        article.Id = request.Id.GetValueOrDefault();
-        article.AuthorId = request.AuthorId;
-        article.Title = request.Title;
-        article.Content = request.Content;
+        var sp = Resolve<IServiceProvider>();
+        var article = new ArticleEntity(sp)
+        {
+            Id = request.Id.GetValueOrDefault(),
+            AuthorId = request.AuthorId,
+            Title = request.Title,
+            Content = request.Content
+        };
         return Task.FromResult(article);
     }
     public override SaveArticleResponse MapFromEntity(ArticleEntity entity)

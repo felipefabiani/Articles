@@ -14,10 +14,7 @@ public static class ProgramExtension
     public static void SetupApplication(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddOptions();
-        builder.Services.AddAuthorizationCore(op => {
-            op.AddPolicy(Policies.Author.AuthorSaveArticle, Policies.Author.GetAuthorSaveArticle());
-        });
-
+        builder.Services.AddArticlesAuthorization();
         builder.Services.AddScoped<IAuthStateProvider, AuthStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(p => (AuthStateProvider)p.GetRequiredService<IAuthStateProvider>());
         builder.Services.AddBlazoredLocalStorage();

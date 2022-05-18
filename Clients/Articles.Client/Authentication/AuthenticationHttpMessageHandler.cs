@@ -19,7 +19,7 @@ public class AuthenticationHttpMessageHandler : DelegatingHandler
             .ConfigureAwait(false);
 
         request.Headers.Authorization =
-            new AuthenticationHeaderValue("Bearer", token);
+            new AuthenticationHeaderValue(AuthConst.Bearer, token);
 
         return await base
             .SendAsync(request, cancellationToken)
