@@ -46,9 +46,7 @@ public class AuthStateProvider : AuthenticationStateProvider, IAuthStateProvider
 
             var authenticationState = GetAuthenticationState(token);
 
-            var userId = authenticationState.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value ?? "0";
-            await _localStorage.SetItemAsStringAsync("UserId", userId);
-            _userId = int.Parse(userId);
+            await SetUserId(authenticationState);
 
             return authenticationState;
         }
@@ -57,6 +55,14 @@ public class AuthStateProvider : AuthenticationStateProvider, IAuthStateProvider
             return _anonymous!;
         }
     }
+
+    private async Task SetUserId(AuthenticationState authenticationState)
+    {
+        var userId = authenticationState.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value ?? "0";
+        await _localStorage.SetItemAsStringAsync("UserId", userId);
+        _userId = int.Parse(userId);
+    }
+
     public async Task NotifyUserAuthentication(UserLoginResponse userLoggedin)
     {
         try
@@ -64,9 +70,9 @@ public class AuthStateProvider : AuthenticationStateProvider, IAuthStateProvider
             await _localStorage.SetItemAsync(AuthConst.AuthToken, userLoggedin.Token.Value);
             var authenticatedUser = GetAuthenticationState(userLoggedin.Token.Value);
             var authState = Task.FromResult(authenticatedUser);
+
+            await SetUserId(authenticatedUser);
             NotifyAuthenticationStateChanged(authState);
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(AuthConst.Bearer, userLoggedin.Token.Value);
         }
         catch (Exception)
         {
