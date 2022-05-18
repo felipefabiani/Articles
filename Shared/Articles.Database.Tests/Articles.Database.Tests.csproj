@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Articles.DataBase\Articles.Database.csproj" />
-    <ProjectReference Include="..\shared\Articles.Test.Helper\Articles.Test.Helper.csproj" />
+    <ProjectReference Include="..\Articles.DataBase\Articles.Database.csproj" />
+    <ProjectReference Include="..\Articles.Test.Helper\Articles.Test.Helper.csproj" />
   </ItemGroup>
 
 </Project>
