@@ -1,10 +1,9 @@
 using Microsoft.Playwright;
-using TechTalk.SpecFlow.Assist;
 
 namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
 
 [Binding]
-public class LoginStepDefinitions: IAsyncDisposable, IDisposable
+public class LoginStepDefinitions : IAsyncDisposable, IDisposable
 {
     private readonly LoginPageObject _loginPage;
     private IPage _page;

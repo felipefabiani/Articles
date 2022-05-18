@@ -110,7 +110,7 @@ public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEn
 
         builder
             .HasOne(x => x.Author)
-            .WithOne()
+            .WithMany()
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired();
     }

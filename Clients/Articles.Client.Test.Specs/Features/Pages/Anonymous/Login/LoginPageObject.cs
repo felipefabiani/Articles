@@ -1,6 +1,4 @@
-﻿using SpecFlow.Actions.Playwright;
-
-namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
+﻿namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
 public class LoginPageObject : BasePageObject<LoginPageObject.User>
 {
     public override string PagePath => "login";

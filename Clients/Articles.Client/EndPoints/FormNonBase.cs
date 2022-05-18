@@ -39,6 +39,7 @@ public abstract class FormBase : ComponentBase
             switch (response.StatusCode)
             {
                 case System.Net.HttpStatusCode.OK:
+                    await Reset();
                     await Success(response);
                     break;
                 case System.Net.HttpStatusCode.Unauthorized:

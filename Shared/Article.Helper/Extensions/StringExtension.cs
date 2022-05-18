@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using ssc = System.Security.Claims;
-
 using static BCrypt.Net.BCrypt;
+using ssc = System.Security.Claims;
 
 namespace Articles.Helper.Extensions
 {

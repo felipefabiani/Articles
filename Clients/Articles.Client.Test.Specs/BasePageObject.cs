@@ -71,7 +71,7 @@ public abstract class BasePageObject<TData> : IAsyncDisposable
     public static async Task<TPage> Create<TPage>(string? token = null)
         where TPage : BasePageObject<TData>, new()
     {
-        var bp = new TPage ();
+        var bp = new TPage();
 
         await bp.CreatePageAsync();
 

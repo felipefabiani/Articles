@@ -1,6 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using PemUtils;
-using System;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
