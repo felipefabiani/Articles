@@ -64,6 +64,23 @@ public static class ServiceCollectionExtention
         {
             var connectionString = builder.Configuration.GetConnectionString(ArticlesConstants.ConnectionString);
 
+            builder.Services.AddDbContextFactory<ArticleContext>(options =>
+            {
+                options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+#endif
+                    .UseSqlServer(connectionString);
+            });
+
+            builder.Services.AddDbContext<ArticleReadOnlyContext>(options =>
+            {
+                options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+#endif
+                    .UseSqlServer(connectionString);
+            });
             builder.Services.AddDbContext<ArticleContext>(options =>
             {
                 options
@@ -76,14 +93,6 @@ public static class ServiceCollectionExtention
                         x.EnableRetryOnFailure(2);
                     });
 
-            });
-            builder.Services.AddDbContext<ArticleReadOnlyContext>(options =>
-            {
-                options
-#if DEBUG
-                    .EnableSensitiveDataLogging()
-#endif
-                    .UseSqlServer(connectionString);
             });
         }
         void AddLifetimeServices()
@@ -241,28 +250,17 @@ public static class ServiceCollectionExtention
 
         async Task<WebApplication> SetEnvironment()
         {
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() ||
+                app.Environment.IsEnvironment(ArticlesConstants.Environment.Uat))
             {
                 app.UseOpenApi();
-                app.UseSwaggerUi3(c =>
-                {
-                    c.ConfigureDefaults();
-                    // c.DocumentPath = "/swagger/swagger.yaml";
-                    c.Path = "/swagger";
+                app.UseSwaggerUi3(c => c.ConfigureDefaults());
 
-                    c.TransformToExternalPath = (s, r) =>
-                    {
-                        var path =
-                            s.EndsWith("swagger") && !string.IsNullOrEmpty(r.PathBase)
-                            ? $"{r.PathBase}{s}"
-                            : s;
-                        return path;
-                    };
-                });
-
-                //var context = app.Services.GetRequiredService<ArticleContext>();
-                //await context.EnsureCreateAndSeedAsync();
-                //await context.Seed();
+                
+                var factory = app.Services.GetRequiredService<IDbContextFactory<ArticleContext>>();
+                using var context = factory.CreateDbContext();
+                await context.EnsureCreateAndSeedAsync();
+                await context.Seed();
             }
             else if (app.Environment.IsEnvironment(ArticlesConstants.Environment.UatAutomatedTest))
             {
@@ -272,7 +270,8 @@ public static class ServiceCollectionExtention
 #endif
                 try
                 {
-                    var context = app.Services.GetRequiredService<ArticleContext>();
+                    var factory = app.Services.GetRequiredService<IDbContextFactory<ArticleContext>>();
+                    using var context = factory.CreateDbContext();
                     await context.EnsureDropCreateAndSeedAsync();
                     await context.Seed();
                 }

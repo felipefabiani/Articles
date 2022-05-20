@@ -18,8 +18,11 @@ public class AuthenticationHttpMessageHandler : DelegatingHandler
             .GetItemAsync<string>(AuthConst.AuthToken)
             .ConfigureAwait(false);
 
-        request.Headers.Authorization =
-            new AuthenticationHeaderValue(AuthConst.Bearer, token);
+        if (!string.IsNullOrEmpty(token))
+        {
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue(AuthConst.Bearer, token);
+        }
 
         return await base
             .SendAsync(request, cancellationToken)
