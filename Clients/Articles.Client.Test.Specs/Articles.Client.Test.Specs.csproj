@@ -69,6 +69,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Article.Helper\Articles.Helper.csproj" />
+    <ProjectReference Include="..\..\shared\Articles.Test.Helper\Articles.Test.Helper.csproj" />
   </ItemGroup>
 
 </Project>

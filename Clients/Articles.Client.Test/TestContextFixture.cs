@@ -78,6 +78,7 @@ namespace Articles.Client.Test
         public void Dispose()
         {
             _ctx?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

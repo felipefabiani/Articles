@@ -32,4 +32,9 @@ Scenario: 3 - Add New Article valid input
 	| Title   | not too short |
 	| Content | not too short |
 	Then article is created
-	And get messages for the inputs fields
+	And get message seccess message
+
+Scenario: 4 - Add New Article non Authorized user
+	Given A logged User
+	When user attempts to add go to the add article page
+	Then not authorized message

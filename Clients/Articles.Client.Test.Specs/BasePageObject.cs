@@ -7,7 +7,7 @@ using static Articles.Helper.ArticlesConstants.Security;
 
 namespace Articles.Client.Test.Specs;
 
-public abstract class BasePageObject<TData> : IAsyncDisposable
+public abstract partial class BasePageObject<TData> : IAsyncDisposable
     where TData : class
 {
     private static string? _token;
@@ -22,12 +22,6 @@ public abstract class BasePageObject<TData> : IAsyncDisposable
     public IBrowserContext Context { get; private set; }
 
     public TData Data { get; private set; }
-
-    public void SetData(Table table)
-    {
-        Data = table.CreateInstance<TData>(
-            new InstanceCreationOptions { VerifyAllColumnsBound = true });
-    }
     public string GetUrl() => $"{BaseAddress.Trim('/')}/{PagePath.Trim('/')}";
 
     protected BasePageObject()
@@ -39,8 +33,60 @@ public abstract class BasePageObject<TData> : IAsyncDisposable
         ValidateToken(token);
 
         await Page.EvaluateAsync<string>("(token) => window.localStorage.setItem('authToken',token)", new[] { token });
-    }
+    }  
+    public static async Task<TPage> Create<TPage>(string? token = null)
+        where TPage : BasePageObject<TData>, new()
+    {
+        var bp = new TPage();
 
+        await bp.CreatePageAsync();
+
+        _token = token;
+
+        await bp.EnsureIsOpenAndResetAsync();
+        return bp;
+    }
+    public async Task EnsureIsOpenAndResetAsync()
+    {
+        if (Page.Url != GetUrl())
+        {
+            await Page.GotoAsync(BaseAddress);
+
+            if (!string.IsNullOrEmpty(_token))
+            {
+                await Login(_token);
+            }
+            await Page.GotoAsync(GetUrl());
+        }
+        else
+        {
+            await Page.ClickAsync(ResetButtonSelector);
+        }
+    }
+    
+    public void SetData(Table table)
+    {
+        Data = table.CreateInstance<TData>(
+            new InstanceCreationOptions { VerifyAllColumnsBound = true });
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (Context is not null)
+        {
+            await Context.DisposeAsync().ConfigureAwait(false);
+        }
+
+        if (Browser is not null)
+        {
+            await Browser.DisposeAsync().ConfigureAwait(false);
+        }
+
+        Playwright1?.Dispose();
+
+        Context = null!;
+        Browser = null!;
+        Playwright1 = null!;
+    }
     private static void ValidateToken(string token)
     {
         var issuerSigningCertificate = new SigningIssuerCertificate();
@@ -67,73 +113,42 @@ public abstract class BasePageObject<TData> : IAsyncDisposable
             throw new Exception("Invalid token, to login provide a valide token using CreateToken from Articles.Helper.Extensions", ex);
         }
     }
-
-    public static async Task<TPage> Create<TPage>(string? token = null)
-        where TPage : BasePageObject<TData>, new()
-    {
-        var bp = new TPage();
-
-        await bp.CreatePageAsync();
-
-        _token = token;
-
-        await bp.EnsureIsOpenAndResetAsync();
-        return bp;
-    }
-
-    protected async Task ClearAndSendTextAsync(string selector, string email)
-    {
-        await Page.FillAsync(selector, string.Empty);
-        await Page.FillAsync(selector, email);
-    }
     private async Task CreatePageAsync()
     {
         Playwright1 = await Playwright.CreateAsync();
 
         Browser = await Playwright1.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
+#if DEBUG
             Headless = false,
-            SlowMo = 1_000
+            SlowMo = 500,
+            Devtools =true
+#else
+            SlowMo = 50
+#endif
         });
         Context = await Browser!.NewContextAsync();
         Page = await Context.NewPageAsync();
     }
+}
 
-    public async Task EnsureIsOpenAndResetAsync()
+
+public abstract partial class BasePageObject<TData>
+{
+    protected async Task ClearAndSendTextAsync(string selector, string text)
     {
-        if (Page.Url != GetUrl())
-        {
-            await Page.GotoAsync(BaseAddress);
-
-            if (!string.IsNullOrEmpty(_token))
-            {
-                await Login(_token);
-            }
-
-            await Page.GotoAsync(GetUrl());
-        }
-        else
-        {
-            await Page.ClickAsync(ResetButtonSelector);
-        }
+        await Page.FillAsync(selector, string.Empty);
+        await Page.FillAsync(selector, text);
     }
+    protected async Task PressTabAsync(string locator) =>
+        await Page.Locator(locator).PressAsync("Tab");
+    
+    public async Task<bool> HasSuccessSnack(string message ) => await Page
+        .Locator($@"div.mud-alert-filled-success > div:has-text(""{message}"")")
+        .CountAsync() == 1;
 
-    public async ValueTask DisposeAsync()
-    {
-        if (Context is not null)
-        {
-            await Context.DisposeAsync().ConfigureAwait(false);
-        }
+    public async Task<bool> HasNotAutorizedAccess() => await Page
+        .Locator(@"div.mud-main-content > p[role=alert]:has-text(""You are not authorized to access this resource."")")
+        .CountAsync() == 1;
 
-        if (Browser is not null)
-        {
-            await Browser.DisposeAsync().ConfigureAwait(false);
-        }
-
-        Playwright1?.Dispose();
-
-        Context = null!;
-        Browser = null!;
-        Playwright1 = null!;
-    }
 }
