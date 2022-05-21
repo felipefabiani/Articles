@@ -5,6 +5,8 @@ using FastEndpoints.Swagger;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,6 +17,7 @@ using System.Reflection;
 using System.Text.Json;
 
 using static Articles.Helper.ArticlesConstants.Security;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Articles.Api.Infrastructure;
 
@@ -220,6 +223,20 @@ public static class ServiceCollectionExtention
     {
         await SetEnvironment();
 
+        app.UseExceptionHandler(exceptionHandlerApp =>
+        {
+            exceptionHandlerApp.Run(async context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.ContentType = Text.Plain;
+                await context.Response.WriteAsync("An exception was thrown.");
+
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var looger = app.Services.GetRequiredService<Serilog.ILogger>();
+
+                looger.Error(exceptionHandlerPathFeature.Error.Message, exceptionHandlerPathFeature.Error);
+            });
+        });
         app.UseCors(ArticlesConstants.Cors.ArticlesClient);
         app.UseAuthentication();
         app.UseAuthorization();
