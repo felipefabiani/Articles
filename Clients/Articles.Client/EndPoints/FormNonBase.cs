@@ -48,6 +48,11 @@ public abstract class FormBase : ComponentBase
                         message: "User doesn't have permission.",
                         severity: Severity.Error);
                     break;
+                case System.Net.HttpStatusCode.InternalServerError:
+                    Snackbar.Add(
+                        message: "An unexpected error has occurred.",
+                        severity: Severity.Error);
+                    break;
 
                 case System.Net.HttpStatusCode.BadRequest:
                 default:
