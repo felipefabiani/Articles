@@ -29,7 +29,8 @@ public static class ServiceCollectionTestExtension
                 RequestServices = sp
             })
             .AddSingleton((sp) => new ArticleEntity(sp))
-            .AddSingleton<ILoginService, LoginService>();
+            .AddSingleton<ILoginService, LoginService>()
+            .AddSingleton(new NexIdService());
     }
 
     public static IServiceCollection AddDbContext(this IServiceCollection services)
@@ -63,33 +64,39 @@ public static class ServiceCollectionTestExtension
                 //databaseRoot: testdb.DatabaseRoot);
             }, optionsLifetime: ServiceLifetime.Transient)
 
-            // .AddDbContextFactory<ArticleReadOnlyContext>((sp, options) =>
-            // {
-            //     // var testdb = sp.GetRequiredService<Testdb>();
-            //     options
-            //         .EnableSensitiveDataLogging()
-            //         .UseInMemoryDatabase(
-            //             databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
-            //             databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot());
+             .AddDbContextFactory<ArticleReadOnlyContext>((sp, options) =>
+             {
+                 // var testdb = sp.GetRequiredService<Testdb>();
+                 options
+                     .EnableSensitiveDataLogging()
+                     .UseInMemoryDatabase(
+                         databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
+                         databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot(),
+                         options =>
+                         {
+                             options.EnableNullChecks();
+                         });
 
-            //     //databaseName: testdb.DatabaseName,
-            //     //databaseRoot: testdb.DatabaseRoot);
-            // }, ServiceLifetime.Transient)
+                 //databaseName: testdb.DatabaseName,
+                 //databaseRoot: testdb.DatabaseRoot);
+             }, ServiceLifetime.Singleton)
 
-            //.AddDbContextFactory<ArticleContext>((sp, options) =>
-            //{
-            //    // var testdb = sp.GetRequiredService<Testdb>();
-            //    options
-            //        .EnableSensitiveDataLogging()
-            //        .UseInMemoryDatabase(
-            //            databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
-            //            databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot());
+            .AddDbContextFactory<ArticleContext>((sp, options) =>
+            {
+                // var testdb = sp.GetRequiredService<Testdb>();
+                options
+                    .EnableSensitiveDataLogging()
+                    .UseInMemoryDatabase(
+                        databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
+                        databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot(),
+                        options =>
+                        {
+                            options.EnableNullChecks();
+                        });
 
-            //    //databaseName: testdb.DatabaseName,
-            //    //databaseRoot: testdb.DatabaseRoot);
-            //}, ServiceLifetime.Transient)
-            // .AddSingleton(typeof(Testdb))
-            ;
+                //databaseName: testdb.DatabaseName,
+                //databaseRoot: testdb.DatabaseRoot);
+            }, ServiceLifetime.Singleton);
     }
 
     //public class Testdb

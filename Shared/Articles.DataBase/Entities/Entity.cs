@@ -8,7 +8,7 @@ public abstract class Entity : IEntity
     public int Id { get; set; }
 }
 
-public abstract class Entity<T> : Entity
+public abstract class Entity<T> : Entity, IAsyncDisposable
     where T : class, IEntity
 {
     public Entity() { }
@@ -18,19 +18,38 @@ public abstract class Entity<T> : Entity
         _logger = service
             .GetRequiredService<ILoggerFactory>()
             .CreateLogger<T>();
+
+        _contextReadOnly = service.
+            GetRequiredService<IDbContextFactory<ArticleReadOnlyContext>>()
+            .CreateDbContext();
+
+        _contextWriteOnly= service.
+            GetRequiredService<IDbContextFactory<ArticleContext>>()
+            .CreateDbContext();
     }
 
     protected readonly IServiceProvider _service = null!;
     protected readonly ILogger<T> _logger = null!;
+    private readonly ArticleContext _contextWriteOnly;
+    private readonly ArticleReadOnlyContext _contextReadOnly;
 
-    private DbContext GetDbContext<TDbContext>() where TDbContext : DbContext
-        => _service.GetRequiredService<TDbContext>();
-    private DbSet<T> GetDbSet<TDbContext>() where TDbContext : DbContext
-        => GetDbContext<TDbContext>().Set<T>();
     protected DbSet<T> DbSetWriteOnly
-        => GetDbSet<ArticleContext>();
+        => _contextWriteOnly.Set<T>();
     protected DbSet<T> DbSetReadOnly
-        => GetDbSet<ArticleReadOnlyContext>();
+        => _contextReadOnly.Set<T>();
     protected async Task SaveAsync(CancellationToken cancellation)
-        => await GetDbContext<ArticleContext>().SaveChangesAsync(cancellation);
+        => await _contextWriteOnly.SaveChangesAsync(cancellation);
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_contextWriteOnly is not null)
+        {
+            await _contextWriteOnly.DisposeAsync();
+        }
+
+        if (_contextReadOnly is not null)
+        {
+            await _contextReadOnly.DisposeAsync();
+        }
+    }
 }

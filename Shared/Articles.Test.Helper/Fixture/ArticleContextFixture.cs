@@ -6,7 +6,7 @@ public class ServiceCollectionFixture : AbstractServiceCollectionFixture
 {
 }
 
-public abstract class AbstractServiceCollectionFixture : IDisposable
+public abstract class AbstractServiceCollectionFixture : IDisposable, IAsyncDisposable
 {
     public IServiceProvider ServiceProvider { get; private set; }
     public AbstractServiceCollectionFixture()
@@ -21,4 +21,16 @@ public abstract class AbstractServiceCollectionFixture : IDisposable
     }
 
     public void Dispose() => (ServiceProvider as ServiceProvider)?.Dispose();
+
+    public async ValueTask DisposeAsync()
+    {
+        var sp = (ServiceProvider as ServiceProvider);
+        if (sp is not null)
+        {
+            await sp.DisposeAsync();
+            sp = null;
+        }
+
+        ServiceProvider = null!;
+    }
 }

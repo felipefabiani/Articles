@@ -4,13 +4,13 @@ using Articles.Helper.Extensions;
 using Articles.Test.Helper.Fixture;
 using AutoFixture;
 using AutoFixture.Dsl;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Articles.Test.Helper.Bases;
 
 public abstract class ServiceProvider<TClassFixture> :
-    IDisposable,
     IClassFixture<TClassFixture>
     where TClassFixture : AbstractServiceCollectionFixture
 {
@@ -22,14 +22,16 @@ public abstract class ServiceProvider<TClassFixture> :
         _fixture = new AutoFixture.Fixture();
         _spFixture = spFixture;
     }
-    public virtual void Dispose() { }
 }
 public abstract class ContextDb<TClassFixture> :
-    ServiceProvider<TClassFixture>
+    ServiceProvider<TClassFixture>,
+    IDisposable,
+    IAsyncDisposable
     where TClassFixture : AbstractServiceCollectionFixture
 {
-    protected readonly ArticleContext _contextWriteOnly;
-    protected readonly ArticleReadOnlyContext _contextReadOnly;
+    protected ArticleContext _contextWriteOnly;
+    protected ArticleReadOnlyContext _contextReadOnly;
+    private readonly NexIdService _nextId;
     protected static List<RoleEntity>? _roles;
     protected static List<ClaimEntity>? _claims;
     protected static List<UserEntity>? _users;
@@ -39,24 +41,19 @@ public abstract class ContextDb<TClassFixture> :
     {
         lock (this)
         {
-            _contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<ArticleContext>();
-            _contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();
-            //_contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleContext>>().CreateDbContext();
-            //_contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleReadOnlyContext>>().CreateDbContext();
+            // _contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<ArticleContext>();
+            // _contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();
+            _contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleContext>>().CreateDbContext();
+            _contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleReadOnlyContext>>().CreateDbContext();
+
+            _nextId = _spFixture.ServiceProvider.GetRequiredService<NexIdService>();
 
             InitDb();
             SeedDb();
         }
     }
-    public override void Dispose()
-    {
-        lock (this)
-        {
-            Reset();
-            //_contextReadOnly.Dispose();
-            //_contextWriteOnly.Dispose();
-        }
-    }
+
+    protected int GetNextId() => _nextId.GetNextId();
 
     protected virtual void InitDb()
     {
@@ -146,6 +143,52 @@ public abstract class ContextDb<TClassFixture> :
         _contextWriteOnly.ChangeTracker.Clear();
         _contextWriteOnly.SaveChanges();
         _contextWriteOnly.Database.EnsureDeleted();
+    }
+
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsyncCore().ConfigureAwait(false);
+
+        Dispose(disposing: false);
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
+        GC.SuppressFinalize(this);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Reset();
+
+            (_contextWriteOnly as IDisposable)?.Dispose();
+            _contextWriteOnly = null!;
+
+            (_contextReadOnly as IDisposable)?.Dispose();
+            _contextReadOnly = null!;
+        }
+    }
+    protected virtual async ValueTask DisposeAsyncCore()
+    {
+        if (_contextReadOnly is not null)
+        {
+            await _contextReadOnly.DisposeAsync().ConfigureAwait(false);
+        }
+
+        if (_contextWriteOnly is IAsyncDisposable disposable)
+        {
+            await _contextWriteOnly.DisposeAsync().ConfigureAwait(false);
+        }
+
+        _contextWriteOnly = null!;
+        _contextWriteOnly = null!;;
     }
 }
 public abstract class ContextDb<TClassFixture, TEntity> :

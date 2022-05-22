@@ -13,16 +13,6 @@ public class SaveArticleEntityTester :
     {
     }
 
-    protected override void PreEntityBuilder()
-    {
-        _fixture.Register(() => _fixture?
-           .Build<CommentEntity>()
-           .Without(x => x.Article)
-           .Create());
-
-        _fixture.Register(() => _contextWriteOnly.Users.First());
-    }
-
     [Fact]
     public async Task Add_Article_required_fields_not_supplied_Fail()
     {
@@ -43,14 +33,21 @@ public class SaveArticleEntityTester :
     [Fact]
     public async Task Update_Article_authors_doesnt_match_Fail()
     {
-        var sut = _entityBuilder
-            .Without(entity => entity.Id)
+        var saved = _entityBuilder
+            .With(entity => entity.Id, 0)
             .With(entity => entity.AuthorId, 1)
+            .Without(entity => entity.Comments)
+            .Without(entity => entity.Author)
             .Create();
 
-        var saved = await sut.Save(default);
+        _ = await saved.Save(default);
 
-        sut.AuthorId += 1;
+        var sut = _entityBuilder
+           .With(entity => entity.Id, saved.Id)
+           .With(entity => entity.AuthorId, saved.AuthorId + 1)
+           .Without(entity => entity.Comments)
+           .Without(entity => entity.Author)
+           .Create();
 
         var ret = await sut.Save(default);
 
@@ -61,11 +58,14 @@ public class SaveArticleEntityTester :
     public async Task Add_Article_Success()
     {
         var sut = _entityBuilder
-           .Without(entity => entity.Id)
-           .With(entity => entity.AuthorId, 1)
-           .Create();
+        .With(entity => entity.Id, 0)
+        .With(entity => entity.AuthorId, 1)
+        .Without(entity => entity.Comments)
+        .Without(entity => entity.Author)
+        .Create();
 
         var ret = await sut.Save(default);
+
         ret.ShouldNotBeNull();
         ret.Id.ShouldBeGreaterThan(0);
     }
@@ -74,8 +74,10 @@ public class SaveArticleEntityTester :
     public async Task Update_Article_Success()
     {
         var sut = _entityBuilder
-           .Without(entity => entity.Id)
+           .With(entity => entity.Id, 0)
            .With(entity => entity.AuthorId, 1)
+           .Without(entity => entity.Comments)
+           .Without(entity => entity.Author)
            .Create();
 
         var saved = await sut.Save(default);

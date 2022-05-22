@@ -9,20 +9,28 @@ public interface ILoginService
 {
     Task<UserLoginResponse> Login(UserLoginRequest request, CancellationToken c);
 }
-public class LoginService : ILoginService, IScopedService
+public class LoginService : ILoginService, IScopedService, IAsyncDisposable, IDisposable
 {
-    private readonly ArticleReadOnlyContext _context;
-    private readonly ArticleOptions _options;
+    private ArticleReadOnlyContext _context;
     private readonly ILogger<LoginService> _logger;
 
     public LoginService(
-        ArticleReadOnlyContext context,
-        IOptions<ArticleOptions> options,
+        IDbContextFactory<ArticleReadOnlyContext> context,
         ILogger<LoginService> logger)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+        _context = context?.CreateDbContext() ?? throw new ArgumentNullException(nameof(context));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    public void Dispose()
+    {
+        _context?.Dispose();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _context.DisposeAsync().ConfigureAwait(false);
+        _context = null!;
     }
 
     public async Task<UserLoginResponse> Login(UserLoginRequest request, CancellationToken cancellationToken)

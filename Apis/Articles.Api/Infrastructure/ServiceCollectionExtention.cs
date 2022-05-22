@@ -76,6 +76,15 @@ public static class ServiceCollectionExtention
                     .UseSqlServer(connectionString);
             });
 
+            builder.Services.AddDbContextFactory<ArticleReadOnlyContext>(options =>
+            {
+                options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+#endif
+                    .UseSqlServer(connectionString);
+            });
+
             builder.Services.AddDbContext<ArticleReadOnlyContext>(options =>
             {
                 options
