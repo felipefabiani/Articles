@@ -16,9 +16,9 @@ public class SaveArticlePageObject : BasePageObject<SaveArticlePageObject.SaveAr
     public static string NonAuthorToken => DateTime.UtcNow
         .AddHours(4).CreateToken(
             id: 3,
-            userName: "Author Test Mock",
-            roles: new[] { "Admin" },
-            claims: new[] { new ssc.Claim("Article_Moderate", "101") });
+            userName: "User Mock",
+            roles: new[] { "User" },
+            claims: new[] { new ssc.Claim("User_Reads", "301") });
 
     public readonly string TitleInputSelector = "#article-title";
     public readonly string ContentInputSelector = "#article-content";

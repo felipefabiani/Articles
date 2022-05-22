@@ -33,7 +33,7 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
         ValidateToken(token);
 
         await Page.EvaluateAsync<string>("(token) => window.localStorage.setItem('authToken',token)", new[] { token });
-    }  
+    }
     public static async Task<TPage> Create<TPage>(string? token = null)
         where TPage : BasePageObject<TData>, new()
     {
@@ -56,14 +56,26 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
             {
                 await Login(_token);
             }
-            await Page.GotoAsync(GetUrl());
+            await Page.RunAndWaitForNavigationAsync(async () =>
+            {
+                await Page.GotoAsync(
+                    url: GetUrl(),
+                    options: new PageGotoOptions
+                    {
+                        WaitUntil = WaitUntilState.NetworkIdle
+                    });
+            }, new PageRunAndWaitForNavigationOptions
+            {
+                UrlString = $"**/{PagePath}",
+                WaitUntil = WaitUntilState.DOMContentLoaded
+            });
         }
         else
         {
             await Page.ClickAsync(ResetButtonSelector);
         }
     }
-    
+
     public void SetData(Table table)
     {
         Data = table.CreateInstance<TData>(
@@ -122,16 +134,17 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
 #if DEBUG
             Headless = false,
             SlowMo = 500,
-            Devtools =true
+            Devtools = false
 #else
-            SlowMo = 50
+            Headless = true,
+            SlowMo = 0,
+            Devtools = false
 #endif
         });
         Context = await Browser!.NewContextAsync();
         Page = await Context.NewPageAsync();
     }
 }
-
 
 public abstract partial class BasePageObject<TData>
 {
@@ -142,8 +155,8 @@ public abstract partial class BasePageObject<TData>
     }
     protected async Task PressTabAsync(string locator) =>
         await Page.Locator(locator).PressAsync("Tab");
-    
-    public async Task<bool> HasSuccessSnack(string message ) => await Page
+
+    public async Task<bool> HasSuccessSnack(string message) => await Page
         .Locator($@"div.mud-alert-filled-success > div:has-text(""{message}"")")
         .CountAsync() == 1;
 

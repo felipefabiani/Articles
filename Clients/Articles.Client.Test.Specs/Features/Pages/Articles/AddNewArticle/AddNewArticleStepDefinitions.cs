@@ -41,7 +41,9 @@ public class AddNewArticleStepDefinitions : IDisposable
     [When(@"author attempts to add new article with valid title and content")]
     public async Task WhenAuthorAttemptsToAddNewArticleWithValidTitleAndContent(Table table)
     {
-        await AddArticle(table);
+        _page.SetData(table);
+        await _page.SetTitle($"{_page.Data.Title} {10.RandomString()}");
+        await _page.SetContent($"{_page.Data.Content} {100.RandomString()}");
     }
 
     [Then(@"article is created")]
@@ -67,11 +69,9 @@ public class AddNewArticleStepDefinitions : IDisposable
     private async Task AddArticle(Table table)
     {
         _page.SetData(table);
-        await _page.SetTitle($"{_page.Data.Title} {10.RandomString()}");
-        await _page.SetContent($"{_page.Data.Content} {100.RandomString()}");
+        await _page.SetTitle(_page.Data.Title);
+        await _page.SetContent(_page.Data.Content);
     }
-
-
 
     [Given(@"A logged User")]
     public async Task GivenALoggedUser()
