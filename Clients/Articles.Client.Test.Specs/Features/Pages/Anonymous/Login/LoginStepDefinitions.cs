@@ -1,6 +1,6 @@
 namespace Articles.Client.Test.Specs.Features.Pages.Anonymous.Login;
 
-[Binding]
+[Binding, Scope(Tag = "Login")]
 public class LoginStepDefinitions : IAsyncDisposable, IDisposable
 {
     private LoginPageObject _page;

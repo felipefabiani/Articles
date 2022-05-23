@@ -1,7 +1,7 @@
 using Articles.Test.Helper.Extensions;
 namespace Articles.Client.Test.Specs.Features.Pages.Articles.AddNewArticle;
 
-[Binding]
+[Binding, Scope(Feature = "AddNewArticle")]
 public class AddNewArticleStepDefinitions : IDisposable
 {
     private SaveArticlePageObject _page = default!;

@@ -34,7 +34,7 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
 
         await Page.EvaluateAsync<string>("(token) => window.localStorage.setItem('authToken',token)", new[] { token });
     }
-    public static async Task<TPage> Create<TPage>(string? token = null)
+    public static async Task<TPage> Create<TPage>(string? token = null, bool gotoPage = true)
         where TPage : BasePageObject<TData>, new()
     {
         var bp = new TPage();
@@ -43,10 +43,10 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
 
         _token = token;
 
-        await bp.EnsureIsOpenAndResetAsync();
+        await bp.EnsureIsOpenAndResetAsync(gotoPage);
         return bp;
     }
-    public async Task EnsureIsOpenAndResetAsync()
+    public async Task EnsureIsOpenAndResetAsync(bool gotoPage)
     {
         if (Page.Url != GetUrl())
         {
@@ -56,24 +56,33 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
             {
                 await Login(_token);
             }
-            await Page.RunAndWaitForNavigationAsync(async () =>
+
+            if (gotoPage)
             {
-                await Page.GotoAsync(
-                    url: GetUrl(),
-                    options: new PageGotoOptions
-                    {
-                        WaitUntil = WaitUntilState.NetworkIdle
-                    });
-            }, new PageRunAndWaitForNavigationOptions
-            {
-                UrlString = $"**/{PagePath}",
-                WaitUntil = WaitUntilState.DOMContentLoaded
-            });
+                await GotoPage();
+            }
         }
         else
         {
             await Page.ClickAsync(ResetButtonSelector);
         }
+    }
+
+    public async Task GotoPage()
+    {
+        await Page.RunAndWaitForNavigationAsync(async () =>
+        {
+            await Page.GotoAsync(
+                url: GetUrl(),
+                options: new PageGotoOptions
+                {
+                    WaitUntil = WaitUntilState.NetworkIdle
+                });
+        }, new PageRunAndWaitForNavigationOptions
+        {
+            UrlString = $"**/{PagePath}",
+            WaitUntil = WaitUntilState.DOMContentLoaded
+        });
     }
 
     public void SetData(Table table)
