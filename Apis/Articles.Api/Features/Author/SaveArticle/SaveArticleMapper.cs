@@ -1,6 +1,6 @@
 ﻿using Articles.Models.Feature.Articles.SaveArticle;
 
-namespace Articles.Api.Features.Articles.SaveArticle;
+namespace Articles.Api.Features.Author.SaveArticle;
 
 public class SaveArticleMapper : Mapper<SaveArticleRequest, SaveArticleResponse, ArticleEntity>
 {

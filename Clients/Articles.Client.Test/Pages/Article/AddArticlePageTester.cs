@@ -1,4 +1,4 @@
-﻿using Articles.Client.Pages.Article;
+﻿using Articles.Client.Pages.Author;
 using Articles.Models.Feature.Articles.SaveArticle;
 using Articles.Test.Helper.TheoryData;
 

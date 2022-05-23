@@ -1,7 +1,7 @@
 ﻿using Articles.Models.Feature.Articles.SaveArticle;
 using static Articles.Helper.Auth.Policies.Author;
 
-namespace Articles.Api.Features.Articles.SaveArticle;
+namespace Articles.Api.Features.Author.SaveArticle;
 public class SaveArticleEndpoint : EndpointWithMapping<SaveArticleRequest, SaveArticleResponse, ArticleEntity>
 {
     public override void Configure()

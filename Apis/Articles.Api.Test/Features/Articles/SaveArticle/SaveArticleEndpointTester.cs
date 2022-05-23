@@ -1,4 +1,4 @@
-﻿using Articles.Api.Features.Articles.SaveArticle;
+﻿using Articles.Api.Features.Author.SaveArticle;
 using Articles.Models.Feature.Articles.SaveArticle;
 using Articles.Test.Helper.Bases;
 using Articles.Test.Helper.Extensions;
