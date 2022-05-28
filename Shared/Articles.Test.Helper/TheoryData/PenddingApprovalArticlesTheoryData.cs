@@ -3,8 +3,16 @@ using Articles.Test.Helper.Bases;
 
 namespace Articles.Test.Helper.TheoryData;
 
-public class PenddingApprovalArticlesInvalidParamTheoryData :
+public class PenddingApprovalArticlesNoParamTheoryData :
     TheoryData<PenddingApprovalArticlesRequest>
+{
+    public PenddingApprovalArticlesNoParamTheoryData()
+    {
+        Add(new PenddingApprovalArticlesRequest());
+    }
+}
+public class PenddingApprovalArticlesInvalidParamTheoryData :
+TheoryData<PenddingApprovalArticlesRequest>
 {
     public PenddingApprovalArticlesInvalidParamTheoryData()
     {
@@ -23,7 +31,11 @@ public class PenddingApprovalArticlesValidParamTheoryData :
 {
     public PenddingApprovalArticlesValidParamTheoryData()
     {
-        Add(new PenddingApprovalArticlesRequest());
+        Add(new PenddingApprovalArticlesRequest
+        {
+            Ids = new[] { 1, 2, 3, 4 }
+        });
+
         Add(new PenddingApprovalArticlesRequest
         {
             StartDate = DateTimeOffset.UtcNow,

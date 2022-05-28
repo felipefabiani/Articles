@@ -14,8 +14,19 @@ public class PenddingApprovalArticlesTester
     }
 
     [Theory]
+    [ClassData(typeof(PenddingApprovalArticlesNoParamTheoryData))]
+    public void Should_have_error_when_no_parameter(
+        PenddingApprovalArticlesRequest data)
+    {
+        var result = _validator.TestValidate(data);
+
+        result.ShouldHaveValidationErrorFor(x => x.Ids).WithErrorCode("NotEmptyValidator");
+        result.ShouldHaveValidationErrorFor(x => x.StartDate).WithErrorCode("NotEmptyValidator");
+    }
+    
+    [Theory]
     [ClassData(typeof(PenddingApprovalArticlesInvalidParamTheoryData))]
-    public void Should_have_no_error_when_valids_parameters(
+    public void Should_have_errors_when_invalids_dates_parameters(
         PenddingApprovalArticlesRequest data)
     {
         var result = _validator.TestValidate(data);
@@ -39,7 +50,7 @@ public class PenddingApprovalArticlesTester
 
     [Theory]
     [ClassData(typeof(PenddingApprovalArticlesValidParamTheoryData))]
-    public void Should_have_error_when_requeired_fields_are_valid(
+    public void Should_have_no_error_when_requeired_fields_are_valid(
         PenddingApprovalArticlesRequest data)
     {
         var result = _validator.TestValidate(data);
