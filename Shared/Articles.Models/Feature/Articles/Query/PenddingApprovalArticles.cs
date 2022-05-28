@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using System;
-using System.Collections.Generic;
 
 namespace Articles.Models.Feature.Articles.SaveArticle
 {
@@ -18,7 +17,7 @@ namespace Articles.Models.Feature.Articles.SaveArticle
             RuleFor(m => m.StartDate)
                 .NotEmpty()
                     .WithMessage("Start Date is Required")
-                    .When(m => m.EndDate.HasValue);                
+                    .When(m => m.EndDate.HasValue);
 
             RuleFor(x => x.EndDate)
                 .NotEmpty()

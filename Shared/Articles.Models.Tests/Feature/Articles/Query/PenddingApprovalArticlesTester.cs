@@ -1,6 +1,5 @@
 ﻿using Articles.Models.Feature.Articles.SaveArticle;
 using Articles.Test.Helper.TheoryData;
-using AutoFixture;
 using FluentValidation.TestHelper;
 using Xunit;
 

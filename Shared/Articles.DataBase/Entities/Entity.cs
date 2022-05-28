@@ -23,7 +23,7 @@ public abstract class Entity<T> : Entity, IAsyncDisposable
             GetRequiredService<IDbContextFactory<ArticleReadOnlyContext>>()
             .CreateDbContext();
 
-        _contextWriteOnly= service.
+        _contextWriteOnly = service.
             GetRequiredService<IDbContextFactory<ArticleContext>>()
             .CreateDbContext();
     }

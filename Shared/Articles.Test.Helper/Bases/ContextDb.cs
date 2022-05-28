@@ -188,7 +188,7 @@ public abstract class ContextDb<TClassFixture> :
         }
 
         _contextWriteOnly = null!;
-        _contextWriteOnly = null!;;
+        _contextWriteOnly = null!; ;
     }
 }
 public abstract class ContextDb<TClassFixture, TEntity> :

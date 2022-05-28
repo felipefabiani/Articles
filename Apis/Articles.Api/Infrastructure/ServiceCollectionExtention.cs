@@ -282,7 +282,7 @@ public static class ServiceCollectionExtention
                 app.UseOpenApi();
                 app.UseSwaggerUi3(c => c.ConfigureDefaults());
 
-                
+
                 var factory = app.Services.GetRequiredService<IDbContextFactory<ArticleContext>>();
                 using var context = factory.CreateDbContext();
                 await context.EnsureCreateAndSeedAsync();
