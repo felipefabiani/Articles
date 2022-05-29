@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Article.Helper\Articles.Helper.csproj" />
+    <ProjectReference Include="..\Articles.Models\Articles.Models.csproj" />
   </ItemGroup>
 
 </Project>

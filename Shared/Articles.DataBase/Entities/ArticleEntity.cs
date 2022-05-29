@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Articles.Models.Feature.Articles.SaveArticle;
+using Microsoft.Extensions.Logging;
 
 namespace Articles.Database.Entities;
 
@@ -57,61 +58,33 @@ public class ArticleEntity :
         _logger.LogDebug("Article saved, id [{id}], title [{title}].", Id, Title);
         return this;
     }
-}
 
-[ExcludeFromCodeCoverage]
-public class ArticleEntityTypeConfiguration : IEntityTypeConfiguration<ArticleEntity>
-{
-    public void Configure(EntityTypeBuilder<ArticleEntity> builder)
+    public async Task<List<ArticleEntity>> GetPendingApprovals(PendingApprovalArticlesRequest request, CancellationToken cancellationToken = default)
     {
-        builder.ToTable("Articles");
+        _logger.LogDebug("GetPendingApprovals article, request {request}.", request);
 
-        builder.HasIndex(x => new
+        var db = DbSetReadOnly
+            .Where(x => x.IsApproved == false)
+            .Where(x => x.RejectionReason == null || x.RejectionReason == string.Empty)
+            .AsQueryable();
+
+        if (request.Ids?.Length > 0)
         {
-            x.Title,
-            x.Content
-        }).IsUnique();
+            db = db.Where(x => request.Ids.Contains(x.AuthorId));
+        }
 
-        builder
-            .Property(x => x.FullName)
-            .IsUnicode(false)
-            .IsRequired()
-            .HasMaxLength(50);
+        if (request.StartDate.HasValue && request.EndDate.HasValue)
+        {
+            db = db.Where(x =>
+                x.CreatedOn >= request.StartDate.Value.Date &&
+                x.CreatedOn <= request.EndDate.Value.Date);
+        }
 
-        builder
-            .Property(x => x.Title)
-            .IsUnicode(false)
-            .IsRequired()
-            .HasMaxLength(50);
+        var list = await db
+            .ToListAsync(cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        builder
-            .Property(x => x.Content)
-            .IsUnicode(true)
-            .IsRequired()
-            .HasMaxLength(3000);
-
-        builder
-            .Property(x => x.CreatedOn)
-            .IsRequired();
-
-        builder
-            .Property(x => x.IsApproved)
-            .IsRequired();
-
-        builder
-            .Property(x => x.RejectionReason)
-            .IsUnicode(false)
-            .HasMaxLength(1000);
-
-        builder
-            .HasMany(x => x.Comments)
-            .WithOne(x => x.Article)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder
-            .HasOne(x => x.Author)
-            .WithMany()
-            .OnDelete(DeleteBehavior.NoAction)
-            .IsRequired();
+        _logger.LogDebug("GetPendingApprovals return {list}.", list);
+        return list;
     }
 }

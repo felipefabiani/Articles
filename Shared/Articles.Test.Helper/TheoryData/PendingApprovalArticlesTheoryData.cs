@@ -50,3 +50,44 @@ public class PendingApprovalArticlesValidParamTheoryData :
         });
     }
 }
+
+public record PendingApprovalArticlesModelData(
+    PendingApprovalArticlesRequest Data,
+    int Total)
+{ }
+public class PendingApprovalArticlesValidQueryParamTheoryData :
+    TheoryData<PendingApprovalArticlesModelData>
+{
+    public PendingApprovalArticlesValidQueryParamTheoryData()
+    {
+        Add(new PendingApprovalArticlesModelData(
+            new PendingApprovalArticlesRequest
+            {
+                Ids = new[] { 1 }
+            },
+            0));
+
+        Add(new PendingApprovalArticlesModelData(
+            new PendingApprovalArticlesRequest
+            {
+                Ids = new[] { 1, 2, 3, 4 }
+            },
+            3));
+
+        Add(new PendingApprovalArticlesModelData(
+            new PendingApprovalArticlesRequest
+            {
+                StartDate = DateTimeOffset.UtcNow.AddDays(-5),
+                EndDate = DateTimeOffset.UtcNow
+            },
+            2));
+        Add(new PendingApprovalArticlesModelData(
+            new PendingApprovalArticlesRequest
+            {
+                Ids = new[] { 3, },
+                StartDate = DateTimeOffset.UtcNow.AddDays(-10),
+                EndDate = DateTimeOffset.UtcNow
+            },
+            3));
+    }
+}

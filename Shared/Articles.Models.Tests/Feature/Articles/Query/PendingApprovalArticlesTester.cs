@@ -23,7 +23,7 @@ public class PendingApprovalArticlesTester
         result.ShouldHaveValidationErrorFor(x => x.Ids).WithErrorCode("NotEmptyValidator");
         result.ShouldHaveValidationErrorFor(x => x.StartDate).WithErrorCode("NotEmptyValidator");
     }
-    
+
     [Theory]
     [ClassData(typeof(PendingApprovalArticlesInvalidParamTheoryData))]
     public void Should_have_errors_when_invalids_dates_parameters(
