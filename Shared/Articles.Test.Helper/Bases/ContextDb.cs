@@ -103,7 +103,7 @@ public abstract class ContextDb<TClassFixture> :
             Title = 20.RandomString(),
             Content = 100.RandomString(),
             IsApproved = false,
-            RejectionReason = string.Empty,
+            RejectionReason = null,
             // CreatedOn = DateTimeOffset.Now.AddDays(-10),
             AuthorId = 3,
         },

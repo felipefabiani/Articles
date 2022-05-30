@@ -78,7 +78,7 @@ public class ArticleEntity :
         {
             db = db.Where(x =>
                 x.CreatedOn >= request.StartDate.Value.Date &&
-                x.CreatedOn <= request.EndDate.Value.Date);
+                x.CreatedOn < request.EndDate.Value.Date.AddDays(1));
         }
 
         var list = await db

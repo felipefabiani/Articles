@@ -84,7 +84,7 @@ public class PendingApprovalArticlesValidQueryParamTheoryData :
         Add(new PendingApprovalArticlesModelData(
             new PendingApprovalArticleRequest
             {
-                Ids = new[] { 3, },
+                Ids = new[] { 3 },
                 StartDate = DateTimeOffset.UtcNow.AddDays(-10),
                 EndDate = DateTimeOffset.UtcNow
             },
