@@ -7,15 +7,20 @@ namespace Articles.Database.Tests.Entities.ArticleEntityTests;
 public class SaveArticleEntityTester :
     ContextDb<ServiceCollectionFixture, ArticleEntity>
 {
+    private readonly int _nextId;
     public SaveArticleEntityTester(
         ServiceCollectionFixture spFixture) :
-        base(spFixture, new ArticleEntity(spFixture.ServiceProvider))
+        base(spFixture)
     {
+        _nextId = _spFixture.ServiceProvider
+            .GetRequiredService<NexIdService>()
+            .GetNextId();
     }
 
     [Fact]
     public async Task Add_Article_required_fields_not_supplied_Fail()
     {
+
         var sut = _entityBuilder
            .OmitAutoProperties()
            .Create();
@@ -35,7 +40,7 @@ public class SaveArticleEntityTester :
     {
         var saved = _entityBuilder
             .With(entity => entity.Id, 0)
-            .With(entity => entity.AuthorId, 1)
+            .With(entity => entity.AuthorId, _nextId)
             .Without(entity => entity.Comments)
             .Without(entity => entity.Author)
             .Create();
@@ -59,7 +64,7 @@ public class SaveArticleEntityTester :
     {
         var sut = _entityBuilder
         .With(entity => entity.Id, 0)
-        .With(entity => entity.AuthorId, 1)
+        .With(entity => entity.AuthorId, _nextId)
         .Without(entity => entity.Comments)
         .Without(entity => entity.Author)
         .Create();
@@ -75,7 +80,7 @@ public class SaveArticleEntityTester :
     {
         var sut = _entityBuilder
            .With(entity => entity.Id, 0)
-           .With(entity => entity.AuthorId, 1)
+           .With(entity => entity.AuthorId, _nextId)
            .Without(entity => entity.Comments)
            .Without(entity => entity.Author)
            .Create();

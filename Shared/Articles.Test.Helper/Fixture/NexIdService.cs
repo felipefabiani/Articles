@@ -9,7 +9,7 @@ public class NexIdService
     {
         _NextIdQueue = new ConcurrentQueue<int>();
         // Populate the queue.
-        for (int i = 10; i <= 100_000; i++)
+        for (int i = 10_000; i <= 100_000; i++)
         {
             _NextIdQueue.Enqueue(i);
         }

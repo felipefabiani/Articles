@@ -9,8 +9,10 @@ public class SeedArticleDatabaseExtensionTester :
 {
     protected override void SeedDb() { }
 
-    public SeedArticleDatabaseExtensionTester(ServiceCollectionFixture spFixture) :
-        base(spFixture)
+    public SeedArticleDatabaseExtensionTester(
+        // ServiceCollectionFixture spFixture
+        ) :
+        base(new ServiceCollectionFixture())
 
     {
     }

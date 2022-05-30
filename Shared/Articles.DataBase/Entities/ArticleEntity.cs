@@ -59,11 +59,12 @@ public class ArticleEntity :
         return this;
     }
 
-    public async Task<List<ArticleEntity>> GetPendingApprovals(PendingApprovalArticlesRequest request, CancellationToken cancellationToken = default)
+    public async Task<List<ArticleEntity>> GetPendingApprovals(PendingApprovalArticleRequest request, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("GetPendingApprovals article, request {request}.", request);
 
         var db = DbSetReadOnly
+            .Include(x => x.Author)
             .Where(x => x.IsApproved == false)
             .Where(x => x.RejectionReason == null || x.RejectionReason == string.Empty)
             .AsQueryable();
@@ -85,6 +86,6 @@ public class ArticleEntity :
             .ConfigureAwait(false);
 
         _logger.LogDebug("GetPendingApprovals return {list}.", list);
-        return list;
+        return list ?? new List<ArticleEntity>();
     }
 }

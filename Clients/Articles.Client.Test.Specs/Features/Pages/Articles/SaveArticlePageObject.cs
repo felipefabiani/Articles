@@ -37,7 +37,7 @@ public class SaveArticlePageObject : BasePageObject<SaveArticlePageObject.SaveAr
         {
             return;
         }
-        await Page.ClickAsync(ArticleMenuSelector);
+        await Page.ClickAsync(ArticleMenuSelector).ConfigureAwait(false);
     }
     public async Task ClickAddArticleMenu()
     {
@@ -45,24 +45,30 @@ public class SaveArticlePageObject : BasePageObject<SaveArticlePageObject.SaveAr
         {
             return;
         }
-
-        
         await Page.RunAndWaitForNavigationAsync(
-            async () => await Page.ClickAsync(AddArticleMenuSelector),
+            async () => await Page.ClickAsync(AddArticleMenuSelector).ConfigureAwait(false),
             new PageRunAndWaitForNavigationOptions
             {
                 UrlString = $"**/{PagePath}",
                 WaitUntil = WaitUntilState.NetworkIdle
-            });
+            }).ConfigureAwait(false);
+
+        await WaitPageFullyLoad().ConfigureAwait(false);
     }
 
     public async Task<bool> HasArticleMenu() => await Page.Locator(ArticleMenuSelector).CountAsync() == 1;
     public async Task<bool> HasAddArticleMenu() => await Page.Locator(AddArticleMenuSelector).CountAsync() == 1;
     public async Task<bool> IsPageLoad()
     {
+        var IsHeaderVisible = await Page
+            .Locator(@"div.mud-card-header > h1:has-text('Add Article')")
+            .CountAsync()
+            .ConfigureAwait(false) == 1;
+
         return
             Page.Url.Contains(PagePath) &&
-            await Page.Locator(@"div.mud-card-header > h1:has-text('Add Article')").CountAsync() == 1;
+            IsHeaderVisible;
+
     }
 
     public record SaveArticle(

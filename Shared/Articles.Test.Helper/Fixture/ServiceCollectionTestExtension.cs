@@ -24,92 +24,78 @@ public static class ServiceCollectionTestExtension
             .ConfigureOptions()
             .AddNullLogger()
             // .AddFluentValidators("Articles.Models")
+            .AddScoped<Testdb>()
             .AddSingleton((sp) => new DefaultHttpContext
             {
                 RequestServices = sp
             })
-            .AddSingleton((sp) => new ArticleEntity(sp))
+            .AddTransient((sp) => new ArticleEntity(sp))
             .AddSingleton<ILoginService, LoginService>()
             .AddSingleton(new NexIdService());
     }
 
+    private static readonly object obj = new object();
     public static IServiceCollection AddDbContext(this IServiceCollection services)
     {
-        InMemoryDatabaseRoot? _inMemoryDatabaseRoot = null;
-        string? dbName = null;
         return services
-             .AddDbContext<ArticleReadOnlyContext>((sp, options) =>
-             {
-                 // var testdb = sp.GetRequiredService<Testdb>();
-                 options
-                     .EnableSensitiveDataLogging()
-                     .UseInMemoryDatabase(
-                         databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
-                         databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot());
-
-                 //databaseName: testdb.DatabaseName,
-                 //databaseRoot: testdb.DatabaseRoot);
-             }, optionsLifetime: ServiceLifetime.Transient)
-
-            .AddDbContext<ArticleContext>((sp, options) =>
-            {
-                // var testdb = sp.GetRequiredService<Testdb>();
-                options
-                    .EnableSensitiveDataLogging()
-                    .UseInMemoryDatabase(
-                        databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
-                        databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot());
-
-                //databaseName: testdb.DatabaseName,
-                //databaseRoot: testdb.DatabaseRoot);
-            }, optionsLifetime: ServiceLifetime.Transient)
-
              .AddDbContextFactory<ArticleReadOnlyContext>((sp, options) =>
              {
-                 // var testdb = sp.GetRequiredService<Testdb>();
+                 var testdb = sp.GetRequiredService<Testdb>().Get();
                  options
                      .EnableSensitiveDataLogging()
                      .UseInMemoryDatabase(
-                         databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
-                         databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot(),
+                         databaseName: testdb.DatabaseName,
+                         databaseRoot: testdb.DatabaseRoot,
                          options =>
                          {
                              options.EnableNullChecks();
                          });
-
-                 //databaseName: testdb.DatabaseName,
-                 //databaseRoot: testdb.DatabaseRoot);
-             }, ServiceLifetime.Singleton)
+             }, ServiceLifetime.Transient)
 
             .AddDbContextFactory<ArticleContext>((sp, options) =>
             {
-                // var testdb = sp.GetRequiredService<Testdb>();
+                var testdb = sp.GetRequiredService<Testdb>().Get();
                 options
                     .EnableSensitiveDataLogging()
                     .UseInMemoryDatabase(
-                        databaseName: dbName ??= $"ArticleContext-{Guid.NewGuid()}",
-                        databaseRoot: _inMemoryDatabaseRoot ??= new InMemoryDatabaseRoot(),
+                        databaseName: testdb.DatabaseName,
+                        databaseRoot: testdb.DatabaseRoot,
                         options =>
                         {
                             options.EnableNullChecks();
                         });
-
-                //databaseName: testdb.DatabaseName,
-                //databaseRoot: testdb.DatabaseRoot);
-            }, ServiceLifetime.Singleton);
+            }, ServiceLifetime.Transient);
     }
 
-    //public class Testdb
-    //{
-    //    public string DatabaseName { get; set; } = $"ArticleContext-{Guid.NewGuid()}";
-    //    public InMemoryDatabaseRoot DatabaseRoot { get; set; } = new InMemoryDatabaseRoot();
+    public class Testdb
+    {
+        public string DatabaseName { get; set; } = $"ArticleContext-{Guid.NewGuid()}";
+        public InMemoryDatabaseRoot DatabaseRoot { get; set; } = new InMemoryDatabaseRoot();
 
-    //    public void Reset()
-    //    {
-    //        DatabaseName = $"ArticleContext-{Guid.NewGuid()}";
-    //        DatabaseRoot = new InMemoryDatabaseRoot();
-    //    }
-    //}
+        private int _id = 0;
+
+        public void Reset(int id=0)
+        {
+            _id = id;
+            _testdb = new Testdb
+            {
+                DatabaseName = $"ArticleContext-{_id}-{Guid.NewGuid()}",
+                DatabaseRoot = new InMemoryDatabaseRoot()
+            };
+        }
+
+        
+        private Testdb _testdb = default!;
+        public Testdb Get()
+        {
+            if (_testdb is null)
+            {
+                Reset(0);
+            }
+
+            return _testdb!;
+        }
+    }
 
     public static IServiceCollection ConfigureOptions(this IServiceCollection services)
     {

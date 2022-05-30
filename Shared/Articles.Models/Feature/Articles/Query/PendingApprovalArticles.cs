@@ -3,31 +3,39 @@ using System;
 
 namespace Articles.Models.Feature.Articles.SaveArticle
 {
-    public class PendingApprovalArticlesRequest
+    public class PendingApprovalArticleRequest
     {
         public int[]? Ids { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
     }
 
-    public class PendingApprovalArticlesValidator : AbstractValidator<PendingApprovalArticlesRequest>
+    public class PendingApprovalArticlesValidator : AbstractValidator<PendingApprovalArticleRequest>
     {
         public PendingApprovalArticlesValidator()
         {
             RuleFor(x => x.Ids)
-                .NotEmpty().WithMessage("Author or Period is requeired")
-                .Unless(x => x.StartDate.HasValue);
+             .NotEmpty().WithMessage("Author or Period is requeired")
+             .Unless(x => x.StartDate.HasValue || x.EndDate.HasValue);
 
             RuleFor(m => m.StartDate)
                 .NotEmpty()
                     .WithMessage("Author or Period is requeired")
-                    .Unless(m => m.Ids?.Length > 0)
+                    .Unless(m => m.Ids?.Length > 0 || m.EndDate.HasValue);
+
+            RuleFor(m => m.StartDate)
+                .NotEmpty()
+                    .WithMessage("Start date is requeired")
                     .When(x => x.EndDate.HasValue);
 
             RuleFor(x => x.EndDate)
                 .NotEmpty()
                     .WithMessage("End Date is Required")
-                    .Unless(m => m.Ids?.Length > 0)
+                    .Unless(m => m.Ids?.Length > 0 || m.StartDate.HasValue);
+
+            RuleFor(x => x.EndDate)
+                .NotEmpty()
+                    .WithMessage("End Date is Required")
                     .When(m => m.StartDate.HasValue)
                 .GreaterThanOrEqualTo(x => x.StartDate)
                     .WithMessage("End date must after Start date")

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace Articles.Api.Test.Features.Articles.SaveArticle;
 
 public class SaveArticleEndpointTester :
-    ServiceProvider<ServiceCollectionFixture>
+    ContextDb<ServiceCollectionFixture>
 {
     private readonly DefaultHttpContext _defaultHttpContext;
 
@@ -23,10 +23,6 @@ public class SaveArticleEndpointTester :
     [Fact]
     public async Task ToEntityAsync()
     {
-        //var lastId = _contextWriteOnly.Articles.Any() ?
-        //    _contextWriteOnly.Articles.Max(art => art.Id) :
-        //    0;
-
         var request = _fixture
             .Build<SaveArticleRequest>()
             .With(x => x.Id, 0)

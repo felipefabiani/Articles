@@ -9,10 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Immutable;
 using Xunit;
+using static Articles.Test.Helper.Fixture.ServiceCollectionTestExtension;
 
 namespace Articles.Test.Helper.Bases;
 
-public abstract class ServiceProvider<TClassFixture> :
+public abstract class ServiceProvider<TClassFixture> : 
     IClassFixture<TClassFixture>
     where TClassFixture : AbstractServiceCollectionFixture
 {
@@ -94,7 +95,6 @@ public abstract class ContextDb<TClassFixture> :
            }
         };
 
-
     protected static ImmutableList<ArticleEntity> _articles =
         ImmutableList<ArticleEntity>.Empty.AddRange(new List<ArticleEntity>
     {
@@ -152,46 +152,71 @@ public abstract class ContextDb<TClassFixture> :
         }
     });
 
+    private static readonly object obj = new object();
+
     protected ContextDb(TClassFixture spFixture)
         : base(spFixture)
     {
-        lock (this)
+        lock (obj)
         {
-            // _contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<ArticleContext>();
-            // _contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<ArticleReadOnlyContext>();
-            _contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleContext>>().CreateDbContext();
-            _contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleReadOnlyContext>>().CreateDbContext();
-
             _nextId = _spFixture.ServiceProvider.GetRequiredService<NexIdService>();
-
-            InitDb();
-            SeedDb();
+            _spFixture.ServiceProvider.GetRequiredService<Testdb>().Reset(GetNextId());
+            _contextReadOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleReadOnlyContext>>().CreateDbContext();
+            _contextWriteOnly = _spFixture.ServiceProvider.GetRequiredService<IDbContextFactory<ArticleContext>>().CreateDbContext();
+            if (!_contextReadOnly.Users.Any())
+            {
+                InitDb();
+                SeedDb();
+            }
         }
     }
-
     protected int GetNextId() => _nextId.GetNextId();
-
     protected virtual void InitDb()
     {
-        lock (this)
+        lock (obj)
         {
             _contextWriteOnly.Database.EnsureDeleted();
             _contextWriteOnly.Database.EnsureCreated();
-            _contextWriteOnly.ChangeTracker.Clear();
-            _contextWriteOnly.SaveChanges();
+            TrackCleanUp();
         }
     }
     protected virtual void SeedDb()
     {
-        lock (this)
+        lock (obj)
         {
-
             _contextWriteOnly.AddRange(_users);
             _contextWriteOnly.SaveChanges();
-
-            _contextWriteOnly.ChangeTracker.Clear();
-            _contextWriteOnly.SaveChanges();
+            TrackCleanUp();
         }
+    }
+
+    private void TrackCleanUp()
+    {
+        _contextWriteOnly.ChangeTracker.Clear();
+        _contextWriteOnly.SaveChanges();
+    }
+
+    protected void ArticleSeed()
+    {
+        if (_contextReadOnly.Articles.Any())
+        {
+            return;
+        }
+
+        var articles = _articles.ToList();
+        _contextWriteOnly.AddRange(articles);
+        _contextWriteOnly.SaveChanges();
+
+        var dates = new[] { -10, -5, -2, -1, -1, -1 };
+        for (int i = 0; i < articles.Count; i++)
+        {
+            articles[i].CreatedOn = articles[i].CreatedOn.AddDays(dates[i]);
+        }
+
+        _contextWriteOnly.UpdateRange(articles);
+        _contextWriteOnly.SaveChanges();
+
+        TrackCleanUp();
     }
     protected virtual void Reset()
     {
@@ -199,7 +224,6 @@ public abstract class ContextDb<TClassFixture> :
         _contextWriteOnly.SaveChanges();
         _contextWriteOnly.Database.EnsureDeleted();
     }
-
 
     public void Dispose()
     {
@@ -254,9 +278,7 @@ public abstract class ContextDb<TClassFixture, TEntity> :
 {
     protected readonly IPostprocessComposer<TEntity> _entityBuilder;
 
-    protected ContextDb(
-        TClassFixture spFixture,
-        TEntity entityBuilder) :
+    protected ContextDb(TClassFixture spFixture) :
         base(spFixture)
 
     {
@@ -264,7 +286,7 @@ public abstract class ContextDb<TClassFixture, TEntity> :
 
         _entityBuilder = _fixture
             .Build<TEntity>()
-            .FromFactory(() => entityBuilder);
+            .FromFactory(() => _spFixture.ServiceProvider.GetRequiredService<TEntity>());
     }
 
     protected virtual void PreEntityBuilder() { }

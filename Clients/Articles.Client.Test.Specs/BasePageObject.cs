@@ -14,7 +14,7 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
 
     public virtual string ResetButtonSelector => "#reset";
     public virtual string SubmitButtonSelector => "#submit";
-    public virtual string BaseAddress => "https://localhost:661";
+    public virtual string BaseAddress => "https://localhost:665";
     public abstract string PagePath { get; }
     public IPage Page { get; private set; }
     public IPlaywright Playwright1 { get; private set; }
@@ -32,40 +32,51 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
     {
         ValidateToken(token);
 
-        await Page.EvaluateAsync<string>("(token) => window.localStorage.setItem('authToken',token)", new[] { token });
+        await Page
+            .EvaluateAsync<string>(
+                "(token) => window.localStorage.setItem('authToken',token)",
+                new[] { token })
+            .ConfigureAwait(false);
+        await Page.ReloadAsync(new PageReloadOptions
+        {
+            WaitUntil = WaitUntilState.NetworkIdle
+        });
+        await WaitPageFullyLoad().ConfigureAwait(false);
     }
     public static async Task<TPage> Create<TPage>(string? token = null, bool gotoPage = true)
         where TPage : BasePageObject<TData>, new()
     {
         var bp = new TPage();
 
-        await bp.CreatePageAsync();
+        await bp.CreatePageAsync().ConfigureAwait(false);
 
         _token = token;
 
-        await bp.EnsureIsOpenAndResetAsync(gotoPage);
+        await bp.EnsureIsOpenAndResetAsync(gotoPage).ConfigureAwait(false);
         return bp;
     }
     public async Task EnsureIsOpenAndResetAsync(bool gotoPage)
     {
         if (Page.Url != GetUrl())
         {
-            await Page.GotoAsync(BaseAddress);
+            await Page.GotoAsync(BaseAddress).ConfigureAwait(false);
+            await WaitPageFullyLoad().ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(_token))
             {
-                await Login(_token);
+                await Login(_token).ConfigureAwait(false);
             }
 
             if (gotoPage)
             {
-                await GotoPage();
+                await GotoPage().ConfigureAwait(false);
             }
         }
         else
         {
-            await Page.ClickAsync(ResetButtonSelector);
+            await Page.ClickAsync(ResetButtonSelector).ConfigureAwait(false);
         }
+        await WaitPageFullyLoad().ConfigureAwait(false);
     }
 
     public async Task GotoPage()
@@ -82,7 +93,16 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
         {
             UrlString = $"**/{PagePath}",
             WaitUntil = WaitUntilState.DOMContentLoaded
-        });
+        }).ConfigureAwait(false);
+
+        await WaitPageFullyLoad().ConfigureAwait(false);
+    }
+
+    public async Task WaitPageFullyLoad()
+    {
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle).ConfigureAwait(false);
+        await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded).ConfigureAwait(false);
+        await Page.WaitForLoadStateAsync(LoadState.Load).ConfigureAwait(false);
     }
 
     public void SetData(Table table)
@@ -142,16 +162,16 @@ public abstract partial class BasePageObject<TData> : IAsyncDisposable
         {
 #if DEBUG
             Headless = false,
-            SlowMo = 500,
+            SlowMo = 0,
             Devtools = false
 #else
-            Headless = true,
+            Headless = false,
             SlowMo = 0,
             Devtools = false
 #endif
-        });
-        Context = await Browser!.NewContextAsync();
-        Page = await Context.NewPageAsync();
+        }).ConfigureAwait(false);
+        Context = await Browser!.NewContextAsync().ConfigureAwait(false);
+        Page = await Context.NewPageAsync().ConfigureAwait(false);
     }
 }
 
@@ -159,18 +179,20 @@ public abstract partial class BasePageObject<TData>
 {
     protected async Task ClearAndSendTextAsync(string selector, string text)
     {
-        await Page.FillAsync(selector, string.Empty);
-        await Page.FillAsync(selector, text);
+        await Page.FillAsync(selector, string.Empty).ConfigureAwait(false);
+        await Page.FillAsync(selector, text).ConfigureAwait(false);
     }
     protected async Task PressTabAsync(string locator) =>
-        await Page.Locator(locator).PressAsync("Tab");
+        await Page.Locator(locator).PressAsync("Tab").ConfigureAwait(false);
 
     public async Task<bool> HasSuccessSnack(string message) => await Page
         .Locator($@"div.mud-alert-filled-success > div:has-text(""{message}"")")
-        .CountAsync() == 1;
+        .CountAsync()
+        .ConfigureAwait(false) == 1;
 
     public async Task<bool> HasNotAutorizedAccess() => await Page
         .Locator(@"div.mud-main-content > p[role=alert]:has-text(""You are not authorized to access this resource."")")
-        .CountAsync() == 1;
+        .CountAsync()
+        .ConfigureAwait(false) == 1;
 
 }

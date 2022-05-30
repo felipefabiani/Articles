@@ -1,0 +1,45 @@
+﻿<h3>Review Article</h3>
+@page "/review-article"
+
+@attribute [Authorize(Policy = "AuthorSaveArticle")]
+
+<PageTitle>Add Article</PageTitle>
+<MudGrid Justify="Justify.Center">
+    <MudItem md="6" xs="12">
+        <PostForm TRequest=SaveArticleRequest
+                  TResponse=SaveArticleResponse
+                  DefaultModel=@(new SaveArticleRequest {
+                      Title = string.Empty,
+                      Content = string.Empty,
+                      AuthorId = AuthStateProvider.UserId
+                  })
+                  HttpClientName="Article.Api"
+                  Endpoint="api/articles/save-article"
+                  ButtonSubmitText="Add">
+            <HeaderTemplate>
+                <MudElement HtmlTag="h1">Add Article</MudElement>
+            </HeaderTemplate>
+            <FormTemplate Context="model">
+                <MudTextField id="article-title"
+                              InputType="InputType.Text"
+                              Label="Title"
+                              Class="mt-3"
+                              @bind-Value="model.Title"
+                              For="@(() => model.Title)" 
+                              MaxLength="100"/>
+                <MudTextField id="article-content"
+                              InputType="InputType.Text"
+                              Label="Content"
+                              Class="mt-3"
+                              @bind-Value="model.Content"
+                              For="@(() => model.Content)" 
+                              MaxLength="1000"
+                              Lines="20"/>
+            </FormTemplate>
+        </PostForm>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}

@@ -16,7 +16,7 @@ public class PendingApprovalArticlesTester
     [Theory]
     [ClassData(typeof(PendingApprovalArticlesNoParamTheoryData))]
     public void Should_have_error_when_no_parameter(
-        PendingApprovalArticlesRequest data)
+        PendingApprovalArticleRequest data)
     {
         var result = _validator.TestValidate(data);
 
@@ -27,23 +27,26 @@ public class PendingApprovalArticlesTester
     [Theory]
     [ClassData(typeof(PendingApprovalArticlesInvalidParamTheoryData))]
     public void Should_have_errors_when_invalids_dates_parameters(
-        PendingApprovalArticlesRequest data)
+        PendingApprovalArticleRequest data)
     {
         var result = _validator.TestValidate(data);
 
         switch (data)
         {
-            case PendingApprovalArticlesRequest x when x.StartDate.HasValue && x.EndDate.HasValue:
-                result.ShouldHaveValidationErrorFor(m => m.EndDate)
-                    .WithErrorCode("GreaterThanOrEqualValidator");
+            case PendingApprovalArticleRequest x when x.StartDate.HasValue && x.EndDate.HasValue:
+                result.ShouldHaveValidationErrorFor(m => m.EndDate).WithErrorCode("GreaterThanOrEqualValidator");
+                result.ShouldNotHaveValidationErrorFor(x => x.Ids);
+                result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
                 break;
-            case PendingApprovalArticlesRequest x when x.StartDate.HasValue:
-                result.ShouldHaveValidationErrorFor(m => m.EndDate)
-                    .WithErrorCode("NotEmptyValidator");
+            case PendingApprovalArticleRequest x when x.StartDate.HasValue:
+                result.ShouldHaveValidationErrorFor(m => m.EndDate).WithErrorCode("NotEmptyValidator");
+                result.ShouldNotHaveValidationErrorFor(x => x.Ids);
+                result.ShouldNotHaveValidationErrorFor(x => x.StartDate);
                 break;
-            case PendingApprovalArticlesRequest x when x.EndDate.HasValue:
-                result.ShouldHaveValidationErrorFor(m => m.StartDate)
-                    .WithErrorCode("NotEmptyValidator");
+            case PendingApprovalArticleRequest x when x.EndDate.HasValue:
+                result.ShouldHaveValidationErrorFor(m => m.StartDate).WithErrorCode("NotEmptyValidator");
+                result.ShouldNotHaveValidationErrorFor(x => x.Ids);
+                result.ShouldNotHaveValidationErrorFor(x => x.EndDate);
                 break;
         }
     }
@@ -51,7 +54,7 @@ public class PendingApprovalArticlesTester
     [Theory]
     [ClassData(typeof(PendingApprovalArticlesValidParamTheoryData))]
     public void Should_have_no_error_when_requeired_fields_are_valid(
-        PendingApprovalArticlesRequest data)
+        PendingApprovalArticleRequest data)
     {
         var result = _validator.TestValidate(data);
         result.ShouldNotHaveValidationErrorFor(m => m.Ids);

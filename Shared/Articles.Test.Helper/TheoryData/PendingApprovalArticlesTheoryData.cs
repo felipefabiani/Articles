@@ -4,21 +4,21 @@ using Articles.Test.Helper.Bases;
 namespace Articles.Test.Helper.TheoryData;
 
 public class PendingApprovalArticlesNoParamTheoryData :
-    TheoryData<PendingApprovalArticlesRequest>
+    TheoryData<PendingApprovalArticleRequest>
 {
     public PendingApprovalArticlesNoParamTheoryData()
     {
-        Add(new PendingApprovalArticlesRequest());
+        Add(new PendingApprovalArticleRequest());
     }
 }
 public class PendingApprovalArticlesInvalidParamTheoryData :
-TheoryData<PendingApprovalArticlesRequest>
+TheoryData<PendingApprovalArticleRequest>
 {
     public PendingApprovalArticlesInvalidParamTheoryData()
     {
-        Add(new PendingApprovalArticlesRequest { StartDate = DateTimeOffset.UtcNow });
-        Add(new PendingApprovalArticlesRequest { EndDate = DateTimeOffset.UtcNow });
-        Add(new PendingApprovalArticlesRequest
+        Add(new PendingApprovalArticleRequest { StartDate = DateTimeOffset.UtcNow });
+        Add(new PendingApprovalArticleRequest { EndDate = DateTimeOffset.UtcNow });
+        Add(new PendingApprovalArticleRequest
         {
             StartDate = DateTimeOffset.UtcNow.AddDays(10),
             EndDate = DateTimeOffset.UtcNow
@@ -27,22 +27,22 @@ TheoryData<PendingApprovalArticlesRequest>
 }
 
 public class PendingApprovalArticlesValidParamTheoryData :
-    TheoryData<PendingApprovalArticlesRequest>
+    TheoryData<PendingApprovalArticleRequest>
 {
     public PendingApprovalArticlesValidParamTheoryData()
     {
-        Add(new PendingApprovalArticlesRequest
+        Add(new PendingApprovalArticleRequest
         {
             Ids = new[] { 1, 2, 3, 4 }
         });
 
-        Add(new PendingApprovalArticlesRequest
+        Add(new PendingApprovalArticleRequest
         {
             StartDate = DateTimeOffset.UtcNow,
             EndDate = DateTimeOffset.UtcNow.AddDays(10)
         });
 
-        Add(new PendingApprovalArticlesRequest
+        Add(new PendingApprovalArticleRequest
         {
             Ids = new[] { 1, 2, 3, 4 },
             StartDate = DateTimeOffset.UtcNow,
@@ -52,7 +52,7 @@ public class PendingApprovalArticlesValidParamTheoryData :
 }
 
 public record PendingApprovalArticlesModelData(
-    PendingApprovalArticlesRequest Data,
+    PendingApprovalArticleRequest Data,
     int Total)
 { }
 public class PendingApprovalArticlesValidQueryParamTheoryData :
@@ -61,28 +61,28 @@ public class PendingApprovalArticlesValidQueryParamTheoryData :
     public PendingApprovalArticlesValidQueryParamTheoryData()
     {
         Add(new PendingApprovalArticlesModelData(
-            new PendingApprovalArticlesRequest
+            new PendingApprovalArticleRequest
             {
                 Ids = new[] { 1 }
             },
             0));
 
         Add(new PendingApprovalArticlesModelData(
-            new PendingApprovalArticlesRequest
+            new PendingApprovalArticleRequest
             {
                 Ids = new[] { 1, 2, 3, 4 }
             },
             3));
 
         Add(new PendingApprovalArticlesModelData(
-            new PendingApprovalArticlesRequest
+            new PendingApprovalArticleRequest
             {
                 StartDate = DateTimeOffset.UtcNow.AddDays(-5),
                 EndDate = DateTimeOffset.UtcNow
             },
             2));
         Add(new PendingApprovalArticlesModelData(
-            new PendingApprovalArticlesRequest
+            new PendingApprovalArticleRequest
             {
                 Ids = new[] { 3, },
                 StartDate = DateTimeOffset.UtcNow.AddDays(-10),
