@@ -1,0 +1,41 @@
+﻿@using Toolbelt.Blazor.HotKeys
+
+<MudDialog Class="m-0 p-0">
+    <DialogContent>
+        <MudTable Items="@HotKeysHandle.GetHotKeys()" Striped="true" Filter="new Func<HotKeyEntry,bool>(FilterFunc1)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Hot Keys</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Keys</MudTh>
+            <MudTh>Descripton</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            @foreach(var k in context.ToString().Split(':'))
+            {
+                <MudTd>@k</MudTd>
+            }
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="MudDialog.Cancel">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Inject] HotKeysHandle HotKeysHandle { get; set; } = default!;
+
+    private string searchString1 = "";
+    private bool FilterFunc1(HotKeyEntry hotKey) => (hotKey, searchString1) switch
+    {
+        { searchString1: var s} when string.IsNullOrWhiteSpace(s) => true,
+        { hotKey: var h} when h.ToString().Contains(searchString1, StringComparison.OrdinalIgnoreCase) => true,
+        _ => false
+    };
+}

@@ -1,18 +1,118 @@
 ﻿@using Articles.Helper.Auth
-<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
-    <MudNavLink Href="/counter" Match="NavLinkMatch.All">Counter</MudNavLink>
+@using Toolbelt.Blazor.HotKeys
+@implements IDisposable
+@inject HotKeysHandle _hotKeysHandle
+@inject HotKeys HotKeys
+
+<MudNavMenu @ref=@_navMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">Home</MudNavLink>
+    <MudNavLink Href="/counter" Match="NavLinkMatch.All" Icon="@Icons.Filled.Calculate">Counter</MudNavLink>
     @*<MudNavGroup Title="Settings" Expanded="true">
     <MudNavLink Href="/users"  Match="NavLinkMatch.Prefix">Users</MudNavLink>
     <MudNavLink Href="/security"  Match="NavLinkMatch.Prefix">Security</MudNavLink>
     </MudNavGroup>*@
-    <MudNavLink Href="/fetchdata" Match="NavLinkMatch.Prefix">Fetch data</MudNavLink>
+    <MudNavLink Href="/fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.ReadMore">Fetch data</MudNavLink>
 
     <AuthorizeView Roles="Author" Context="Header">
-        <MudNavGroup Title="Article" Expanded="false">
+        <MudNavGroup Title="Article" Expanded="@_articleExpanded" Icon="@Icons.Filled.Article">
             <AuthorizeView Policy=@Policies.Author.AuthorSaveArticle Context="child">
-                <MudNavLink Href="/add-article" Match="NavLinkMatch.Prefix">Add Article</MudNavLink>
+                <MudNavLink Href="/add-article" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.PostAdd">Add Article</MudNavLink>
             </AuthorizeView>
         </MudNavGroup>
     </AuthorizeView>
 </MudNavMenu>
+
+@code {
+    [Parameter] public bool DrawerOpen { get; set; }
+    [Parameter] public EventCallback<bool> DrawerOpenChanged { get; set; }
+
+    private MudNavMenu? _navMenu;
+    private bool _articleExpanded = false;
+    protected override async Task OnInitializedAsync()
+    {
+        var test = _hotKeysHandle.Add()
+            // .Add(ModKeys.Ctrl|ModKeys.Shift, Keys.Home, () => NavManager.NavigateTo("/"), "Go to home page", _hotKeysHandle.ExcludeAll)
+            // .Add(ModKeys.Ctrl|ModKeys.Shift, Keys.Home, (k) => NavManager.NavigateTo("/"), "Go to home page", _hotKeysHandle.ExcludeAll);
+            .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.Home, _ => GoTo("/"), "Go to home page", _hotKeysHandle.AllowsInputs)
+            .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.C, _ => GoTo("/counter"), "Go to Counter", _hotKeysHandle.AllowsInputs)
+            .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.F, _ => GoTo("/fetchdata"), "Go to Fetch Data", _hotKeysHandle.AllowsInputs)
+            // .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.A, OnCtrlKeyDown, "Toggle article menu", _hotKeysHandle.ExcludeAll)
+            .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.Add, _ => GoTo("/add-article"), "Go to add article", _hotKeysHandle.AllowsInputs)
+            .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.M, ToggleMenu, "Toggle Menu", _hotKeysHandle.AllowsInputs)
+            ;
+        HotKeys.KeyDown += HotKeys_KeyDown;
+
+
+    }
+    Task ToggleMenu()
+    {
+        DrawerOpen = _menuKeyPressed = !_menuKeyPressed;
+        DrawerOpenChanged.InvokeAsync(DrawerOpen).ConfigureAwait(false);
+        return Task.CompletedTask;
+    }
+
+    private bool _menuKeyPressed = false;
+    private void HotKeys_KeyDown(object sender, HotKeyDownEventArgs e)
+    {
+        if (e.ModKeys == (ModKeys.Ctrl | ModKeys.Shift) || 
+            _menuKeyPressed)
+        {
+            e.PreventDefault = true;
+        }
+
+        if (e.Key == Keys.ESC)
+        {
+            e.PreventDefault = true;
+            _menuKeyPressed = false;
+        }
+
+        if (_menuKeyPressed == true && e.Key != Keys.M)
+        {
+            switch (e.Key)
+            {
+                case Keys.H:
+                    GoTo("/");
+                    break;
+                case Keys.C:
+                    GoTo("/counter");
+                    break;
+                case Keys.A:
+                    _articleExpanded = !_articleExpanded;
+                    StateHasChanged();
+                    return;
+                case Keys.Add:
+                    GoTo("/add-article");
+                    break;
+            }
+            ToggleMenu();
+        }
+    }
+
+    private DateTime LastCtrlKeyPressed = DateTime.MinValue;
+    private void OnCtrlKeyDown(HotKeyEntry e)
+    {
+        var lastCtrlKeyPressed = this.LastCtrlKeyPressed;
+        this.LastCtrlKeyPressed = DateTime.Now;
+
+        if ((DateTime.Now - lastCtrlKeyPressed).TotalMilliseconds <= 500)
+        {
+            switch (e.Key)
+            {
+                case Keys.A:
+                    _articleExpanded = !_articleExpanded;
+                    break;
+            }
+
+            StateHasChanged();
+        }
+    }
+    void GoTo(string url)
+    {
+       NavManager.NavigateTo(url);
+    }
+    public void Dispose()
+    {
+        _hotKeysHandle.Remove();
+        HotKeys.KeyDown -= HotKeys_KeyDown;
+    }
+}

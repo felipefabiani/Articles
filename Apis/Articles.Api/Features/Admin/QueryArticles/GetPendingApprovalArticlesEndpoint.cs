@@ -7,8 +7,9 @@ public class GetPendingApprovalArticlesEndpoint : EndpointWithMapping<PendingApp
 {
     public override void Configure()
     {
-        Post("/articles/save-article");
-        Policies(AuthorSaveArticle);
+        Get("/articles/getPendingApproval");
+        // Policies(AuthorSaveArticle);
+
     }
 
     public override async Task HandleAsync(PendingApprovalArticleRequest request, CancellationToken cancellationToken)
@@ -16,7 +17,6 @@ public class GetPendingApprovalArticlesEndpoint : EndpointWithMapping<PendingApp
         Logger.LogDebug("Get Pending Approval Article, request {request}", request);
 
         var articleEntity = Resolve<ArticleEntity>();
-
         var pendingApprovalAritcles = await articleEntity
             .GetPendingApprovals(request, cancellationToken)
             .ConfigureAwait(false);

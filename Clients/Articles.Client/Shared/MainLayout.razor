@@ -1,17 +1,19 @@
-﻿@inherits LayoutComponentBase
+﻿@using Toolbelt.Blazor.HotKeys
+@inherits LayoutComponentBase
+@*@implements IDisposable*@
+@inject HotKeysHandle _hotKeysHandle
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-
 <MudLayout>
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
         <LoginDisplay></LoginDisplay>
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu/>
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Breakpoint="Breakpoint.Sm"  Variant="@DrawerVariant.Mini">
+        <NavMenu @bind-DrawerOpen=_drawerOpen/>
     </MudDrawer>
     <MudMainContent>
         @Body
@@ -19,10 +21,22 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
+    bool _drawerOpen = false;
 
-    void DrawerToggle()
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+        StateHasChanged();
     }
+
+    //protected override void OnInitialized()
+    //{
+    //    _hotKeysHandle.Add()
+    //        .Add(ModKeys.Shift | ModKeys.Ctrl, Keys.M, DrawerToggle, "Open Menu", _hotKeysHandle.ExcludeAll);
+    //}
+
+    //public void Dispose()
+    //{
+    //    _hotKeysHandle.Remove();
+    //}
 }

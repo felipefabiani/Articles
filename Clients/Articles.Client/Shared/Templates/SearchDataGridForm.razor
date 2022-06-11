@@ -1,0 +1,113 @@
+﻿@using Microsoft.AspNetCore.Components.Rendering
+@inherits SearchDataGridFormBase<TRequest, TResponse>
+@typeparam TRequest where TRequest : class, new ()
+@typeparam TResponse where TResponse : notnull, new ()
+
+
+<MudGrid Spacing="2" Justify="Justify.Center" Class="m-2">
+    <MudItem xs="12">
+        <MudCard Elevation="2">
+            <MudCardHeader>
+                @HeaderTemplate
+            </MudCardHeader>
+            <MudCardContent>
+                <MudForm Model="@_model" @ref="@form"
+                         Validation="@ValidateValue"
+                         ValidationDelay="0">
+                    @FormTemplate(_model)
+                </MudForm>
+            </MudCardContent>
+            <MudCardActions>
+                <MudPaper Class="d-flex flex-row-reverse flex-grow-1 gap-4" Elevation="0">
+                    <MudButton id="submit" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())">@(ButtonSubmitText ?? "Ok")</MudButton>
+                    <MudButton id="reset" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Reset())">Reset</MudButton>
+                    @ButtonsTemplate
+                </MudPaper>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12">
+            <MudDataGrid 
+                Elevation="2" 
+                Items="@Response" 
+                Dense="@dense" 
+                Hover="@hover" 
+                Bordered="@bordered" 
+                Striped="@striped" 
+                Breakpoint="Breakpoint.Sm"
+                Sortable="true"
+                Hideable="true"
+                QuickFilter="@(new Func<TResponse,bool>(FilterFunc1))"
+            >
+                <ToolBarContent>                    
+                    @if(DataGrid.Title is not null)
+                    {
+                        <MudText Typo="Typo.h6">@DataGrid.Title</MudText>
+                        <MudSpacer />
+                    }
+                    @if(DataGrid.Filter is not null)
+                    {
+                        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    }
+                </ToolBarContent>
+                <Columns>
+                    <SelectColumn T="TResponse" />
+                    @foreach (var col in DataGrid.Columns)
+                    {
+                        @if(col.CellTemplate is not null)
+                        {
+                            <Column T="TResponse"                         
+                                Field="@col.Field"
+                                Title="@col.Title" 
+                                Sortable="@col.Sortable" 
+                                Filterable="@col.Filterable"
+                                SortBy="@col.SortBy"
+                                CellStyleFunc="@col.CellStyleFunc"
+                            >
+                                <CellTemplate>
+                                        @col.CellTemplate?.Invoke(@context.Item)
+                                </CellTemplate>
+                            </Column>
+                        } else
+                        {
+                            <Column T="TResponse"                         
+                                Field="@col.Field"
+                                Title="@col.Title" 
+                                Sortable="@col.Sortable" 
+                                Filterable="@col.Filterable"
+                                SortBy="@col.SortBy"
+                            />
+                        }
+                    }
+                </Columns> 
+                 <PagerContent>
+                      <MudDataGridPager T="TResponse" PageSizeOptions="new int[]{ 3, 5, 10, 20, 50,100 }" />
+                </PagerContent>
+            </MudDataGrid>
+
+            @if(Response?.Count > 0)
+            {        
+                <div class="d-flex flex-wrap mt-4">
+                    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+                    <MudSwitch @bind-Checked="@dense" Color="Color.Primary">Dense</MudSwitch>
+                    <MudSwitch @bind-Checked="@striped" Color="Color.Primary">Striped</MudSwitch>
+                    <MudSwitch @bind-Checked="@bordered" Color="Color.Primary">Bordered</MudSwitch>
+                    <MudSwitch @bind-Checked="@fixed_header" Color="Color.Primary">Fixed Header</MudSwitch>
+                </div>
+            }
+    </MudItem>
+</MudGrid>
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+    private bool fixed_header = true;
+
+    private TResponse selectedItem1 = default!;
+    private HashSet<TResponse> selectedItems = new HashSet<TResponse>();
+
+    private bool FilterFunc1(TResponse element) => DataGrid.Filter?.Invoke(element, searchString1) ?? true; 
+    
+}

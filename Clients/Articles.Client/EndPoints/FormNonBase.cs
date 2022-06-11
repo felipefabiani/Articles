@@ -2,15 +2,17 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Net.Http.Json;
+using Toolbelt.Blazor.HotKeys;
 
 namespace Articles.Client.EndPoints;
-public abstract class FormBase : ComponentBase
+public abstract class FormBase : ComponentBase, IDisposable
 {
-    [Inject] protected IDialogService DialogService { get; set; } = null!;
-    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
-    [Inject] protected IHttpClientFactory HttpClientFactory { get; set; } = null!;
-    [Parameter] public string HttpClientName { get; set; } = null!;
-    [Parameter] public string Endpoint { get; set; } = null!;
+    [Inject] protected IDialogService DialogService { get; set; } = default!;
+    [Inject] protected ISnackbar SnackbarFormBase { get; set; } = default!;
+    [Inject] protected IHttpClientFactory HttpClientFactory { get; set; } = default!;
+    [Inject] protected HotKeysHandle HotKeysHandle { get; set; } = default!;
+    [Parameter] public string HttpClientName { get; set; } = default!;
+    [Parameter] public string Endpoint { get; set; } = default!;
     [Parameter] public string? SuccessMessage { get; set; } = null;
     [Parameter] public string? FailedMessage { get; set; } = null;
     [Parameter] public bool DisableSuccessDefaultMessage { get; set; } = false;
@@ -19,11 +21,15 @@ public abstract class FormBase : ComponentBase
 
     protected CancellationTokenSource cancellationTokenSource = new();
 
-    protected MudForm form = null!;
+    protected MudForm? form;
     protected HttpClient HttpClient { get { return HttpClientFactory.CreateClient(HttpClientName); } }
+    protected HotKeysContext HotKeysContext = default!;
+
+
     protected async Task Submit()
+    
     {
-        await form.Validate();
+        await form!.Validate();
 
         if (!form.IsValid)
         {
@@ -44,12 +50,12 @@ public abstract class FormBase : ComponentBase
                     break;
                 case System.Net.HttpStatusCode.Unauthorized:
                 case System.Net.HttpStatusCode.Forbidden:
-                    Snackbar.Add(
+                    SnackbarFormBase.Add(
                         message: "User doesn't have permission.",
                         severity: Severity.Error);
                     break;
                 case System.Net.HttpStatusCode.InternalServerError:
-                    Snackbar.Add(
+                    SnackbarFormBase.Add(
                         message: "An unexpected error has occurred.",
                         severity: Severity.Error);
                     break;
@@ -62,15 +68,15 @@ public abstract class FormBase : ComponentBase
         }
         catch (TaskCanceledException ex) when (ex.CancellationToken.IsCancellationRequested)
         {
-            Snackbar.Add("User canceled request!", MudBlazor.Severity.Warning);
+            SnackbarFormBase.Add("User canceled request!", MudBlazor.Severity.Warning);
         }
         catch (TaskCanceledException)
         {
-            Snackbar.Add("Request timed out", MudBlazor.Severity.Warning);
+            SnackbarFormBase.Add("Request timed out", MudBlazor.Severity.Warning);
         }
         catch (Exception ex)
         {
-            Snackbar.Add($"Unexpected error:<BR/><BR>{ex.Message}", MudBlazor.Severity.Error);
+            SnackbarFormBase.Add($"Unexpected error:<BR/><BR>{ex.Message}", MudBlazor.Severity.Error);
         }
         finally
         {
@@ -96,13 +102,13 @@ public abstract class FormBase : ComponentBase
     {
         if (FailedMessage is not null)
         {
-            Snackbar.Add(
+            SnackbarFormBase.Add(
                 message: FailedMessage,
                 severity: Severity.Error);
         }
         else if (DisableFailDefaultMessage == false)
         {
-            Snackbar.Add(
+            SnackbarFormBase.Add(
                 message: FailedMessage ?? string.Join("<br/>", bad?.errors?.GeneralErrors!),
                 severity: Severity.Error);
         }
@@ -112,13 +118,13 @@ public abstract class FormBase : ComponentBase
     {
         if (SuccessMessage is not null)
         {
-            Snackbar.Add(
+            SnackbarFormBase.Add(
                 message: SuccessMessage,
                 severity: Severity.Success);
         }
         else if (DisableFailDefaultMessage == false)
         {
-            Snackbar.Add(
+            SnackbarFormBase.Add(
                 message: "Completed successfully",
                 severity: Severity.Success);
         }
@@ -154,15 +160,28 @@ public abstract class FormBase : ComponentBase
         ResetCancelationToken();
         return Task.CompletedTask;
     }
-    protected virtual Task Reset()
+    protected virtual async Task Reset()
     {
-        form.Reset();
-        return Task.CompletedTask;
+        form?.Reset();
+        await Task.CompletedTask;
     }
     private void ResetCancelationToken()
     {
         cancellationTokenSource.Cancel();
         cancellationTokenSource.Dispose();
         cancellationTokenSource = new CancellationTokenSource();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+       await base.OnInitializedAsync();
+
+        HotKeysContext = HotKeysHandle.Add()
+            .Add(ModKeys.Ctrl, Keys.Enter, Submit, ButtonSubmitText, exclude: Exclude.InputNonText | Exclude.TextArea | Exclude.InputNonText);
+        
+    }
+    public void Dispose()
+    {
+        HotKeysHandle.Remove();
     }
 }

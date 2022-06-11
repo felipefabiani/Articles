@@ -34,6 +34,8 @@ public static class ServiceCollectionExtention
         AddCors();
         AddAuthentication();
 
+        builder.Services.AddTransient((sp) => new ArticleEntity(sp));
+
         _ = builder.Services.AddArticlesAuthorization();
         _ = builder.Services.AddFastEndpoints();
         _ = builder.Services.AddResponseCaching();
@@ -279,8 +281,8 @@ public static class ServiceCollectionExtention
             if (app.Environment.IsDevelopment() ||
                 app.Environment.IsEnvironment(ArticlesConstants.Environment.Uat))
             {
-                app.UseOpenApi();
-                app.UseSwaggerUi3(c => c.ConfigureDefaults());
+                //app.UseOpenApi();
+                //app.UseSwaggerUi3(c => c.ConfigureDefaults());
 
 
                 var factory = app.Services.GetRequiredService<IDbContextFactory<ArticleContext>>();

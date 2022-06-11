@@ -8,12 +8,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity?.Name!
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick=@BeginSignOut>Log out</MudButton>
+        <MudFab Color="Color.Primary" EndIcon="@Icons.Outlined.Logout" OnClick="BeginSignOut" DisableElevation="true" Label="@context.User.Identity?.Name" />
     </Authorized>
     <NotAuthorized>
-        
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="login">Log in</MudButton>
+        <MudFab Color="Color.Primary" EndIcon="@Icons.Outlined.Login" Href="login" DisableElevation="true" Label="Log In" />
     </NotAuthorized>
 </AuthorizeView>
 
@@ -23,7 +21,7 @@
 
     private async Task BeginSignOut(MouseEventArgs args)
     {
-         await AuthService.Logout();
+        await AuthService.Logout();
         Navigation.NavigateTo("/login");
     }
 }

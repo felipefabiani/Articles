@@ -2,13 +2,14 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using Toolbelt.Blazor.HotKeys;
 
 namespace Articles.Client.EndPoints;
 public abstract class FormBase<TRequest, TResponse> : FormBase
     where TRequest : class, new()
     where TResponse : notnull, new()
 {
-    [Inject] protected AbstractValidator<TRequest> Validator { get; set; } = null!;
+    [Inject] protected AbstractValidator<TRequest> Validator { get; set; } = default!;
     [Parameter] public TRequest DefaultModel { get; set; } = new();
     [Parameter] public RenderFragment HeaderTemplate { get; set; } = default!;
     [Parameter] public RenderFragment<TRequest> FormTemplate { get; set; } = default!;
@@ -29,23 +30,24 @@ public abstract class FormBase<TRequest, TResponse> : FormBase
 
     protected override async Task Success(HttpResponseMessage response)
     {
-        var result = await response.Content.ReadFromJsonAsync<TResponse>();
+        var resp = await response.Content.ReadFromJsonAsync<TResponse>() ?? new TResponse();
 
         ShowSuccesMessage();
 
-        SuccessCallBack?.Invoke(result!);
+        SuccessCallBack?.Invoke(resp);
     }
 
-    protected override Task Reset()
+    protected override async Task Reset()
     {
-        base.Reset();
-        _model = DefaultModel.CloneJson(); ;
-        return Task.CompletedTask;
-    }
-    protected override Task OnInitializedAsync()
-    {
+        await base.Reset();
         _model = DefaultModel.CloneJson();
-        return base.OnInitializedAsync();
+        this.StateHasChanged();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = DefaultModel.CloneJson();
+        HotKeysContext.Add(ModKeys.Ctrl, Keys.Backspace, Reset, "Reset", exclude: Exclude.InputNonText | Exclude.TextArea | Exclude.InputNonText);
     }
 
     public Func<object, string, IEnumerable<string>> ValidateValue => (mod, propertyName) =>

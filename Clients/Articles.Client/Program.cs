@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
 using Serilog.Debugging;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 SelfLog.Enable(m => Console.Error.WriteLine(m));
 Log.Logger = new LoggerConfiguration()
@@ -11,6 +12,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.Services.AddHotKeys();
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

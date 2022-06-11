@@ -1,0 +1,81 @@
+﻿@page "/get-article-1"
+@*@attribute [Authorize(Policy = "AuthorSaveArticle")]*@
+
+<PageTitle>Add Article</PageTitle>
+
+<SearchDataGridForm
+    TRequest=PendingApprovalArticleRequest
+    TResponse=PendingApprovalArticleResponse
+    HttpClientName="Article.Api"
+    Endpoint="api/articles/getPendingApproval"
+
+    DefaultModel="@(new PendingApprovalArticleRequest { 
+        // Ids = new []{3},
+        StartDate = DateTimeOffset.Now.AddYears(-1),
+        EndDate = DateTimeOffset.Now.AddYears(1)
+    })"
+    ButtonSubmitText="Ok"
+    DataGrid=@(new DataGrid<PendingApprovalArticleResponse>{
+        Title= "Articles",
+        Filter = (obj, str) => obj switch {
+            { Title: var x  } when x.Contains(str) => true,
+            { Content: var x  } when x.Contains(str) => true,
+            { AuthorName: var x  } when x.Contains(str) => true,
+            // { CreatedOn: var x  } when x.(str) => true,
+            _ => false
+        },
+        Columns = new List<DataColumn<PendingApprovalArticleResponse>>{
+            new DataColumn<PendingApprovalArticleResponse> {
+                Title = "Title",
+                Field = "Title",
+                // Field = (item) => nameof(item.Title),
+                Sortable = true,
+                SortBy = (item) => item.Title
+            },
+            new DataColumn<PendingApprovalArticleResponse> {
+                Title = "Content",
+                Field = "Content",
+                // Field = (item) =>  nameof(item.Content),
+            },
+            new DataColumn<PendingApprovalArticleResponse> {
+                Title = "Author Name",
+                Field = "AuthorName",
+                // Field = (item) =>  nameof(item.AuthorName),
+            },
+            new DataColumn<PendingApprovalArticleResponse> {
+                Title = "Created On",
+                Field = "CreatedOn",
+                // Field = (item) =>  nameof(item.CreatedOn),
+                Sortable = true,
+                SortBy = (item) => item.CreatedOn,
+                HasCellTemplate = true,
+                CellTemplate = (item) => item.CreatedOn.ToString("dd-MM-yyyyy"),
+                CellStyleFunc = (item) => item.CreatedOn.Date switch {
+                    {Date: var d} when d >= DateTimeOffset.Now.AddMonths(-1) => "background-color:#8CED8C",
+                    {Date: var d} when d <= DateTimeOffset.Now.AddMonths(-3) => "background-color:#EACE5D",
+                    _ => ""
+                }                    
+            }
+        }
+    })
+>
+    <HeaderTemplate>
+        <MudElement HtmlTag="h1">
+            Seach Pending Approval Article
+        </MudElement>
+    </HeaderTemplate>
+    <FormTemplate Context="model">
+        @*<MudTextField id="article-title"
+                        InputType="InputType.Search"
+                        Label="Authors"
+                        Class="mt-3"
+                        @bind-Value=@model.Ids
+                        For=@(() => model.Ids)
+                        MaxLength="100"/>
+        *@
+    </FormTemplate>
+</SearchDataGridForm>
+
+@code {
+
+}

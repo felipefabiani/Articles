@@ -2,7 +2,10 @@
 @typeparam TRequest where TRequest : class, new ()
 @typeparam TResponse where TResponse : notnull, new ()
 
-<MudForm Model="@_model" @ref="@form" Validation="@ValidateValue" ValidationDelay="0">
+<MudForm Model="@_model" 
+    Validation="@ValidateValue" 
+    ValidationDelay="0"
+    @ref=@form>
     <MudCard>
         <MudCardHeader>
             @HeaderTemplate
@@ -12,8 +15,8 @@
         </MudCardContent>
         <MudCardActions>
             <MudPaper Class="d-flex flex-row-reverse flex-grow-1 gap-4" Elevation="0">
-                <MudButton id="submit" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())">@(ButtonSubmitText ?? "Ok")</MudButton>
-                <MudButton id="reset" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Reset())">Reset</MudButton>
+                <MudButton id="submit" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())" accesskey="e">@(ButtonSubmitText ?? "Ok")</MudButton>
+                <MudButton id="reset" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Reset())" accesskey="k">Reset</MudButton>
                 @*<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Cancel())">Cancel</MudButton>*@
                 @*<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => OpenDialog())">Cancel</MudButton>*@
                 <CascadingValue Value="this">

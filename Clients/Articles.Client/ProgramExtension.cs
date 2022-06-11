@@ -17,6 +17,8 @@ public static class ProgramExtension
         builder.Services.AddArticlesAuthorization();
         builder.Services.AddScoped<IAuthStateProvider, AuthStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(p => (AuthStateProvider)p.GetRequiredService<IAuthStateProvider>());
+        builder.Services.AddScoped<HotKeysHandle>();
+
         builder.Services.AddBlazoredLocalStorage();
         builder.AddMudServices();
 

@@ -1,0 +1,110 @@
+﻿@using Microsoft.AspNetCore.Components.Rendering
+@inherits SearchFormBase<TRequest, TResponse>
+@typeparam TRequest where TRequest : class, new ()
+@typeparam TResponse where TResponse : notnull, new ()
+
+
+<MudGrid Spacing="2" Justify="Justify.Center" Class="m-2">
+    <MudItem xs="12">
+        <MudCard Elevation="2">
+            <MudCardHeader>
+                @HeaderTemplate
+            </MudCardHeader>
+            <MudCardContent>
+                <MudForm Model="@_model" @ref="@form"
+                         Validation="@ValidateValue"
+                         ValidationDelay="0">
+                    @FormTemplate(_model)
+                </MudForm>
+            </MudCardContent>
+            <MudCardActions>
+                <MudPaper Class="d-flex flex-row-reverse flex-grow-1 gap-4" Elevation="0">
+                    <MudButton id="submit" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Submit())">@(ButtonSubmitText ?? "Ok")</MudButton>
+                    <MudButton id="reset" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await Reset())">Reset</MudButton>
+                    @ButtonsTemplate
+                </MudPaper>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12">
+            <MudTable 
+                Elevation="2" 
+                Context="content" 
+                Items="@Response" 
+                Dense="@dense" 
+                Hover="@hover" 
+                Bordered="@bordered" 
+                Striped="@striped" 
+                Breakpoint="Breakpoint.Sm"
+                SortLabel="Sort By"
+                FixedHeader="@fixed_header"
+                Filter="new Func<TResponse,bool>(FilterFunc1)"
+            >
+                <ToolBarContent>
+                    @if(Table.Title is not null)
+                    {
+                        <MudText Typo="Typo.h6">@Table.Title</MudText>
+                        <MudSpacer />
+                    }
+                    @if(Table.Filter is not null)
+                    {
+                        <MudTextField 
+                            @bind-Value="searchString1" 
+                            Placeholder="Search" 
+                            Adornment="Adornment.Start" 
+                            AdornmentIcon="@Icons.Material.Filled.Search" 
+                            IconSize="Size.Medium" 
+                            Class="mt-0">
+                        </MudTextField>
+                    }
+                </ToolBarContent>
+                <HeaderContent>
+                    @foreach (var col in Table.Columns)
+                    {
+                        <MudTh>
+                            <MudTableSortLabel 
+                                SortBy="new Func<TResponse, object>(col.RowValue)">
+                                @col.HeaderName
+                            </MudTableSortLabel>
+                        </MudTh>
+                    }
+                </HeaderContent>
+                <RowTemplate>
+                    @foreach (var col in Table.Columns)
+                    {
+                        <MudTd DataLabel="@col.HeaderName">
+                            @col.RowValue.Invoke(@content)
+                        </MudTd>
+                    }
+                </RowTemplate>
+                 <PagerContent>
+                    <MudTablePager  PageSizeOptions="new int[]{ 10, 25, 50, 100 }" />
+                </PagerContent>
+            </MudTable>
+
+            @if(Response?.Count > 0)
+            {        
+                <div class="d-flex flex-wrap mt-4">
+                    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+                    <MudSwitch @bind-Checked="@dense" Color="Color.Primary">Dense</MudSwitch>
+                    <MudSwitch @bind-Checked="@striped" Color="Color.Primary">Striped</MudSwitch>
+                    <MudSwitch @bind-Checked="@bordered" Color="Color.Primary">Bordered</MudSwitch>
+                    <MudSwitch @bind-Checked="@fixed_header" Color="Color.Primary">Fixed Header</MudSwitch>
+                </div>
+            }
+    </MudItem>
+</MudGrid>
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+    private bool fixed_header = true;
+
+    private TResponse selectedItem1 = default!;
+    private HashSet<TResponse> selectedItems = new HashSet<TResponse>();
+
+    private bool FilterFunc1(TResponse element) => Table.Filter?.Invoke(element, searchString1) ?? true; 
+    
+}

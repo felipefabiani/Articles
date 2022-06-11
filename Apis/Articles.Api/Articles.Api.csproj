@@ -27,9 +27,9 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
 
-	  <PackageReference Include="FastEndpoints" Version="4.0.0" />
-	  <PackageReference Include="FastEndpoints.Security" Version="4.0.0" />
-	  <PackageReference Include="FastEndpoints.Swagger" Version="4.0.0" />
+	  <PackageReference Include="FastEndpoints" Version="4.2.0" />
+	  <PackageReference Include="FastEndpoints.Security" Version="4.2.0" />
+	  <PackageReference Include="FastEndpoints.Swagger" Version="4.2.0" />
 	  <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
