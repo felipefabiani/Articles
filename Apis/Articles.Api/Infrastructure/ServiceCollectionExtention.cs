@@ -269,11 +269,11 @@ public static class ServiceCollectionExtention
         });
 
 
-        app.Run(async context =>
-        {
-            context.Response.Redirect("swagger");
-            await Task.CompletedTask;
-        });
+        //app.Run(async context =>
+        //{
+        //    context.Response.Redirect("swagger");
+        //    await Task.CompletedTask;
+        //});
         return app;
 
         async Task<WebApplication> SetEnvironment()

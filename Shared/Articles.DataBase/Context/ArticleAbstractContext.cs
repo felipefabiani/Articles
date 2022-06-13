@@ -21,6 +21,7 @@
 ////    or  EntityFrameworkCore\Script-Migration {*from migration} {to migration} -Context ArticleContext
 ////    * from not include the script for the specific migration
 
+using Articles.Database.View;
 using System.Reflection;
 
 namespace Articles.Database.Context;
@@ -32,11 +33,12 @@ public abstract class ArticleAbstractContext : DbContext
     {
     }
 
-    public virtual DbSet<ArticleEntity> Articles { get; set; } = null!;
-    public virtual DbSet<CommentEntity> Comments { get; set; } = null!;
-    public virtual DbSet<UserEntity> Users { get; set; } = null!;
-    public virtual DbSet<RoleEntity> Roles { get; set; } = null!;
-    public virtual DbSet<ClaimEntity> Claims { get; set; } = null!;
+    public virtual DbSet<ArticleEntity> Articles { get; set; } = default!;
+    public virtual DbSet<AuthorView> Authors { get; set; } = default!;
+    public virtual DbSet<CommentEntity> Comments { get; set; } = default!;
+    public virtual DbSet<UserEntity> Users { get; set; } = default!;
+    public virtual DbSet<RoleEntity> Roles { get; set; } = default!;
+    public virtual DbSet<ClaimEntity> Claims { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

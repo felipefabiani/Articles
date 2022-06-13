@@ -27,7 +27,7 @@ public abstract class FormBase : ComponentBase, IDisposable
 
 
     protected async Task Submit()
-    
+
     {
         await form!.Validate();
 
@@ -174,11 +174,11 @@ public abstract class FormBase : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-       await base.OnInitializedAsync();
+        await base.OnInitializedAsync();
 
         HotKeysContext = HotKeysHandle.Add()
             .Add(ModKeys.Ctrl, Keys.Enter, Submit, ButtonSubmitText, exclude: Exclude.InputNonText | Exclude.TextArea | Exclude.InputNonText);
-        
+
     }
     public void Dispose()
     {

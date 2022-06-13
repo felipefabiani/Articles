@@ -9,11 +9,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Articles.Database.Migrations
+namespace Articles.Database.Migrations.Seeding
 {
+    [ExcludeFromCodeCoverage]
     [DbContext(typeof(ArticleContext))]
-    [Migration("20220329213340_Initial")]
-    partial class Initial
+    [Migration("20250329213444_SeedingUsers")]
+    partial class SeedingUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,7 +195,7 @@ namespace Articles.Database.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ClaimUser", b =>
+            modelBuilder.Entity("UsersClaims", b =>
                 {
                     b.Property<int>("ClaimsId")
                         .HasColumnType("int");
@@ -206,10 +207,10 @@ namespace Articles.Database.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("ClaimUser");
+                    b.ToTable("UsersClaims");
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UsersRoles", b =>
                 {
                     b.Property<int>("RolesId")
                         .HasColumnType("int");
@@ -221,7 +222,7 @@ namespace Articles.Database.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("RoleUser");
+                    b.ToTable("UsersRoles");
                 });
 
             modelBuilder.Entity("Articles.Database.Entities.Comment", b =>
@@ -231,7 +232,7 @@ namespace Articles.Database.Migrations
                         .HasForeignKey("ArticleId");
                 });
 
-            modelBuilder.Entity("ClaimUser", b =>
+            modelBuilder.Entity("UsersClaims", b =>
                 {
                     b.HasOne("Articles.Database.Entities.Claim", null)
                         .WithMany()
@@ -246,7 +247,7 @@ namespace Articles.Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UsersRoles", b =>
                 {
                     b.HasOne("Articles.Database.Entities.Role", null)
                         .WithMany()

@@ -13,7 +13,7 @@ using static Articles.Test.Helper.Fixture.ServiceCollectionTestExtension;
 
 namespace Articles.Test.Helper.Bases;
 
-public abstract class ServiceProvider<TClassFixture> : 
+public abstract class ServiceProvider<TClassFixture> :
     IClassFixture<TClassFixture>
     where TClassFixture : AbstractServiceCollectionFixture
 {

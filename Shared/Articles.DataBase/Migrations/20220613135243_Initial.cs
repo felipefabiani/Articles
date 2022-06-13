@@ -9,24 +9,6 @@ namespace Articles.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Articles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Title = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    RejectionReason = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Articles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Claims",
                 columns: table => new
                 {
@@ -71,73 +53,105 @@ namespace Articles.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Articles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateAdded = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    ArticleId = table.Column<int>(type: "int", nullable: true)
+                    FullName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Title = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    RejectionReason = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: true),
+                    AuthorId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifyedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
+                        name: "FK_Articles_Users_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClaimUser",
+                name: "UsersClaims",
                 columns: table => new
                 {
-                    ClaimsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClaimId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClaimUser", x => new { x.ClaimsId, x.UsersId });
+                    table.PrimaryKey("PK_UsersClaims", x => new { x.UserId, x.ClaimId });
                     table.ForeignKey(
-                        name: "FK_ClaimUser_Claims_ClaimsId",
-                        column: x => x.ClaimsId,
+                        name: "FK_UsersClaims_Claims_ClaimId",
+                        column: x => x.ClaimId,
                         principalTable: "Claims",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClaimUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_UsersClaims_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleUser",
+                name: "UsersRoles",
                 columns: table => new
                 {
-                    RolesId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleUser", x => new { x.RolesId, x.UsersId });
+                    table.PrimaryKey("PK_UsersRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_RoleUser_Roles_RolesId",
-                        column: x => x.RolesId,
+                        name: "FK_UsersRoles_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RoleUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_UsersRoles_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NickName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifyedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_AuthorId",
+                table: "Articles",
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_Title_Content",
@@ -152,13 +166,8 @@ namespace Articles.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClaimUser_UsersId",
-                table: "ClaimUser",
-                column: "UsersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comment_ArticleId",
-                table: "Comment",
+                name: "IX_Comments_ArticleId",
+                table: "Comments",
                 column: "ArticleId");
 
             migrationBuilder.CreateIndex(
@@ -166,11 +175,6 @@ namespace Articles.Database.Migrations
                 table: "Roles",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoleUser_UsersId",
-                table: "RoleUser",
-                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -183,24 +187,44 @@ namespace Articles.Database.Migrations
                 table: "Users",
                 columns: new[] { "Email", "Password" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersClaims_ClaimId",
+                table: "UsersClaims",
+                column: "ClaimId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersClaims_UserId",
+                table: "UsersClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersRoles_RoleId",
+                table: "UsersRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersRoles_UserId",
+                table: "UsersRoles",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClaimUser");
+                name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "UsersClaims");
 
             migrationBuilder.DropTable(
-                name: "RoleUser");
-
-            migrationBuilder.DropTable(
-                name: "Claims");
+                name: "UsersRoles");
 
             migrationBuilder.DropTable(
                 name: "Articles");
+
+            migrationBuilder.DropTable(
+                name: "Claims");
 
             migrationBuilder.DropTable(
                 name: "Roles");

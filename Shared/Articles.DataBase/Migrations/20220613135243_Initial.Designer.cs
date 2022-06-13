@@ -9,17 +9,17 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Articles.Database.migrations
+namespace Articles.Database.Migrations
 {
     [DbContext(typeof(ArticleContext))]
-    [Migration("20220430082051_AddTrackableInterface")]
-    partial class AddTrackableInterface
+    [Migration("20220613135243_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -69,13 +69,15 @@ namespace Articles.Database.migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.HasIndex("Title", "Content")
                         .IsUnique();
 
                     b.ToTable("Articles", (string)null);
                 });
 
-            modelBuilder.Entity("Articles.Database.Entities.Claim", b =>
+            modelBuilder.Entity("Articles.Database.Entities.ClaimEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,10 +102,10 @@ namespace Articles.Database.migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Claims");
+                    b.ToTable("Claims", (string)null);
                 });
 
-            modelBuilder.Entity("Articles.Database.Entities.Comment", b =>
+            modelBuilder.Entity("Articles.Database.Entities.CommentEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,7 +141,7 @@ namespace Articles.Database.migrations
                     b.ToTable("Comments", (string)null);
                 });
 
-            modelBuilder.Entity("Articles.Database.Entities.Role", b =>
+            modelBuilder.Entity("Articles.Database.Entities.RoleEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -158,10 +160,10 @@ namespace Articles.Database.migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("Articles.Database.Entities.User", b =>
+            modelBuilder.Entity("Articles.Database.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,37 +209,52 @@ namespace Articles.Database.migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ClaimUser", b =>
+            modelBuilder.Entity("UsersClaims", b =>
                 {
-                    b.Property<int>("ClaimsId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsersId")
+                    b.Property<int>("ClaimId")
                         .HasColumnType("int");
 
-                    b.HasKey("ClaimsId", "UsersId");
+                    b.HasKey("UserId", "ClaimId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("ClaimId");
 
-                    b.ToTable("ClaimUser");
+                    b.HasIndex(new[] { "UserId" }, "IX_UsersClaims_UserId");
+
+                    b.ToTable("UsersClaims", (string)null);
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UsersRoles", b =>
                 {
-                    b.Property<int>("RolesId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsersId")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.HasKey("RolesId", "UsersId");
+                    b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("RoleId");
 
-                    b.ToTable("RoleUser");
+                    b.HasIndex(new[] { "UserId" }, "IX_UsersRoles_UserId");
+
+                    b.ToTable("UsersRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Articles.Database.Entities.Comment", b =>
+            modelBuilder.Entity("Articles.Database.Entities.ArticleEntity", b =>
+                {
+                    b.HasOne("Articles.Database.Entities.UserEntity", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Articles.Database.Entities.CommentEntity", b =>
                 {
                     b.HasOne("Articles.Database.Entities.ArticleEntity", "Article")
                         .WithMany("Comments")
@@ -248,32 +265,32 @@ namespace Articles.Database.migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("ClaimUser", b =>
+            modelBuilder.Entity("UsersClaims", b =>
                 {
-                    b.HasOne("Articles.Database.Entities.Claim", null)
+                    b.HasOne("Articles.Database.Entities.ClaimEntity", null)
                         .WithMany()
-                        .HasForeignKey("ClaimsId")
+                        .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Articles.Database.Entities.User", null)
+                    b.HasOne("Articles.Database.Entities.UserEntity", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UsersRoles", b =>
                 {
-                    b.HasOne("Articles.Database.Entities.Role", null)
+                    b.HasOne("Articles.Database.Entities.RoleEntity", null)
                         .WithMany()
-                        .HasForeignKey("RolesId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Articles.Database.Entities.User", null)
+                    b.HasOne("Articles.Database.Entities.UserEntity", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,7 +1,6 @@
 ﻿using Articles.Client.Shared.Templates;
 using Articles.Helper.Extensions;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using System.Net.Http.Json;
 
 namespace Articles.Client.EndPoints;
@@ -30,7 +29,7 @@ public abstract class SearchDataGridFormBase<TRequest, TResponse> : FormBase<TRe
 
         SuccessCallBack?.Invoke(_resp);
     }
-    
+
     protected override Task Reset()
     {
         searchString1 = string.Empty;

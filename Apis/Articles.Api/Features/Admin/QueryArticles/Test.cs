@@ -1,6 +1,4 @@
-﻿using Articles.Models.Feature.Articles.SaveArticle;
-using System.Collections.Generic;
-using static Articles.Helper.Auth.Policies.Author;
+﻿using System.Collections.Generic;
 
 namespace Articles.Api.Features.Admin.SaveArticle;
 
@@ -28,7 +26,7 @@ public class TestEndpoint : Endpoint<MyRequest>
 
         var queryParam = QueryTest<int[]>("Codes");
         var items = QueryTest<IEnumerable<Item>>("items");
-        
+
         await SendAsync(Response, cancellation: cancellationToken);
     }
 

@@ -1,6 +1,6 @@
 ﻿//namespace Articles.Database.Entities;
 
-//public class ClaimUserEntity
+//public class UsersClaimsEntity
 //{
 //    public int UserId { get; set; }
 //    public int ClaimId { get; set; }
@@ -8,11 +8,11 @@
 //    public ClaimEntity Claim { get; set; } = new();
 //}
 
-//public class UserClaimEntityTypeConfiguration : IEntityTypeConfiguration<ClaimUserEntity>
+//public class UserClaimEntityTypeConfiguration : IEntityTypeConfiguration<UsersClaimsEntity>
 //{
-//    public void Configure(EntityTypeBuilder<ClaimUserEntity> builder)
+//    public void Configure(EntityTypeBuilder<UsersClaimsEntity> builder)
 //    {
-//        builder.ToTable("ClaimUser");
+//        builder.ToTable("UsersClaims");
 //        builder.HasIndex(x => new
 //        {
 //            x.UserId,

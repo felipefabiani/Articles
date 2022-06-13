@@ -57,28 +57,28 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<UserEntity>
             .HasMany(x => x.Roles)
             .WithMany(x => x.Users)
             .UsingEntity<Dictionary<string, object>>(
-                "RoleUser",
-                l => l.HasOne<RoleEntity>().WithMany().HasForeignKey("UserId"),
-                r => r.HasOne<UserEntity>().WithMany().HasForeignKey("RoleId"),
+                "UsersRoles",
+                l => l.HasOne<RoleEntity>().WithMany().HasForeignKey("RoleId"),
+                r => r.HasOne<UserEntity>().WithMany().HasForeignKey("UserId"),
                 j =>
                 {
-                    j.HasKey("RoleId", "UserId");
-                    j.ToTable("RoleUser");
-                    j.HasIndex(new[] { "UserId" }, "IX_RoleUser_UserId");
+                    j.HasKey("UserId", "RoleId");
+                    j.ToTable("UsersRoles");
+                    j.HasIndex(new[] { "UserId" }, "IX_UsersRoles_UserId");
                 });
 
         builder
             .HasMany(x => x.Claims)
             .WithMany(x => x.Users)
             .UsingEntity<Dictionary<string, object>>(
-                "ClaimUser",
-                l => l.HasOne<ClaimEntity>().WithMany().HasForeignKey("UserId"),
-                r => r.HasOne<UserEntity>().WithMany().HasForeignKey("ClaimId"),
+                "UsersClaims",
+                l => l.HasOne<ClaimEntity>().WithMany().HasForeignKey("ClaimId"),
+                r => r.HasOne<UserEntity>().WithMany().HasForeignKey("UserId"),
                 j =>
                 {
-                    j.HasKey("ClaimId", "UserId");
-                    j.ToTable("ClaimUser");
-                    j.HasIndex(new[] { "UserId" }, "IX_ClaimUser_UserId");
+                    j.HasKey("UserId", "ClaimId");
+                    j.ToTable("UsersClaims");
+                    j.HasIndex(new[] { "UserId" }, "IX_UsersClaims_UserId");
                 });
     }
 }

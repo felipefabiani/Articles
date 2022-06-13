@@ -19,7 +19,8 @@ public static class SeedArticleDatabaseExtension
         var roles = context.Roles.ToList();
         var claims = context.Claims.ToList();
 
-        await context.AddRangeAsync(
+        var users = new List<UserEntity>
+        {
             new UserEntity()
             {
                 FirstName = "Full",
@@ -27,7 +28,7 @@ public static class SeedArticleDatabaseExtension
                 Email = "full.access@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
                 Password = "123456".GetPassword(),
-                Roles = roles,
+                Roles = context.Roles.ToList(),
                 Claims = claims,
             },
             new UserEntity()
@@ -37,7 +38,9 @@ public static class SeedArticleDatabaseExtension
                 Email = "admin.test@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
                 Password = "123456".GetPassword(),
-                Roles = roles.Where(x => x.Id == 1).ToList(),
+                Roles = context.Roles
+                    .Where(x => x.Id == 1 || x.Id == 3)
+                    .ToList(),
                 Claims = claims.Where(x => x.Id <= 4).ToList()
             },
             new UserEntity()
@@ -47,7 +50,9 @@ public static class SeedArticleDatabaseExtension
                 Email = "author.test@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
                 Password = "123456".GetPassword(),
-                Roles = roles.Where(x => x.Id == 2).ToList(),
+                Roles = context.Roles
+                    .Where(x => x.Id == 2 || x.Id == 3)
+                    .ToList(),
                 Claims = claims.Where(x => x.Id >= 5 && x.Id < 9).ToList()
             },
             new UserEntity()
@@ -57,9 +62,13 @@ public static class SeedArticleDatabaseExtension
                 Email = "user.test@article.ie",
                 DateOfBirday = DateTimeOffset.Now.AddYears(-40),
                 Password = "123456".GetPassword(),
-                Roles = roles.Where(x => x.Id == 3).ToList(),
+                Roles = context.Roles
+                    .Where(x => x.Id == 3)
+                    .ToList(),
                 Claims = claims.Where(x => x.Id >= 9 && x.Id <= 9).ToList()
-            });
+            }
+        };
+        await context.AddRangeAsync(users);
         await context.SaveChangesAsync();
     }
 

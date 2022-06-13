@@ -20,6 +20,14 @@
             </AuthorizeView>
         </MudNavGroup>
     </AuthorizeView>
+
+    @*<AuthorizeView Roles="Author" Context="Header">*@
+        <MudNavGroup Title="Admin" Expanded="@_articleExpanded" Icon="@Icons.Filled.Article">
+            @*<AuthorizeView Policy=@Policies.Author.AuthorSaveArticle Context="child">*@
+                <MudNavLink Href="/get-peding-approval-article" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.PostAdd">Approve Articles</MudNavLink>
+            @*</AuthorizeView>*@
+        </MudNavGroup>
+    @*</AuthorizeView>*@
 </MudNavMenu>
 
 @code {

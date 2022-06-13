@@ -74,7 +74,7 @@ public static class ServiceCollectionTestExtension
 
         private int _id = 0;
 
-        public void Reset(int id=0)
+        public void Reset(int id = 0)
         {
             _id = id;
             _testdb = new Testdb
@@ -84,7 +84,7 @@ public static class ServiceCollectionTestExtension
             };
         }
 
-        
+
         private Testdb _testdb = default!;
         public Testdb Get()
         {

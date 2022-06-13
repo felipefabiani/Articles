@@ -6,7 +6,7 @@ public class ServiceCollectionFixture : AbstractServiceCollectionFixture
 {
 }
 
-public abstract class AbstractServiceCollectionFixture : 
+public abstract class AbstractServiceCollectionFixture :
     // IDisposable, 
     IAsyncDisposable
 {

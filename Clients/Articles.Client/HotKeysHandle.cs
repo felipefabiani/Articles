@@ -11,7 +11,7 @@ public class HotKeysHandle
 
     public HotKeysHandle(HotKeys hotKeys, IDialogService dialogService)
     {
-         _hotKeys = hotKeys;
+        _hotKeys = hotKeys;
         DialogService = dialogService;
         Init();
     }
@@ -39,15 +39,16 @@ public class HotKeysHandle
 
     public Exclude AllowsInputs = Exclude.InputNonText;
     public void Init()
-    {        
+    {
         Add()
             .Add(ModKeys.Ctrl, Keys.F1, OpenDialog, "Hot Keys Info", AllowsInputs)
-            .Add(ModKeys.Ctrl| ModKeys.Shift, Keys.F2, OpenDialog, "Test", AllowsInputs);
+            .Add(ModKeys.Ctrl | ModKeys.Shift, Keys.F2, OpenDialog, "Test", AllowsInputs);
     }
 
     private void OpenDialog()
     {
-        var options = new DialogOptions { 
+        var options = new DialogOptions
+        {
             CloseOnEscapeKey = true,
             NoHeader = true,
             CloseButton = true

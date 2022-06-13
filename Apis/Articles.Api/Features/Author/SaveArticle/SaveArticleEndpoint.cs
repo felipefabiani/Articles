@@ -2,7 +2,7 @@
 using static Articles.Helper.Auth.Policies.Author;
 
 namespace Articles.Api.Features.Author.SaveArticle;
-public class SaveArticleEndpoint : EndpointWithMapping<SaveArticleRequest, SaveArticleResponse, ArticleEntity>
+public class GetAuthorsEndpoint : EndpointWithMapping<SaveArticleRequest, SaveArticleResponse, ArticleEntity>
 {
     public override void Configure()
     {

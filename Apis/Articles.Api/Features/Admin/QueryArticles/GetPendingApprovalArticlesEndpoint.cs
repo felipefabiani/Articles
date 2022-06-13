@@ -1,6 +1,5 @@
 ﻿using Articles.Models.Feature.Articles.SaveArticle;
 using System.Collections.Generic;
-using static Articles.Helper.Auth.Policies.Author;
 
 namespace Articles.Api.Features.Admin.SaveArticle;
 public class GetPendingApprovalArticlesEndpoint : EndpointWithMapping<PendingApprovalArticleRequest, List<PendingApprovalArticleResponse>, List<ArticleEntity>>

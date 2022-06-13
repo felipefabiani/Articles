@@ -31,7 +31,7 @@ public class SaveArticleEndpointTester :
             .WithStringLength(x => x.Content, 20)
             .Create();
 
-        var sut = Factory.Create<SaveArticleEndpoint>(_defaultHttpContext, default);
+        var sut = Factory.Create<GetAuthorsEndpoint>(_defaultHttpContext, default);
 
         await sut.HandleAsync(request, default);
 

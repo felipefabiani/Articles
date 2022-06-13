@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using System.Text.Json;
 
 namespace Articles.Helper.Extensions
 {
@@ -18,7 +17,7 @@ namespace Articles.Helper.Extensions
             var properties = request.GetType().GetProperties()
                 .Where(x => x.CanRead)
                 .Where(x => x.GetValue(request, null) != null)
-                .ToDictionary(x => x.Name, x => 
+                .ToDictionary(x => x.Name, x =>
                 {
                     var obj = x.GetValue(request, null);
                     return obj switch
@@ -26,9 +25,9 @@ namespace Articles.Helper.Extensions
                         DateTime dt => dt.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), // JsonSerializer.Serialize(dt.ToUniversalTime()),
                         DateTimeOffset dt => dt.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                         _ => obj
-                    };                    
+                    };
                 });
-        
+
 
             // Get names for all IEnumerable properties (excl. string)
             var propertyNames = properties

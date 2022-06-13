@@ -207,34 +207,38 @@ namespace Articles.Database.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ClaimUser", b =>
+            modelBuilder.Entity("UsersClaims", b =>
                 {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClaimId")
                         .HasColumnType("int");
 
+                    b.HasKey("UserId", "ClaimId");
+
+                    b.HasIndex("ClaimId");
+
+                    b.HasIndex(new[] { "UserId" }, "IX_UsersClaims_UserId");
+
+                    b.ToTable("UsersClaims", (string)null);
+                });
+
+            modelBuilder.Entity("UsersRoles", b =>
+                {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ClaimId", "UserId");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_ClaimUser_UserId");
-
-                    b.ToTable("ClaimUser", (string)null);
-                });
-
-            modelBuilder.Entity("RoleUser", b =>
-                {
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.HasKey("UserId", "RoleId");
 
-                    b.HasKey("RoleId", "UserId");
+                    b.HasIndex("RoleId");
 
-                    b.HasIndex(new[] { "UserId" }, "IX_RoleUser_UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_UsersRoles_UserId");
 
-                    b.ToTable("RoleUser", (string)null);
+                    b.ToTable("UsersRoles", (string)null);
                 });
 
             modelBuilder.Entity("Articles.Database.Entities.ArticleEntity", b =>
@@ -259,30 +263,30 @@ namespace Articles.Database.Migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("ClaimUser", b =>
+            modelBuilder.Entity("UsersClaims", b =>
                 {
-                    b.HasOne("Articles.Database.Entities.UserEntity", null)
+                    b.HasOne("Articles.Database.Entities.ClaimEntity", null)
                         .WithMany()
                         .HasForeignKey("ClaimId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Articles.Database.Entities.ClaimEntity", null)
+                    b.HasOne("Articles.Database.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
+            modelBuilder.Entity("UsersRoles", b =>
                 {
-                    b.HasOne("Articles.Database.Entities.UserEntity", null)
+                    b.HasOne("Articles.Database.Entities.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Articles.Database.Entities.RoleEntity", null)
+                    b.HasOne("Articles.Database.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
