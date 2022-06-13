@@ -1,7 +1,7 @@
-﻿using Articles.Models.Feature.Articles.SaveArticle;
+﻿using Articles.Models.Feature.Articles.Query;
 using System.Collections.Generic;
 
-namespace Articles.Api.Features.Admin.SaveArticle;
+namespace Articles.Api.Features.Admin.QueryArticles;
 public class GetPendingApprovalArticlesEndpoint : EndpointWithMapping<PendingApprovalArticleRequest, List<PendingApprovalArticleResponse>, List<ArticleEntity>>
 {
     public override void Configure()

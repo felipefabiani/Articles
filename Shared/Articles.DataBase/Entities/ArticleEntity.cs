@@ -1,4 +1,4 @@
-﻿using Articles.Models.Feature.Articles.SaveArticle;
+﻿using Articles.Models.Feature.Articles.Query;
 using Microsoft.Extensions.Logging;
 
 namespace Articles.Database.Entities;

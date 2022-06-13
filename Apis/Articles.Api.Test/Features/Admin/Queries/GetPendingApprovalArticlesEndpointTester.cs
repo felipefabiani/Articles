@@ -1,10 +1,10 @@
-﻿using Articles.Api.Features.Admin.SaveArticle;
+﻿using Articles.Api.Features.Admin.QueryArticles;
 using Articles.Test.Helper.Bases;
 using Articles.Test.Helper.Fixture;
 using Articles.Test.Helper.TheoryData;
 using Microsoft.AspNetCore.Http;
 
-namespace Articles.Api.Test.Features.Articles.SaveArticle;
+namespace Articles.Api.Test.Features.Author.Queries;
 
 public class GetPendingApprovalArticlesEndpointTester :
     ContextDb<ServiceCollectionFixture>

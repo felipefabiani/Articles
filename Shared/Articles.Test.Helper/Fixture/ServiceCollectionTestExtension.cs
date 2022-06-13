@@ -1,6 +1,7 @@
 ﻿using Articles.Api.Features.Login;
 using Articles.Database.Context;
 using Articles.Database.Entities;
+using Articles.Database.View;
 using Articles.Models.Feature.Articles.SaveArticle;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,7 @@ public static class ServiceCollectionTestExtension
                 RequestServices = sp
             })
             .AddTransient((sp) => new ArticleEntity(sp))
+            .AddTransient((sp) => new AuthorView(sp))
             .AddSingleton<ILoginService, LoginService>()
             .AddSingleton(new NexIdService());
     }

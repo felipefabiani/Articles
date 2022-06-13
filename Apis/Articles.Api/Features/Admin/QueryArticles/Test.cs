@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Articles.Api.Features.Admin.SaveArticle;
+namespace Articles.Api.Features.Admin.QueryArticles;
 
 
 public class Item

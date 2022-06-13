@@ -1,9 +1,9 @@
-﻿using Articles.Models.Feature.Articles.SaveArticle;
+﻿using Articles.Models.Feature.Articles.Query;
 using Articles.Test.Helper.TheoryData;
 using FluentValidation.TestHelper;
 using Xunit;
 
-namespace Articles.Models.Tests.Feature.Articles.SaveArticle;
+namespace Articles.Models.Tests.Feature.Articles.Query;
 public class PendingApprovalArticlesTester
 {
     private PendingApprovalArticlesValidator _validator;

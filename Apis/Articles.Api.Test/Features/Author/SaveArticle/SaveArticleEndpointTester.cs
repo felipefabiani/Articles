@@ -6,7 +6,7 @@ using Articles.Test.Helper.Fixture;
 using AutoFixture;
 using Microsoft.AspNetCore.Http;
 
-namespace Articles.Api.Test.Features.Articles.SaveArticle;
+namespace Articles.Api.Test.Features.Author.SaveArticle;
 
 public class SaveArticleEndpointTester :
     ContextDb<ServiceCollectionFixture>

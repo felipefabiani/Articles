@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System;
 
-namespace Articles.Models.Feature.Articles.SaveArticle
+namespace Articles.Models.Feature.Articles.Query
 {
     public class PendingApprovalArticleRequest
     {

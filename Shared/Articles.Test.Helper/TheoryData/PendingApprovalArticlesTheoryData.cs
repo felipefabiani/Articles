@@ -1,4 +1,4 @@
-﻿using Articles.Models.Feature.Articles.SaveArticle;
+﻿using Articles.Models.Feature.Articles.Query;
 using Articles.Test.Helper.Bases;
 
 namespace Articles.Test.Helper.TheoryData;
