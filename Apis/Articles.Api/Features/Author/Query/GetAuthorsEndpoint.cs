@@ -9,7 +9,8 @@ public class GetAuthorsEndpoint : EndpointWithMapping<AuthorLookUpRequest, List<
     public override void Configure()
     {
         Get("/authors/get");
-        Policies(Read);
+        // Policies(Read);
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(AuthorLookUpRequest request, CancellationToken cancellationToken)

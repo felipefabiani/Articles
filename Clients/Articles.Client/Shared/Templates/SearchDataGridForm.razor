@@ -11,9 +11,10 @@
                 @HeaderTemplate
             </MudCardHeader>
             <MudCardContent>
-                <MudForm Model="@_model" @ref="@form"
-                         Validation="@ValidateValue"
-                         ValidationDelay="0">
+                <MudForm 
+                    Model="@_model" @ref="@form"
+                    Validation="@ValidateValue"
+                    ValidationDelay="0">
                     @FormTemplate(_model)
                 </MudForm>
             </MudCardContent>

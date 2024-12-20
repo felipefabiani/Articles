@@ -25,15 +25,13 @@ public abstract class FormBase : ComponentBase, IDisposable
     protected HttpClient HttpClient { get { return HttpClientFactory.CreateClient(HttpClientName); } }
     protected HotKeysContext HotKeysContext = default!;
 
-
     protected async Task Submit()
-
     {
         await form!.Validate();
 
         if (!form.IsValid)
         {
-            return;
+         //   return;
         }
 
         var dlgRef = ShowDialog();

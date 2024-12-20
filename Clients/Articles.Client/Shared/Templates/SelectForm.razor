@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Components.Rendering
+@inherits SelectRemoteBase<TRequest, TResponse>
+@typeparam TRequest where TRequest : class, new ()
+@typeparam TResponse where TResponse : notnull, new ()
+
+<MudSelect 
+    T="TResponse" 
+    Label="@Label" 
+    AnchorOrigin="Origin.BottomCenter"  
+    @bind-Value="Value"
+    @bind-SelectedValues="Options"
+    Clearable>
+
+    @foreach (var r in Response)
+    {
+        <MudSelectItem T="TResponse" Value="@r" />
+    }
+</MudSelect>
+
+@*
+ValueChanged="@(async (p) => await OnChange(p).ConfigureAwait(false))"
+    SelectedValuesChanged="@(async (p) => await SelectedValuesChangedTest().ConfigureAwait(false))"*@

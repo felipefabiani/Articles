@@ -20,7 +20,7 @@ public abstract class SearchFormBase<TRequest, TResponse> : FormBase<TRequest, T
     }
 
     public TResponse _resp = default!;
-    public List<TResponse>? Response { get; set; }
+    public List<TResponse> Response { get; set; } = new List<TResponse>();
     protected override async Task Success(HttpResponseMessage response)
     {
         Response = await response.Content.ReadFromJsonAsync<List<TResponse>>();

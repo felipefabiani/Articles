@@ -1,4 +1,6 @@
 ﻿@page "/get-peding-approval-article"
+@using Articles.Models.Feature.Articles.Query
+@using Articles.Models.Feature.Author.Query
 @*@attribute [Authorize(Policy = "AuthorSaveArticle")]*@
 
 <PageTitle>Add Article</PageTitle>
@@ -65,6 +67,16 @@
         </MudElement>
     </HeaderTemplate>
     <FormTemplate Context="model">
+        <SelectForm 
+            TRequest=AuthorLookUpRequest
+            TResponse=AuthorLookUpResponse
+            HttpClientName="Article.Api"
+            Endpoint="api/authors/get"
+            DefaultModel="@(new AuthorLookUpRequest())"
+            Label="Select Author"
+            ToStringFunc="@(av => av.FullName)"
+            OnValueChanged="@((p) => model.Id = p.Id)"
+        />  
         @*<MudTextField id="article-title"
                         InputType="InputType.Search"
                         Label="Authors"
@@ -77,5 +89,8 @@
 </SearchDataGridForm>
 
 @code {
-
+    //
+    //        
+    //
+    //        
 }
